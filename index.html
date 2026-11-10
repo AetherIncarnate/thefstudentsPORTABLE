@@ -4343,6 +4343,43 @@ html[data-theme="sepia"] .yt-search-shell {
     .lg\:row-span-3 { grid-row: span 3 / span 3; }
   }
 }
+
+
+
+/* === TURN 8 SEARCH, CHANNELS/PLAYLISTS, SHORTS & AQ. WRAPPED === */
+@layer utilities {
+  .h-28 { height: calc(var(--spacing) * 28); }
+  .h-\[calc\(100vh-10\.25rem\)\] { height: calc(100vh - 10.25rem); }
+  .h-\[calc\(100vh-10\.5rem\)\] { height: calc(100vh - 10.5rem); }
+  .max-h-\[80vh\] { max-height: 80vh; }
+  .max-h-\[820px\] { max-height: 820px; }
+  .bottom-8 { bottom: calc(var(--spacing) * 8); }
+  .mr-1\.5 { margin-right: calc(var(--spacing) * 1.5); }
+  .px-0\.5 { padding-inline: calc(var(--spacing) * 0.5); }
+  .gap-x-1\.5 { column-gap: calc(var(--spacing) * 1.5); }
+  .rounded-b-\[9px\] { border-bottom-left-radius: 9px; border-bottom-right-radius: 9px; }
+  .font-extrabold { font-weight: 800; }
+  .size-16 { width: calc(var(--spacing) * 16); height: calc(var(--spacing) * 16); }
+  .bg-primary\/80 { background-color: color-mix(in oklab, var(--primary) 80%, transparent); }
+  .bg-secondary\/55 { background-color: color-mix(in oklab, var(--secondary) 55%, transparent); }
+  .text-primary\/85 { color: color-mix(in oklab, var(--primary) 85%, transparent); }
+  .text-muted-foreground\/90 { color: color-mix(in oklab, var(--muted-foreground) 90%, transparent); }
+  .hover\:bg-white\/20:hover { background-color: rgba(255, 255, 255, 0.20); }
+  .hover\:opacity-85:hover { opacity: 0.85; }
+  @media (min-width: 640px) {
+    .sm\:block { display: block; }
+    .sm\:w-36 { width: calc(var(--spacing) * 36); }
+    .sm\:flex-row { flex-direction: row; }
+    .sm\:items-center { align-items: center; }
+    .sm\:grid-cols-\[minmax\(0\,1fr\)_220px\] { grid-template-columns: minmax(0, 1fr) 220px; }
+  }
+  @media (min-width: 768px) {
+    .md\:inline-flex { display: inline-flex; }
+  }
+  @media (min-width: 1280px) {
+    .xl\:flex { display: flex; }
+  }
+}
 </style></head><body><div id="root"></div><script>"use strict";(()=>{
 var vb=Object.create;var ji=Object.defineProperty;var Lb=Object.getOwnPropertyDescriptor;var bb=Object.getOwnPropertyNames;var Sb=Object.getPrototypeOf,Cb=Object.prototype.hasOwnProperty;var Ib=(e,a)=>()=>(e&&(a=e(e=0)),a);var yt=(e,a)=>()=>(a||e((a={exports:{}}).exports,a),a.exports),wb=(e,a)=>{for(var t in a)ji(e,t,{get:a[t],enumerable:!0})},kb=(e,a,t,l)=>{if(a&&typeof a=="object"||typeof a=="function")for(let o of bb(a))!Cb.call(e,o)&&o!==t&&ji(e,o,{get:()=>a[o],enumerable:!(l=Lb(a,o))||l.enumerable});return e};var P=(e,a,t)=>(t=e!=null?vb(Sb(e)):{},kb(a||!e||!e.__esModule?ji(t,"default",{value:e,enumerable:!0}):t,e));var tp=yt(Fe=>{"use strict";function Qi(e,a){var t=e.length;e.push(a);e:for(;0<t;){var l=t-1>>>1,o=e[l];if(0<Nn(o,a))e[l]=a,e[t]=o,t=l;else break e}}function Tt(e){return e.length===0?null:e[0]}function Pn(e){if(e.length===0)return null;var a=e[0],t=e.pop();if(t!==a){e[0]=t;e:for(var l=0,o=e.length,u=o>>>1;l<u;){var r=2*(l+1)-1,n=e[r],s=r+1,i=e[s];if(0>Nn(n,t))s<o&&0>Nn(i,n)?(e[l]=i,e[s]=t,l=s):(e[l]=n,e[r]=t,l=r);else if(s<o&&0>Nn(i,t))e[l]=i,e[s]=t,l=s;else break e}}return a}function Nn(e,a){var t=e.sortIndex-a.sortIndex;return t!==0?t:e.id-a.id}Fe.unstable_now=void 0;typeof performance=="object"&&typeof performance.now=="function"?(Ym=performance,Fe.unstable_now=function(){return Ym.now()}):(Xi=Date,Km=Xi.now(),Fe.unstable_now=function(){return Xi.now()-Km});var Ym,Xi,Km,Gt=[],yl=[],Ab=1,Ja=null,xa=3,Wi=!1,Gu=!1,ju=!1,Zi=!1,Zm=typeof setTimeout=="function"?setTimeout:null,Jm=typeof clearTimeout=="function"?clearTimeout:null,Qm=typeof setImmediate<"u"?setImmediate:null;function _n(e){for(var a=Tt(yl);a!==null;){if(a.callback===null)Pn(yl);else if(a.startTime<=e)Pn(yl),a.sortIndex=a.expirationTime,Qi(Gt,a);else break;a=Tt(yl)}}function Ji(e){if(ju=!1,_n(e),!Gu)if(Tt(Gt)!==null)Gu=!0,No||(No=!0,Oo());else{var a=Tt(yl);a!==null&&$i(Ji,a.startTime-e)}}var No=!1,Xu=-1,$m=5,ep=-1;function ap(){return Zi?!0:!(Fe.unstable_now()-ep<$m)}function Yi(){if(Zi=!1,No){var e=Fe.unstable_now();ep=e;var a=!0;try{e:{Gu=!1,ju&&(ju=!1,Jm(Xu),Xu=-1),Wi=!0;var t=xa;try{a:{for(_n(e),Ja=Tt(Gt);Ja!==null&&!(Ja.expirationTime>e&&ap());){var l=Ja.callback;if(typeof l=="function"){Ja.callback=null,xa=Ja.priorityLevel;var o=l(Ja.expirationTime<=e);if(e=Fe.unstable_now(),typeof o=="function"){Ja.callback=o,_n(e),a=!0;break a}Ja===Tt(Gt)&&Pn(Gt),_n(e)}else Pn(Gt);Ja=Tt(Gt)}if(Ja!==null)a=!0;else{var u=Tt(yl);u!==null&&$i(Ji,u.startTime-e),a=!1}}break e}finally{Ja=null,xa=t,Wi=!1}a=void 0}}finally{a?Oo():No=!1}}}var Oo;typeof Qm=="function"?Oo=function(){Qm(Yi)}:typeof MessageChannel<"u"?(Ki=new MessageChannel,Wm=Ki.port2,Ki.port1.onmessage=Yi,Oo=function(){Wm.postMessage(null)}):Oo=function(){Zm(Yi,0)};var Ki,Wm;function $i(e,a){Xu=Zm(function(){e(Fe.unstable_now())},a)}Fe.unstable_IdlePriority=5;Fe.unstable_ImmediatePriority=1;Fe.unstable_LowPriority=4;Fe.unstable_NormalPriority=3;Fe.unstable_Profiling=null;Fe.unstable_UserBlockingPriority=2;Fe.unstable_cancelCallback=function(e){e.callback=null};Fe.unstable_forceFrameRate=function(e){0>e||125<e?console.error("forceFrameRate takes a positive int between 0 and 125, forcing frame rates higher than 125 fps is not supported"):$m=0<e?Math.floor(1e3/e):5};Fe.unstable_getCurrentPriorityLevel=function(){return xa};Fe.unstable_next=function(e){switch(xa){case 1:case 2:case 3:var a=3;break;default:a=xa}var t=xa;xa=a;try{return e()}finally{xa=t}};Fe.unstable_requestPaint=function(){Zi=!0};Fe.unstable_runWithPriority=function(e,a){switch(e){case 1:case 2:case 3:case 4:case 5:break;default:e=3}var t=xa;xa=e;try{return a()}finally{xa=t}};Fe.unstable_scheduleCallback=function(e,a,t){var l=Fe.unstable_now();switch(typeof t=="object"&&t!==null?(t=t.delay,t=typeof t=="number"&&0<t?l+t:l):t=l,e){case 1:var o=-1;break;case 2:o=250;break;case 5:o=1073741823;break;case 4:o=1e4;break;default:o=5e3}return o=t+o,e={id:Ab++,callback:a,priorityLevel:e,startTime:t,expirationTime:o,sortIndex:-1},t>l?(e.sortIndex=t,Qi(yl,e),Tt(Gt)===null&&e===Tt(yl)&&(ju?(Jm(Xu),Xu=-1):ju=!0,$i(Ji,t-l))):(e.sortIndex=o,Qi(Gt,e),Gu||Wi||(Gu=!0,No||(No=!0,Oo()))),e};Fe.unstable_shouldYield=ap;Fe.unstable_wrapCallback=function(e){var a=xa;return function(){var t=xa;xa=a;try{return e.apply(this,arguments)}finally{xa=t}}}});var op=yt((zw,lp)=>{"use strict";lp.exports=tp()});var hp=yt(oe=>{"use strict";var td=Symbol.for("react.transitional.element"),Rb=Symbol.for("react.portal"),Tb=Symbol.for("react.fragment"),Mb=Symbol.for("react.strict_mode"),Db=Symbol.for("react.profiler"),Eb=Symbol.for("react.consumer"),Bb=Symbol.for("react.context"),Ob=Symbol.for("react.forward_ref"),Nb=Symbol.for("react.suspense"),_b=Symbol.for("react.memo"),ip=Symbol.for("react.lazy"),Pb=Symbol.for("react.activity"),up=Symbol.iterator;function Ub(e){return e===null||typeof e!="object"?null:(e=up&&e[up]||e["@@iterator"],typeof e=="function"?e:null)}var dp={isMounted:function(){return!1},enqueueForceUpdate:function(){},enqueueReplaceState:function(){},enqueueSetState:function(){}},cp=Object.assign,fp={};function Po(e,a,t){this.props=e,this.context=a,this.refs=fp,this.updater=t||dp}Po.prototype.isReactComponent={};Po.prototype.setState=function(e,a){if(typeof e!="object"&&typeof e!="function"&&e!=null)throw Error("takes an object of state variables to update or a function which returns an object of state variables.");this.updater.enqueueSetState(this,e,a,"setState")};Po.prototype.forceUpdate=function(e){this.updater.enqueueForceUpdate(this,e,"forceUpdate")};function mp(){}mp.prototype=Po.prototype;function ld(e,a,t){this.props=e,this.context=a,this.refs=fp,this.updater=t||dp}var od=ld.prototype=new mp;od.constructor=ld;cp(od,Po.prototype);od.isPureReactComponent=!0;var rp=Array.isArray;function ad(){}var Be={H:null,A:null,T:null,S:null},pp=Object.prototype.hasOwnProperty;function ud(e,a,t){var l=t.ref;return{$$typeof:td,type:e,key:a,ref:l!==void 0?l:null,props:t}}function zb(e,a){return ud(e.type,a,e.props)}function rd(e){return typeof e=="object"&&e!==null&&e.$$typeof===td}function qb(e){var a={"=":"=0",":":"=2"};return"$"+e.replace(/[=:]/g,function(t){return a[t]})}var np=/\/+/g;function ed(e,a){return typeof e=="object"&&e!==null&&e.key!=null?qb(""+e.key):a.toString(36)}function Hb(e){switch(e.status){case"fulfilled":return e.value;case"rejected":throw e.reason;default:switch(typeof e.status=="string"?e.then(ad,ad):(e.status="pending",e.then(function(a){e.status==="pending"&&(e.status="fulfilled",e.value=a)},function(a){e.status==="pending"&&(e.status="rejected",e.reason=a)})),e.status){case"fulfilled":return e.value;case"rejected":throw e.reason}}throw e}function _o(e,a,t,l,o){var u=typeof e;(u==="undefined"||u==="boolean")&&(e=null);var r=!1;if(e===null)r=!0;else switch(u){case"bigint":case"string":case"number":r=!0;break;case"object":switch(e.$$typeof){case td:case Rb:r=!0;break;case ip:return r=e._init,_o(r(e._payload),a,t,l,o)}}if(r)return o=o(e),r=l===""?"."+ed(e,0):l,rp(o)?(t="",r!=null&&(t=r.replace(np,"$&/")+"/"),_o(o,a,t,"",function(i){return i})):o!=null&&(rd(o)&&(o=zb(o,t+(o.key==null||e&&e.key===o.key?"":(""+o.key).replace(np,"$&/")+"/")+r)),a.push(o)),1;r=0;var n=l===""?".":l+":";if(rp(e))for(var s=0;s<e.length;s++)l=e[s],u=n+ed(l,s),r+=_o(l,a,t,u,o);else if(s=Ub(e),typeof s=="function")for(e=s.call(e),s=0;!(l=e.next()).done;)l=l.value,u=n+ed(l,s++),r+=_o(l,a,t,u,o);else if(u==="object"){if(typeof e.then=="function")return _o(Hb(e),a,t,l,o);throw a=String(e),Error("Objects are not valid as a React child (found: "+(a==="[object Object]"?"object with keys {"+Object.keys(e).join(", ")+"}":a)+"). If you meant to render a collection of children, use an array instead.")}return r}function Un(e,a,t){if(e==null)return e;var l=[],o=0;return _o(e,l,"","",function(u){return a.call(t,u,o++)}),l}function Fb(e){if(e._status===-1){var a=e._result;a=a(),a.then(function(t){(e._status===0||e._status===-1)&&(e._status=1,e._result=t)},function(t){(e._status===0||e._status===-1)&&(e._status=2,e._result=t)}),e._status===-1&&(e._status=0,e._result=a)}if(e._status===1)return e._result.default;throw e._result}var sp=typeof reportError=="function"?reportError:function(e){if(typeof window=="object"&&typeof window.ErrorEvent=="function"){var a=new window.ErrorEvent("error",{bubbles:!0,cancelable:!0,message:typeof e=="object"&&e!==null&&typeof e.message=="string"?String(e.message):String(e),error:e});if(!window.dispatchEvent(a))return}else if(typeof process=="object"&&typeof process.emit=="function"){process.emit("uncaughtException",e);return}console.error(e)},Vb={map:Un,forEach:function(e,a,t){Un(e,function(){a.apply(this,arguments)},t)},count:function(e){var a=0;return Un(e,function(){a++}),a},toArray:function(e){return Un(e,function(a){return a})||[]},only:function(e){if(!rd(e))throw Error("React.Children.only expected to receive a single React element child.");return e}};oe.Activity=Pb;oe.Children=Vb;oe.Component=Po;oe.Fragment=Tb;oe.Profiler=Db;oe.PureComponent=ld;oe.StrictMode=Mb;oe.Suspense=Nb;oe.__CLIENT_INTERNALS_DO_NOT_USE_OR_WARN_USERS_THEY_CANNOT_UPGRADE=Be;oe.__COMPILER_RUNTIME={__proto__:null,c:function(e){return Be.H.useMemoCache(e)}};oe.cache=function(e){return function(){return e.apply(null,arguments)}};oe.cacheSignal=function(){return null};oe.cloneElement=function(e,a,t){if(e==null)throw Error("The argument must be a React element, but you passed "+e+".");var l=cp({},e.props),o=e.key;if(a!=null)for(u in a.key!==void 0&&(o=""+a.key),a)!pp.call(a,u)||u==="key"||u==="__self"||u==="__source"||u==="ref"&&a.ref===void 0||(l[u]=a[u]);var u=arguments.length-2;if(u===1)l.children=t;else if(1<u){for(var r=Array(u),n=0;n<u;n++)r[n]=arguments[n+2];l.children=r}return ud(e.type,o,l)};oe.createContext=function(e){return e={$$typeof:Bb,_currentValue:e,_currentValue2:e,_threadCount:0,Provider:null,Consumer:null},e.Provider=e,e.Consumer={$$typeof:Eb,_context:e},e};oe.createElement=function(e,a,t){var l,o={},u=null;if(a!=null)for(l in a.key!==void 0&&(u=""+a.key),a)pp.call(a,l)&&l!=="key"&&l!=="__self"&&l!=="__source"&&(o[l]=a[l]);var r=arguments.length-2;if(r===1)o.children=t;else if(1<r){for(var n=Array(r),s=0;s<r;s++)n[s]=arguments[s+2];o.children=n}if(e&&e.defaultProps)for(l in r=e.defaultProps,r)o[l]===void 0&&(o[l]=r[l]);return ud(e,u,o)};oe.createRef=function(){return{current:null}};oe.forwardRef=function(e){return{$$typeof:Ob,render:e}};oe.isValidElement=rd;oe.lazy=function(e){return{$$typeof:ip,_payload:{_status:-1,_result:e},_init:Fb}};oe.memo=function(e,a){return{$$typeof:_b,type:e,compare:a===void 0?null:a}};oe.startTransition=function(e){var a=Be.T,t={};Be.T=t;try{var l=e(),o=Be.S;o!==null&&o(t,l),typeof l=="object"&&l!==null&&typeof l.then=="function"&&l.then(ad,sp)}catch(u){sp(u)}finally{a!==null&&t.types!==null&&(a.types=t.types),Be.T=a}};oe.unstable_useCacheRefresh=function(){return Be.H.useCacheRefresh()};oe.use=function(e){return Be.H.use(e)};oe.useActionState=function(e,a,t){return Be.H.useActionState(e,a,t)};oe.useCallback=function(e,a){return Be.H.useCallback(e,a)};oe.useContext=function(e){return Be.H.useContext(e)};oe.useDebugValue=function(){};oe.useDeferredValue=function(e,a){return Be.H.useDeferredValue(e,a)};oe.useEffect=function(e,a){return Be.H.useEffect(e,a)};oe.useEffectEvent=function(e){return Be.H.useEffectEvent(e)};oe.useId=function(){return Be.H.useId()};oe.useImperativeHandle=function(e,a,t){return Be.H.useImperativeHandle(e,a,t)};oe.useInsertionEffect=function(e,a){return Be.H.useInsertionEffect(e,a)};oe.useLayoutEffect=function(e,a){return Be.H.useLayoutEffect(e,a)};oe.useMemo=function(e,a){return Be.H.useMemo(e,a)};oe.useOptimistic=function(e,a){return Be.H.useOptimistic(e,a)};oe.useReducer=function(e,a,t){return Be.H.useReducer(e,a,t)};oe.useRef=function(e){return Be.H.useRef(e)};oe.useState=function(e){return Be.H.useState(e)};oe.useSyncExternalStore=function(e,a,t){return Be.H.useSyncExternalStore(e,a,t)};oe.useTransition=function(){return Be.H.useTransition()};oe.version="19.2.8"});var ue=yt((Hw,gp)=>{"use strict";gp.exports=hp()});var xp=yt(ba=>{"use strict";var Gb=ue();function yp(e){var a="https://react.dev/errors/"+e;if(1<arguments.length){a+="?args[]="+encodeURIComponent(arguments[1]);for(var t=2;t<arguments.length;t++)a+="&args[]="+encodeURIComponent(arguments[t])}return"Minified React error #"+e+"; visit "+a+" for the full message or use the non-minified dev environment for full errors and additional helpful warnings."}function xl(){}var La={d:{f:xl,r:function(){throw Error(yp(522))},D:xl,C:xl,L:xl,m:xl,X:xl,S:xl,M:xl},p:0,findDOMNode:null},jb=Symbol.for("react.portal");function Xb(e,a,t){var l=3<arguments.length&&arguments[3]!==void 0?arguments[3]:null;return{$$typeof:jb,key:l==null?null:""+l,children:e,containerInfo:a,implementation:t}}var Yu=Gb.__CLIENT_INTERNALS_DO_NOT_USE_OR_WARN_USERS_THEY_CANNOT_UPGRADE;function zn(e,a){if(e==="font")return"";if(typeof a=="string")return a==="use-credentials"?a:""}ba.__DOM_INTERNALS_DO_NOT_USE_OR_WARN_USERS_THEY_CANNOT_UPGRADE=La;ba.createPortal=function(e,a){var t=2<arguments.length&&arguments[2]!==void 0?arguments[2]:null;if(!a||a.nodeType!==1&&a.nodeType!==9&&a.nodeType!==11)throw Error(yp(299));return Xb(e,a,null,t)};ba.flushSync=function(e){var a=Yu.T,t=La.p;try{if(Yu.T=null,La.p=2,e)return e()}finally{Yu.T=a,La.p=t,La.d.f()}};ba.preconnect=function(e,a){typeof e=="string"&&(a?(a=a.crossOrigin,a=typeof a=="string"?a==="use-credentials"?a:"":void 0):a=null,La.d.C(e,a))};ba.prefetchDNS=function(e){typeof e=="string"&&La.d.D(e)};ba.preinit=function(e,a){if(typeof e=="string"&&a&&typeof a.as=="string"){var t=a.as,l=zn(t,a.crossOrigin),o=typeof a.integrity=="string"?a.integrity:void 0,u=typeof a.fetchPriority=="string"?a.fetchPriority:void 0;t==="style"?La.d.S(e,typeof a.precedence=="string"?a.precedence:void 0,{crossOrigin:l,integrity:o,fetchPriority:u}):t==="script"&&La.d.X(e,{crossOrigin:l,integrity:o,fetchPriority:u,nonce:typeof a.nonce=="string"?a.nonce:void 0})}};ba.preinitModule=function(e,a){if(typeof e=="string")if(typeof a=="object"&&a!==null){if(a.as==null||a.as==="script"){var t=zn(a.as,a.crossOrigin);La.d.M(e,{crossOrigin:t,integrity:typeof a.integrity=="string"?a.integrity:void 0,nonce:typeof a.nonce=="string"?a.nonce:void 0})}}else a==null&&La.d.M(e)};ba.preload=function(e,a){if(typeof e=="string"&&typeof a=="object"&&a!==null&&typeof a.as=="string"){var t=a.as,l=zn(t,a.crossOrigin);La.d.L(e,t,{crossOrigin:l,integrity:typeof a.integrity=="string"?a.integrity:void 0,nonce:typeof a.nonce=="string"?a.nonce:void 0,type:typeof a.type=="string"?a.type:void 0,fetchPriority:typeof a.fetchPriority=="string"?a.fetchPriority:void 0,referrerPolicy:typeof a.referrerPolicy=="string"?a.referrerPolicy:void 0,imageSrcSet:typeof a.imageSrcSet=="string"?a.imageSrcSet:void 0,imageSizes:typeof a.imageSizes=="string"?a.imageSizes:void 0,media:typeof a.media=="string"?a.media:void 0})}};ba.preloadModule=function(e,a){if(typeof e=="string")if(a){var t=zn(a.as,a.crossOrigin);La.d.m(e,{as:typeof a.as=="string"&&a.as!=="script"?a.as:void 0,crossOrigin:t,integrity:typeof a.integrity=="string"?a.integrity:void 0})}else La.d.m(e)};ba.requestFormReset=function(e){La.d.r(e)};ba.unstable_batchedUpdates=function(e,a){return e(a)};ba.useFormState=function(e,a,t){return Yu.H.useFormState(e,a,t)};ba.useFormStatus=function(){return Yu.H.useHostTransitionStatus()};ba.version="19.2.8"});var qn=yt((Vw,Lp)=>{"use strict";function vp(){if(!(typeof __REACT_DEVTOOLS_GLOBAL_HOOK__>"u"||typeof __REACT_DEVTOOLS_GLOBAL_HOOK__.checkDCE!="function"))try{__REACT_DEVTOOLS_GLOBAL_HOOK__.checkDCE(vp)}catch(e){console.error(e)}}vp(),Lp.exports=xp()});var Ex=yt(ci=>{"use strict";var ta=op(),Xh=ue(),Yb=qn();function A(e){var a="https://react.dev/errors/"+e;if(1<arguments.length){a+="?args[]="+encodeURIComponent(arguments[1]);for(var t=2;t<arguments.length;t++)a+="&args[]="+encodeURIComponent(arguments[t])}return"Minified React error #"+e+"; visit "+a+" for the full message or use the non-minified dev environment for full errors and additional helpful warnings."}function Yh(e){return!(!e||e.nodeType!==1&&e.nodeType!==9&&e.nodeType!==11)}function Br(e){var a=e,t=e;if(e.alternate)for(;a.return;)a=a.return;else{e=a;do a=e,(a.flags&4098)!==0&&(t=a.return),e=a.return;while(e)}return a.tag===3?t:null}function Kh(e){if(e.tag===13){var a=e.memoizedState;if(a===null&&(e=e.alternate,e!==null&&(a=e.memoizedState)),a!==null)return a.dehydrated}return null}function Qh(e){if(e.tag===31){var a=e.memoizedState;if(a===null&&(e=e.alternate,e!==null&&(a=e.memoizedState)),a!==null)return a.dehydrated}return null}function bp(e){if(Br(e)!==e)throw Error(A(188))}function Kb(e){var a=e.alternate;if(!a){if(a=Br(e),a===null)throw Error(A(188));return a!==e?null:e}for(var t=e,l=a;;){var o=t.return;if(o===null)break;var u=o.alternate;if(u===null){if(l=o.return,l!==null){t=l;continue}break}if(o.child===u.child){for(u=o.child;u;){if(u===t)return bp(o),e;if(u===l)return bp(o),a;u=u.sibling}throw Error(A(188))}if(t.return!==l.return)t=o,l=u;else{for(var r=!1,n=o.child;n;){if(n===t){r=!0,t=o,l=u;break}if(n===l){r=!0,l=o,t=u;break}n=n.sibling}if(!r){for(n=u.child;n;){if(n===t){r=!0,t=u,l=o;break}if(n===l){r=!0,l=u,t=o;break}n=n.sibling}if(!r)throw Error(A(189))}}if(t.alternate!==l)throw Error(A(190))}if(t.tag!==3)throw Error(A(188));return t.stateNode.current===t?e:a}function Wh(e){var a=e.tag;if(a===5||a===26||a===27||a===6)return e;for(e=e.child;e!==null;){if(a=Wh(e),a!==null)return a;e=e.sibling}return null}var _e=Object.assign,Qb=Symbol.for("react.element"),Hn=Symbol.for("react.transitional.element"),ar=Symbol.for("react.portal"),Vo=Symbol.for("react.fragment"),Zh=Symbol.for("react.strict_mode"),qd=Symbol.for("react.profiler"),Jh=Symbol.for("react.consumer"),Jt=Symbol.for("react.context"),Nc=Symbol.for("react.forward_ref"),Hd=Symbol.for("react.suspense"),Fd=Symbol.for("react.suspense_list"),_c=Symbol.for("react.memo"),vl=Symbol.for("react.lazy");Symbol.for("react.scope");var Vd=Symbol.for("react.activity");Symbol.for("react.legacy_hidden");Symbol.for("react.tracing_marker");var Wb=Symbol.for("react.memo_cache_sentinel");Symbol.for("react.view_transition");var Sp=Symbol.iterator;function Ku(e){return e===null||typeof e!="object"?null:(e=Sp&&e[Sp]||e["@@iterator"],typeof e=="function"?e:null)}var Zb=Symbol.for("react.client.reference");function Gd(e){if(e==null)return null;if(typeof e=="function")return e.$$typeof===Zb?null:e.displayName||e.name||null;if(typeof e=="string")return e;switch(e){case Vo:return"Fragment";case qd:return"Profiler";case Zh:return"StrictMode";case Hd:return"Suspense";case Fd:return"SuspenseList";case Vd:return"Activity"}if(typeof e=="object")switch(e.$$typeof){case ar:return"Portal";case Jt:return e.displayName||"Context";case Jh:return(e._context.displayName||"Context")+".Consumer";case Nc:var a=e.render;return e=e.displayName,e||(e=a.displayName||a.name||"",e=e!==""?"ForwardRef("+e+")":"ForwardRef"),e;case _c:return a=e.displayName||null,a!==null?a:Gd(e.type)||"Memo";case vl:a=e._payload,e=e._init;try{return Gd(e(a))}catch{}}return null}var tr=Array.isArray,ee=Xh.__CLIENT_INTERNALS_DO_NOT_USE_OR_WARN_USERS_THEY_CANNOT_UPGRADE,Le=Yb.__DOM_INTERNALS_DO_NOT_USE_OR_WARN_USERS_THEY_CANNOT_UPGRADE,lo={pending:!1,data:null,method:null,action:null},jd=[],Go=-1;function Ot(e){return{current:e}}function sa(e){0>Go||(e.current=jd[Go],jd[Go]=null,Go--)}function De(e,a){Go++,jd[Go]=e.current,e.current=a}var Bt=Ot(null),vr=Ot(null),Ml=Ot(null),Ls=Ot(null);function bs(e,a){switch(De(Ml,a),De(vr,e),De(Bt,null),a.nodeType){case 9:case 11:e=(e=a.documentElement)&&(e=e.namespaceURI)?Th(e):0;break;default:if(e=a.tagName,a=a.namespaceURI)a=Th(a),e=xx(a,e);else switch(e){case"svg":e=1;break;case"math":e=2;break;default:e=0}}sa(Bt),De(Bt,e)}function su(){sa(Bt),sa(vr),sa(Ml)}function Xd(e){e.memoizedState!==null&&De(Ls,e);var a=Bt.current,t=xx(a,e.type);a!==t&&(De(vr,e),De(Bt,t))}function Ss(e){vr.current===e&&(sa(Bt),sa(vr)),Ls.current===e&&(sa(Ls),Mr._currentValue=lo)}var nd,Cp;function $l(e){if(nd===void 0)try{throw Error()}catch(t){var a=t.stack.trim().match(/\n( *(at )?)/);nd=a&&a[1]||"",Cp=-1<t.stack.indexOf(`
     at`)?" (<anonymous>)":-1<t.stack.indexOf("@")?"@unknown:0:0":""}return`
@@ -4460,6 +4497,7 @@ const Icons = {
   ListVideo: un,
   LoaderCircle: it,
   Maximize: rn,
+  Maximize2: rn,
   Menu: nn,
   MessageSquare: Au,
   Pause: sn,
@@ -7113,190 +7151,183 @@ async function resolveProxiedVideoStreams(videoId, startSec, settings, signal) {
   const proxyCfg = {
     webProxyMode: settings.webProxyMode,
     webProxyProvider: settings.webProxyProvider,
-    customWebProxy: settings.customWebProxy
+    customWebProxy: settings.customWebProxy,
+    wispEnabled: settings.wispEnabled,
+    wispServers: settings.wispServers,
+    customWispServer: settings.customWispServer
   };
   const streams = [];
   const subtitles = [];
   const embeds = buildProxiedEmbedList(videoId, startSec, settings);
   const userPrimaryInv = settings.instance && !settings.instance.includes("nadeko.net") ? [settings.instance] : [];
-  const pipedBases = [...new Set([...(settings.pipedInstances || []), ...DEFAULT_PIPED_INSTANCES].map(x => safeHttpsUrl(x)?.replace(/\/$/, "")).filter(Boolean))].slice(0, 5);
-  const invBases = [...new Set([...userPrimaryInv, ...DEFAULT_INVIDIOUS_INSTANCES, ...(settings.invidiousInstances || [])].map(x => safeHttpsUrl(x)?.replace(/\/$/, "")).filter(Boolean))].slice(0, 5);
-  const pipedTask = (async () => {
-    for (const base of pipedBases) {
-      if (signal.aborted) return;
-      try {
-        const data = await proxyFetchJson(`${base}/streams/${videoId}`, signal, proxyCfg, 6500);
-        if (!data || !Array.isArray(data.videoStreams) && !data.hls) continue;
-        const host = new URL(base).hostname;
-        const audioTracks = (Array.isArray(data.audioStreams) ? data.audioStreams : []).filter(a => safeHttpsUrl(a?.url)).sort((a, b) => (Number(b.bitrate) || 0) - (Number(a.bitrate) || 0));
-        const bestAudioUrl = safeHttpsUrl(audioTracks[0]?.url) ?? undefined;
-        for (const vs of data.videoStreams || []) {
-          const vUrl = safeHttpsUrl(vs?.url);
-          if (!vUrl) continue;
-          const h = parseHeightFromQuality(vs.quality || vs.height) || 360;
-          if (vs.videoOnly === false) {
-            streams.push({
-              id: `piped-mux-${host}-${h}-${vs.format || "mp4"}`,
-              label: `${vs.quality || `${h}p`} (${host})`,
-              height: h,
-              kind: "muxed",
-              videoUrl: vUrl,
-              mimeType: vs.mimeType,
-              via: `Piped · ${host}`
-            });
-          } else if (bestAudioUrl && h >= 480 && String(vs.mimeType || "").includes("mp4")) {
-            streams.push({
-              id: `piped-hd-${host}-${h}-${vs.fps || 30}`,
-              label: `${vs.quality || `${h}p`} HD (${host})`,
-              height: h,
-              kind: "adaptive",
-              videoUrl: vUrl,
-              audioUrl: bestAudioUrl,
-              mimeType: vs.mimeType,
-              via: `Piped HD · ${host}`
-            });
-          }
-        }
-        for (const au of audioTracks.slice(0, 2)) {
-          const aUrl = safeHttpsUrl(au.url);
-          if (!aUrl) continue;
-          const kbps = au.bitrate ? `${Math.round(Number(au.bitrate) / 1000)}kbps` : au.quality || "Audio";
-          streams.push({
-            id: `piped-audio-${host}-${kbps}`,
-            label: `Audio ${kbps} (${host})`,
-            height: 0,
-            kind: "audio",
-            audioUrl: aUrl,
-            mimeType: au.mimeType,
-            via: `Piped Audio · ${host}`
-          });
-        }
-        const hlsUrl = safeHttpsUrl(data.hls);
-        if (hlsUrl) {
-          streams.push({
-            id: `piped-hls-${host}`,
-            label: `HLS Auto (${host})`,
-            height: 720,
-            kind: "hls",
-            videoUrl: hlsUrl,
-            mimeType: "application/vnd.apple.mpegurl",
-            via: `Piped HLS · ${host}`
-          });
-        }
-        for (const sub of data.subtitles || []) {
-          const sUrl = safeHttpsUrl(sub?.url);
-          if (sUrl && !subtitles.some(x => x.lang === sub.code)) {
-            subtitles.push({
-              label: `${sub.name || sub.code}${sub.autoGenerated ? " (auto)" : ""}`,
-              lang: String(sub.code || "en"),
-              url: sUrl
-            });
-          }
-        }
-        if (streams.length > 0) break;
-      } catch {}
-    }
-  })();
-  const invidiousTask = (async () => {
-    for (const base of invBases) {
-      if (signal.aborted) return;
-      try {
-        const data = await proxyFetchJson(`${base}/api/v1/videos/${videoId}?local=true`, signal, proxyCfg, 6500);
-        if (!data || !data.title) continue;
-        const host = new URL(base).hostname;
-        const ensureLocalProxy = raw => {
-          if (!raw) return null;
-          try {
-            const u = new URL(raw, base);
-            if (u.hostname.endsWith("googlevideo.com")) {
-              const proxied = new URL(`${base}/videoplayback${u.search}`);
-              proxied.searchParams.set("local", "true");
-              return proxied.href;
-            }
-            if (u.origin === new URL(base).origin) {
-              u.searchParams.set("local", "true");
-              return u.href;
-            }
-            return u.href;
-          } catch {
-            return null;
-          }
-        };
-        const adaptiveAudios = (Array.isArray(data.adaptiveFormats) ? data.adaptiveFormats : []).filter(f => String(f?.type || "").startsWith("audio/")).sort((a, b) => (Number(b.bitrate) || 0) - (Number(a.bitrate) || 0));
-        const bestInvAudio = ensureLocalProxy(resolveRelativeToInstance(adaptiveAudios[0]?.url, base));
-        for (const fmt of data.formatStreams || []) {
-          const vUrl = ensureLocalProxy(resolveRelativeToInstance(fmt?.url, base));
-          if (!vUrl) continue;
-          const h = parseHeightFromQuality(fmt.qualityLabel || fmt.resolution) || 360;
-          streams.push({
-            id: `inv-mux-${host}-${fmt.itag || h}`,
-            label: `${fmt.qualityLabel || `${h}p`} (${host})`,
-            height: h,
-            kind: "muxed",
-            videoUrl: vUrl,
-            mimeType: fmt.type,
-            via: `Invidious · ${host}`
-          });
-        }
-        if (bestInvAudio) {
-          for (const af of data.adaptiveFormats || []) {
-            if (!String(af?.type || "").startsWith("video/mp4")) continue;
-            const h = parseHeightFromQuality(af.qualityLabel || af.resolution);
-            if (h < 480) continue;
-            const vUrl = ensureLocalProxy(resolveRelativeToInstance(af.url, base));
-            if (!vUrl) continue;
-            streams.push({
-              id: `inv-hd-${host}-${af.itag || h}`,
-              label: `${af.qualityLabel || `${h}p`} HD (${host})`,
-              height: h,
-              kind: "adaptive",
-              videoUrl: vUrl,
-              audioUrl: bestInvAudio,
-              mimeType: af.type,
-              via: `Invidious HD · ${host}`
-            });
-          }
-          streams.push({
-            id: `inv-audio-${host}`,
-            label: `Audio Stream (${host})`,
-            height: 0,
-            kind: "audio",
-            audioUrl: bestInvAudio,
-            via: `Invidious Audio · ${host}`
-          });
-        }
-        break;
-      } catch {}
-    }
-  })();
-  await Promise.allSettled([pipedTask, invidiousTask]);
-  const directBases = [...new Set(["https://yt.chocolatemoo53.com", ...invBases])].slice(0, 3);
-  for (const base of directBases) {
+  const pipedBases = rankHealthyBases([...new Set([...(settings.pipedInstances || []), ...DEFAULT_PIPED_INSTANCES].map(x => safeHttpsUrl(x)?.replace(/\/$/, "")).filter(Boolean))]).slice(0, 3);
+  const invBases = rankHealthyBases([...new Set([...userPrimaryInv, ...DEFAULT_INVIDIOUS_INSTANCES, ...(settings.invidiousInstances || [])].map(x => safeHttpsUrl(x)?.replace(/\/$/, "")).filter(Boolean))]).slice(0, 3);
+
+  const raceSig = signal ? AbortSignal.any([signal, AbortSignal.timeout(4800)]) : AbortSignal.timeout(4800);
+
+  const fetchFromPiped = async base => {
+    const data = await proxyFetchJson(`${base}/streams/${videoId}`, raceSig, proxyCfg, 4200);
+    if (!data || (!Array.isArray(data.videoStreams) && !data.hls)) throw new Error("Empty Piped streams");
     const host = new URL(base).hostname;
-    const id360 = `inv-latest18-${host}`;
-    if (!streams.some(s => s.id === id360)) {
-      streams.push({
-        id: id360,
-        label: `360p Direct Proxy (${host})`,
-        height: 360,
-        kind: "fallback-muxed",
-        videoUrl: `${base}/latest_version?id=${videoId}&itag=18&local=true`,
-        via: `Invidious Proxy · ${host}`
+    const localStreams = [];
+    const localSubs = [];
+    const audioTracks = (Array.isArray(data.audioStreams) ? data.audioStreams : []).filter(a => safeHttpsUrl(a?.url)).sort((a, b) => (Number(b.bitrate) || 0) - (Number(a.bitrate) || 0));
+    const bestAudioUrl = safeHttpsUrl(audioTracks[0]?.url) ?? undefined;
+    for (const vs of data.videoStreams || []) {
+      const vUrl = safeHttpsUrl(vs?.url);
+      if (!vUrl) continue;
+      const h = parseHeightFromQuality(vs.quality || vs.height) || 360;
+      if (vs.videoOnly === false) {
+        localStreams.push({
+          id: `piped-mux-${host}-${h}-${vs.format || "mp4"}`,
+          label: `${vs.quality || `${h}p`} (${host})`,
+          height: h,
+          kind: "muxed",
+          videoUrl: vUrl,
+          mimeType: vs.mimeType,
+          via: `Piped · ${host}`
+        });
+      } else if (bestAudioUrl && h >= 480 && String(vs.mimeType || "").includes("mp4")) {
+        localStreams.push({
+          id: `piped-hd-${host}-${h}-${vs.fps || 30}`,
+          label: `${vs.quality || `${h}p`} HD (${host})`,
+          height: h,
+          kind: "adaptive",
+          videoUrl: vUrl,
+          audioUrl: bestAudioUrl,
+          mimeType: vs.mimeType,
+          via: `Piped HD · ${host}`
+        });
+      }
+    }
+    for (const au of audioTracks.slice(0, 2)) {
+      const aUrl = safeHttpsUrl(au.url);
+      if (!aUrl) continue;
+      const kbps = au.bitrate ? `${Math.round(Number(au.bitrate) / 1000)}kbps` : au.quality || "Audio";
+      localStreams.push({
+        id: `piped-audio-${host}-${kbps}`,
+        label: `Audio ${kbps} (${host})`,
+        height: 0,
+        kind: "audio",
+        audioUrl: aUrl,
+        mimeType: au.mimeType,
+        via: `Piped Audio · ${host}`
       });
     }
-  }
-  const deduped = [];
-  const seenKeys = new Set();
-  for (const s of streams) {
-    const k = `${s.kind}:${s.videoUrl || ""}:${s.audioUrl || ""}`;
-    if (!seenKeys.has(k)) {
-      seenKeys.add(k);
-      deduped.push(s);
+    const hlsUrl = safeHttpsUrl(data.hls);
+    if (hlsUrl) {
+      localStreams.push({
+        id: `piped-hls-${host}`,
+        label: `HLS Auto (${host})`,
+        height: 720,
+        kind: "hls",
+        videoUrl: hlsUrl,
+        mimeType: "application/vnd.apple.mpegurl",
+        via: `Piped HLS · ${host}`
+      });
     }
-  }
+    for (const sub of data.subtitles || []) {
+      const sUrl = safeHttpsUrl(sub?.url);
+      if (sUrl) {
+        localSubs.push({
+          lang: sub.code || "en",
+          label: `${sub.name || sub.code || "Subtitles"}${sub.autoGenerated ? " (Auto)" : ""}`,
+          url: sUrl,
+          mimeType: sub.mimeType
+        });
+      }
+    }
+    if (!localStreams.length) throw new Error("No usable Piped stream URLs");
+    return { streams: localStreams, subtitles: localSubs };
+  };
+
+  const fetchFromInv = async base => {
+    const data = await proxyFetchJson(`${base}/api/v1/videos/${videoId}`, raceSig, proxyCfg, 4200);
+    if (!data || (!Array.isArray(data.formatStreams) && !Array.isArray(data.adaptiveFormats))) throw new Error("Empty Invidious streams");
+    const host = new URL(base).hostname;
+    const localStreams = [];
+    const localSubs = [];
+    const adaptive = Array.isArray(data.adaptiveFormats) ? data.adaptiveFormats : [];
+    const audioAdapts = adaptive.filter(a => String(a?.type || "").startsWith("audio/")).sort((a, b) => (Number(b.bitrate) || 0) - (Number(a.bitrate) || 0));
+    const bestInvAudio = audioAdapts[0] ? (resolveRelativeToInstance(`/latest_version?id=${videoId}&itag=${audioAdapts[0].itag}&local=true`, base) || safeHttpsUrl(audioAdapts[0].url)) : undefined;
+    for (const fsItem of Array.isArray(data.formatStreams) ? data.formatStreams : []) {
+      const h = parseHeightFromQuality(fsItem.qualityLabel || fsItem.resolution) || 360;
+      const proxiedLocal = fsItem.itag ? resolveRelativeToInstance(`/latest_version?id=${videoId}&itag=${fsItem.itag}&local=true`, base) : null;
+      const directUrl = proxiedLocal || safeHttpsUrl(fsItem.url);
+      if (!directUrl) continue;
+      localStreams.push({
+        id: `inv-mux-${host}-${fsItem.itag || h}`,
+        label: `${fsItem.qualityLabel || `${h}p`} (${host})`,
+        height: h,
+        kind: "muxed",
+        videoUrl: directUrl,
+        mimeType: fsItem.type,
+        via: `Invidious · ${host}`
+      });
+    }
+    if (bestInvAudio) {
+      for (const vf of adaptive) {
+        if (!String(vf?.type || "").startsWith("video/mp4")) continue;
+        const h = parseHeightFromQuality(vf.qualityLabel || vf.resolution);
+        if (h < 480) continue;
+        const vUrl = (vf.itag ? resolveRelativeToInstance(`/latest_version?id=${videoId}&itag=${vf.itag}&local=true`, base) : null) || safeHttpsUrl(vf.url);
+        if (!vUrl) continue;
+        localStreams.push({
+          id: `inv-hd-${host}-${vf.itag || h}`,
+          label: `${vf.qualityLabel || `${h}p`} HD (${host})`,
+          height: h,
+          kind: "adaptive",
+          videoUrl: vUrl,
+          audioUrl: bestInvAudio,
+          mimeType: vf.type,
+          via: `Invidious HD · ${host}`
+        });
+      }
+    }
+    for (const cap of Array.isArray(data.captions) ? data.captions : []) {
+      const cUrl = resolveRelativeToInstance(cap?.url, base) || safeHttpsUrl(cap?.url);
+      if (cUrl) {
+        localSubs.push({
+          lang: cap.language_code || "en",
+          label: cap.label || cap.language_code || "Captions",
+          url: cUrl,
+          mimeType: "text/vtt"
+        });
+      }
+    }
+    if (!localStreams.length) throw new Error("No usable Invidious stream URLs");
+    return { streams: localStreams, subtitles: localSubs };
+  };
+
+  try {
+    const firstWin = await Promise.any([
+      ...pipedBases.map(fetchFromPiped),
+      ...invBases.map(fetchFromInv)
+    ]);
+    streams.push(...firstWin.streams);
+    subtitles.push(...firstWin.subtitles);
+  } catch {}
+
+  const seenIds = new Set();
+  const dedupStreams = streams.filter(s => {
+    if (seenIds.has(s.id)) return false;
+    seenIds.add(s.id);
+    return true;
+  }).sort((a, b) => {
+    const rankKind = k => k === "muxed" ? 0 : k === "hls" ? 1 : k === "adaptive" ? 2 : 3;
+    return rankKind(a.kind) - rankKind(b.kind) || (b.height || 0) - (a.height || 0);
+  });
+
+  const seenSubLangs = new Set();
+  const dedupSubs = subtitles.filter(s => {
+    if (seenSubLangs.has(s.lang)) return false;
+    seenSubLangs.add(s.lang);
+    return true;
+  });
+
   return {
-    streams: deduped,
-    subtitles,
+    streams: dedupStreams,
+    subtitles: dedupSubs,
     embeds
   };
 }
@@ -8714,6 +8745,381 @@ async function fetchPersonalizedForYouFeed({
   };
 }
 
+function isUsableYouTubeDataApiKey(key) {
+  const k = (key || "").trim();
+  if (!k) return false;
+  // AQ.* keys are Google AI Studio / Vertex AI Express Auth keys, NOT YouTube Data API v3 keys
+  if (/^(AQ\.|sk-|gsk_|ya29\.)/i.test(k)) return false;
+  return true;
+}
+
+function extractYtInitialDataJson(html) {
+  if (typeof html !== "string" || html.length < 200) return null;
+  const markers = ["var ytInitialData = ", "window[\"ytInitialData\"] = ", "ytInitialData = "];
+  let startBrace = -1;
+  for (const m of markers) {
+    const idx = html.indexOf(m);
+    if (idx !== -1) {
+      startBrace = html.indexOf("{", idx + m.length - 1);
+      if (startBrace !== -1) break;
+    }
+  }
+  if (startBrace === -1) return null;
+  let depth = 0;
+  let inStr = false;
+  let esc = false;
+  for (let i = startBrace; i < html.length; i++) {
+    const ch = html[i];
+    if (inStr) {
+      if (esc) esc = false;
+      else if (ch === "\\") esc = true;
+      else if (ch === "\"") inStr = false;
+      continue;
+    }
+    if (ch === "\"") {
+      inStr = true;
+    } else if (ch === "{") {
+      depth++;
+    } else if (ch === "}") {
+      depth--;
+      if (depth === 0) {
+        try {
+          return JSON.parse(html.slice(startBrace, i + 1));
+        } catch {
+          return null;
+        }
+      }
+    }
+  }
+  return null;
+}
+
+function ytRunsText(obj) {
+  if (!obj) return "";
+  if (typeof obj === "string") return obj;
+  if (typeof obj.simpleText === "string") return obj.simpleText;
+  if (typeof obj.content === "string") return obj.content;
+  if (Array.isArray(obj.runs)) return obj.runs.map(r => r?.text || "").join("");
+  return "";
+}
+
+async function fetchYouTubeHtmlSearch(query, mode, signal, proxyCfg) {
+  const q = (query || "").trim();
+  if (!q) return { videos: [], channels: [], playlists: [] };
+  const spMap = {
+    video: "EgIQAQ%3D%3D",
+    channel: "EgIQAg%3D%3D",
+    playlist: "EgIQAw%3D%3D",
+    shorts: "EgIYAQ%3D%3D"
+  };
+  const sp = spMap[mode] ? `&sp=${spMap[mode]}` : "";
+  const searchTerm = mode === "shorts" && !/#shorts|\bshorts\b/i.test(q) ? `${q} #shorts` : q;
+  const targetUrl = `https://www.youtube.com/results?search_query=${encodeURIComponent(searchTerm)}&hl=en${sp}`;
+  const html = await proxyFetchText(targetUrl, signal, proxyCfg, 6000);
+  const data = extractYtInitialDataJson(html);
+  if (!data) throw new Error("Could not parse ytInitialData");
+
+  const videos = [];
+  const channels = [];
+  const playlists = [];
+  const seenVid = new Set();
+  const seenCh = new Set();
+  const seenPl = new Set();
+
+  const walk = node => {
+    if (!node || typeof node !== "object") return;
+    if (Array.isArray(node)) {
+      for (const item of node) walk(item);
+      return;
+    }
+
+    // 1) Standard Video Renderer
+    if (node.videoRenderer && VIDEO_ID_RE.test(node.videoRenderer.videoId || "")) {
+      const vr = node.videoRenderer;
+      const vid = vr.videoId;
+      if (!seenVid.has(vid)) {
+        const title = ytRunsText(vr.title);
+        if (title) {
+          seenVid.add(vid);
+          const ownerRun = vr.ownerText?.runs?.[0] || vr.longBylineText?.runs?.[0] || vr.shortBylineText?.runs?.[0];
+          const chTitle = ownerRun?.text || ytRunsText(vr.ownerText) || "";
+          const browseId = ownerRun?.navigationEndpoint?.browseEndpoint?.browseId || "";
+          const cid = CHANNEL_ID_RE.test(browseId) ? browseId : "";
+          const rawAv = vr.channelThumbnailSupportedRenderers?.channelThumbnailWithLinkRenderer?.thumbnail?.thumbnails?.at(-1)?.url
+            || vr.channelThumbnail?.thumbnails?.at(-1)?.url;
+          const chAvatar = normalizeCreatorAvatarUrl(rawAv);
+          if (cid && chAvatar) MEMORY_CHANNEL_AVATARS.set(cid, chAvatar);
+          const lenTxt = ytRunsText(vr.lengthText);
+          const durationSec = parseVideoDurationSec(lenTxt);
+          const viewsTxt = ytRunsText(vr.viewCountText) || ytRunsText(vr.shortViewCountText);
+          const views = parseSubCountText(viewsTxt.replace(/views?/i, "").trim());
+          const pubTxt = ytRunsText(vr.publishedTimeText);
+          const navUrl = vr.navigationEndpoint?.commandMetadata?.webCommandMetadata?.url || "";
+          const isShort = navUrl.includes("/shorts/") || (durationSec != null && durationSec > 0 && durationSec <= 65 && /#shorts/i.test(title));
+          const isLive = Boolean(vr.badges?.some(b => /LIVE/i.test(b?.metadataBadgeRenderer?.label || ""))) || /watching/i.test(viewsTxt);
+          videos.push({
+            id: vid,
+            title,
+            channel: chTitle,
+            channelId: cid,
+            channelAvatar: chAvatar || undefined,
+            thumbnail: `https://i.ytimg.com/vi/${vid}/maxresdefault.jpg`,
+            published: pubTxt || "",
+            views: typeof views === "number" && Number.isFinite(views) ? Math.round(views) : undefined,
+            durationSec: durationSec || undefined,
+            isShort,
+            isLive
+          });
+        }
+      }
+    }
+
+    // 2) Reel / Shorts Lockup Renderer
+    if (node.reelItemRenderer && VIDEO_ID_RE.test(node.reelItemRenderer.videoId || "")) {
+      const rr = node.reelItemRenderer;
+      const vid = rr.videoId;
+      if (!seenVid.has(vid)) {
+        const title = ytRunsText(rr.headline) || "YouTube Short";
+        seenVid.add(vid);
+        const viewsTxt = ytRunsText(rr.viewCountText);
+        const views = parseSubCountText(viewsTxt.replace(/views?/i, "").trim());
+        videos.push({
+          id: vid,
+          title,
+          channel: "",
+          channelId: "",
+          thumbnail: `https://i.ytimg.com/vi/${vid}/hqdefault.jpg`,
+          published: "",
+          views: typeof views === "number" && Number.isFinite(views) ? Math.round(views) : undefined,
+          durationSec: 45,
+          isShort: true
+        });
+      }
+    }
+    if (node.shortsLockupViewModel) {
+      const sl = node.shortsLockupViewModel;
+      const tapUrl = sl.onTap?.innertubeCommand?.reelWatchEndpoint?.videoId
+        || sl.onTap?.innertubeCommand?.commandMetadata?.webCommandMetadata?.url?.match(/\/shorts\/([A-Za-z0-9_-]{11})/)?.[1];
+      if (tapUrl && VIDEO_ID_RE.test(tapUrl) && !seenVid.has(tapUrl)) {
+        seenVid.add(tapUrl);
+        const title = sl.overlayMetadata?.primaryText?.content || sl.accessibilityText?.split(",")?.[0] || "YouTube Short";
+        const subTxt = sl.overlayMetadata?.secondaryText?.content || "";
+        const views = parseSubCountText(subTxt.replace(/views?/i, "").trim());
+        videos.push({
+          id: tapUrl,
+          title,
+          channel: "",
+          channelId: "",
+          thumbnail: `https://i.ytimg.com/vi/${tapUrl}/hqdefault.jpg`,
+          published: "",
+          views: typeof views === "number" && Number.isFinite(views) ? Math.round(views) : undefined,
+          durationSec: 45,
+          isShort: true
+        });
+      }
+    }
+
+    // 3) Channel Renderer
+    if (node.channelRenderer && CHANNEL_ID_RE.test(node.channelRenderer.channelId || "")) {
+      const cr = node.channelRenderer;
+      const cid = cr.channelId;
+      if (!seenCh.has(cid)) {
+        seenCh.add(cid);
+        const title = ytRunsText(cr.title) || cid;
+        const rawAv = cr.thumbnail?.thumbnails?.at(-1)?.url;
+        const av = normalizeCreatorAvatarUrl(rawAv?.startsWith("//") ? `https:${rawAv}` : rawAv);
+        if (av) MEMORY_CHANNEL_AVATARS.set(cid, av);
+        // Note: on modern YouTube, subscriberCountText sometimes holds "@handle" while videoCountText holds "16.8M subscribers"
+        const t1 = ytRunsText(cr.subscriberCountText);
+        const t2 = ytRunsText(cr.videoCountText);
+        const subSource = /subscriber/i.test(t1) ? t1 : /subscriber/i.test(t2) ? t2 : "";
+        const vidSource = /video/i.test(t2) ? t2 : /video/i.test(t1) ? t1 : "";
+        const handleSource = t1.startsWith("@") ? t1 : (cr.navigationEndpoint?.commandMetadata?.webCommandMetadata?.url?.match(/\/@([\w.-]+)/)?.[1] ? `@${cr.navigationEndpoint.commandMetadata.webCommandMetadata.url.match(/\/@([\w.-]+)/)[1]}` : "");
+        const subs = subSource ? parseSubCountText(subSource.replace(/subscribers?/i, "").trim()) : null;
+        const vCount = vidSource ? parseSubCountText(vidSource.replace(/videos?/i, "").trim()) : null;
+        const verified = Boolean(cr.ownerBadges?.some(b => /VERIFIED|OFFICIAL/i.test(b?.metadataBadgeRenderer?.style || "")));
+        channels.push({
+          kind: "channel",
+          id: cid,
+          title,
+          handle: handleSource || undefined,
+          description: ytRunsText(cr.descriptionSnippet),
+          thumbnail: av || "",
+          subscribers: typeof subs === "number" && Number.isFinite(subs) ? Math.round(subs) : undefined,
+          count: typeof vCount === "number" && Number.isFinite(vCount) ? Math.round(vCount) : undefined,
+          verified
+        });
+      }
+    }
+
+    // 4) Playlist Renderer & Modern Lockup Playlist ViewModel
+    if (node.playlistRenderer && node.playlistRenderer.playlistId) {
+      const pr = node.playlistRenderer;
+      const pid = pr.playlistId;
+      if (!seenPl.has(pid) && /^[\w-]{10,150}$/.test(pid)) {
+        seenPl.add(pid);
+        const title = ytRunsText(pr.title) || pid;
+        const ch = ytRunsText(pr.shortBylineText) || ytRunsText(pr.longBylineText);
+        const thumb = safeHttpsUrl(pr.thumbnails?.[0]?.thumbnails?.at(-1)?.url || pr.thumbnailRenderer?.playlistVideoThumbnailRenderer?.thumbnail?.thumbnails?.at(-1)?.url) || "";
+        const countNum = Number(ytRunsText(pr.videoCount) || pr.videoCountText?.runs?.[0]?.text?.replace(/\D+/g, ""));
+        playlists.push({
+          kind: "playlist",
+          id: pid,
+          title,
+          channel: ch,
+          thumbnail: thumb,
+          count: Number.isFinite(countNum) && countNum > 0 ? countNum : undefined
+        });
+      }
+    }
+    if (node.lockupViewModel && node.lockupViewModel.contentType === "LOCKUP_CONTENT_TYPE_PLAYLIST" && node.lockupViewModel.contentId) {
+      const lv = node.lockupViewModel;
+      const pid = lv.contentId;
+      if (!seenPl.has(pid) && /^[\w-]{10,150}$/.test(pid)) {
+        seenPl.add(pid);
+        const title = lv.metadata?.lockupMetadataViewModel?.title?.content || pid;
+        const metaRows = lv.metadata?.lockupMetadataViewModel?.metadata?.contentMetadataViewModel?.metadataRows || [];
+        const ch = metaRows?.[0]?.metadataParts?.[0]?.text?.content || "";
+        const thumb = safeHttpsUrl(lv.contentImage?.collectionThumbnailViewModel?.primaryThumbnail?.thumbnailViewModel?.image?.sources?.at(-1)?.url) || "";
+        const badgeTxt = lv.contentImage?.collectionThumbnailViewModel?.primaryThumbnail?.thumbnailViewModel?.overlays?.[0]?.thumbnailOverlayBadgeViewModel?.thumbnailBadges?.[0]?.thumbnailBadgeViewModel?.text || "";
+        const countNum = Number(String(badgeTxt).replace(/\D+/g, ""));
+        playlists.push({
+          kind: "playlist",
+          id: pid,
+          title,
+          channel: ch,
+          thumbnail: thumb,
+          count: Number.isFinite(countNum) && countNum > 0 ? countNum : undefined
+        });
+      }
+    }
+
+    for (const k of Object.keys(node)) {
+      walk(node[k]);
+    }
+  };
+
+  walk(data);
+  return { videos, channels, playlists };
+}
+
+const SHORTS_ROTATION_TOPICS = [
+  "#shorts",
+  "trending shorts",
+  "viral shorts",
+  "funny shorts",
+  "science & tech shorts",
+  "gaming shorts",
+  "music shorts",
+  "satisfying shorts"
+];
+
+async function fetchShortsFeed({ query, pageToken, apiKey, settings, region, tasteProfile, signal, proxyCfg, invBases, pipedBases }) {
+  const pageNum = pageToken && pageToken.startsWith("shorts-page:") ? Math.max(1, Number(pageToken.split(":")[1]) || 1) : 1;
+  const personalTopics = (tasteProfile?.topicQueries || []).map(t => `${t.query} #shorts`);
+  const topicPool = [...new Set([
+    ...(query?.trim() ? [query.trim()] : []),
+    ...personalTopics.slice(0, 2),
+    ...SHORTS_ROTATION_TOPICS
+  ])];
+  const chosenQuery = query?.trim()
+    ? (/#shorts|\bshorts\b/i.test(query.trim()) ? query.trim() : `${query.trim()} #shorts`)
+    : (topicPool[(pageNum - 1) % topicPool.length] || "#shorts");
+
+  const nextSyntheticToken = `shorts-page:${pageNum + 1}`;
+  const filterValidShorts = list => list.filter(v => v && (!v.durationSec || v.durationSec <= 180)).map(v => ({
+    ...v,
+    isShort: true,
+    durationSec: v.durationSec || 45
+  }));
+
+  // 1) Official YouTube Data API v3 (if valid YouTube key)
+  if (isUsableYouTubeDataApiKey(apiKey)) {
+    try {
+      const directCfg = { webProxyMode: "direct", webProxyProvider: "allorigins", customWebProxy: "" };
+      const d = await proxyFetchJson(ytApiUrl("search", apiKey.trim(), {
+        part: "snippet",
+        maxResults: "24",
+        q: chosenQuery,
+        type: "video",
+        videoDuration: "short",
+        order: pageNum === 1 && !query?.trim() ? "viewCount" : "relevance",
+        regionCode: region || "US",
+        ...(pageToken && !pageToken.startsWith("shorts-page:") ? { pageToken } : {})
+      }), signal, directCfg, 5000);
+      const mapped = await enrichYtApiVideosWithDetails((d.items ?? []).map(mapYtFeedVideo).filter(Boolean), apiKey.trim(), signal);
+      const valid = filterValidShorts(mapped);
+      if (valid.length > 0) {
+        return {
+          videos: valid,
+          next: d.nextPageToken || nextSyntheticToken,
+          source: "YouTube Data API · Shorts"
+        };
+      }
+    } catch {}
+  }
+
+  // 2) Parallel Race across Piped (youtube_shorts + videos), Invidious (duration=short), & Direct YouTube HTML!
+  const tasks = [];
+
+  for (const pBase of pipedBases.slice(0, 3)) {
+    tasks.push((async () => {
+      // Try youtube_shorts filter first, then videos filter
+      for (const flt of ["youtube_shorts", "videos"]) {
+        try {
+          const res = await proxyFetchJson(`${pBase}/search?${new URLSearchParams({ q: chosenQuery, filter: flt })}`, signal, proxyCfg, 4800);
+          const items = filterValidShorts((Array.isArray(res?.items) ? res.items : []).map(mapPipedFeedVideo).filter(Boolean));
+          if (items.length >= 2) {
+            return {
+              videos: items,
+              next: nextSyntheticToken,
+              source: `Piped Shorts (${new URL(pBase).hostname})`
+            };
+          }
+        } catch {}
+      }
+      throw new Error("Piped Shorts empty");
+    })());
+  }
+
+  for (const iBase of invBases.slice(0, 3)) {
+    tasks.push((async () => {
+      const raw = await proxyFetchJson(`${iBase}/api/v1/search?${new URLSearchParams({
+        q: chosenQuery,
+        type: "video",
+        duration: "short",
+        sort: "views",
+        region: region || "US",
+        page: String(pageNum)
+      })}`, signal, proxyCfg, 4800);
+      const items = filterValidShorts((Array.isArray(raw) ? raw : []).map(r => mapInvFeedVideo(r, iBase)).filter(Boolean));
+      if (items.length >= 2) {
+        return {
+          videos: items,
+          next: nextSyntheticToken,
+          source: `Invidious Shorts (${new URL(iBase).hostname})`
+        };
+      }
+      throw new Error("Invidious Shorts empty");
+    })());
+  }
+
+  tasks.push((async () => {
+    const parsed = await fetchYouTubeHtmlSearch(chosenQuery, "shorts", signal, proxyCfg);
+    const items = filterValidShorts(parsed.videos);
+    if (items.length >= 2) {
+      return {
+        videos: items,
+        next: nextSyntheticToken,
+        source: "YouTube Shorts Direct"
+      };
+    }
+    throw new Error("YT HTML Shorts empty");
+  })());
+
+  return Promise.any(tasks);
+}
+
 async function fetchDiscoveryFeed(category, query, apiKey, settings, subscriptions, pageToken, signal, forceRefresh = false, region = "US", tasteProfile = null, historyMap = null, onPartial = null) {
   if (category === "subscriptions" && !subscriptions.length) {
     return {
@@ -8722,8 +9128,9 @@ async function fetchDiscoveryFeed(category, query, apiKey, settings, subscriptio
       source: ""
     };
   }
+  const hasYtKey = isUsableYouTubeDataApiKey(apiKey);
   const tasteSig = category === "home" && tasteProfile?.hasSignals ? tasteProfile.signature : "cold";
-  const cacheKey = `discovery:v8:${category}:${region}:${query}:${settings.instance}:${subscriptions.map(s => s.channelId).join(",")}:${pageToken}:${apiKey ? "api" : "proxy"}:${tasteSig}`;
+  const cacheKey = `discovery:v9:${category}:${region}:${query}:${settings.instance}:${subscriptions.map(s => s.channelId).join(",")}:${pageToken}:${hasYtKey ? "api" : "proxy"}:${tasteSig}`;
   const cached = await readStore("cache", cacheKey);
   if (!forceRefresh && cached?.feed?.videos?.length > 0 && Date.now() - cached.at < 420000) {
     return cached.feed;
@@ -8739,6 +9146,30 @@ async function fetchDiscoveryFeed(category, query, apiKey, settings, subscriptio
   const invBases = rankHealthyBases([...new Set([...(settings.instance && !settings.instance.includes("nadeko.net") ? [settings.instance] : []), ...DEFAULT_INVIDIOUS_INSTANCES, ...(settings.invidiousInstances || [])].map(u => safeHttpsUrl(u)?.replace(/\/$/, "")).filter(Boolean))]).slice(0, 5);
   const pipedBases = rankHealthyBases([...new Set([...(settings.pipedInstances || []), ...DEFAULT_PIPED_INSTANCES].map(u => safeHttpsUrl(u)?.replace(/\/$/, "")).filter(Boolean))]).slice(0, 5);
 
+  // Dedicated Parallel Shorts Engine!
+  if (category === "shorts") {
+    try {
+      const shortsFeed = await fetchShortsFeed({
+        query,
+        pageToken,
+        apiKey,
+        settings,
+        region,
+        tasteProfile,
+        signal,
+        proxyCfg,
+        invBases,
+        pipedBases
+      });
+      if (!signal?.aborted && shortsFeed?.videos?.length > 0) {
+        await writeStore("cache", cacheKey, { at: Date.now(), feed: shortsFeed });
+      }
+      return shortsFeed;
+    } catch {
+      throw new Error("Could not reach YouTube Shorts right now. Click Retry Shorts or check Proxies in Settings.");
+    }
+  }
+
   let feed = null;
 
   // 1) Personalized For You Engine
@@ -8747,7 +9178,7 @@ async function fetchDiscoveryFeed(category, query, apiKey, settings, subscriptio
       feed = await fetchPersonalizedForYouFeed({
         tasteProfile,
         historyMap,
-        apiKey,
+        apiKey: hasYtKey ? apiKey : "",
         settings,
         region,
         signal,
@@ -8759,8 +9190,8 @@ async function fetchDiscoveryFeed(category, query, apiKey, settings, subscriptio
     } catch {}
   }
 
-  // 2) Official YouTube Data API v3 (wrapped in try/catch so quotaExceeded/network errors seamlessly fall back to keyless proxies!)
-  if ((!feed || !feed.videos?.length) && apiKey.trim()) {
+  // 2) Official YouTube Data API v3 (only if apiKey is a YouTube Data API key!)
+  if ((!feed || !feed.videos?.length) && hasYtKey) {
     const directCfg = {
       webProxyMode: "direct",
       webProxyProvider: "allorigins",
@@ -8807,17 +9238,11 @@ async function fetchDiscoveryFeed(category, query, apiKey, settings, subscriptio
           };
         }
       } else {
-        const isSearchLike = category === "search" || category === "shorts";
+        const isSearchLike = category === "search";
         const d = await proxyFetchJson(ytApiUrl(isSearchLike ? "search" : "videos", apiKey.trim(), {
           part: isSearchLike ? "snippet" : "snippet,statistics,contentDetails",
           maxResults: "24",
-          ...(category === "shorts" ? {
-            q: "#shorts",
-            type: "video",
-            videoDuration: "short",
-            order: "viewCount",
-            regionCode: region
-          } : category === "search" ? {
+          ...(category === "search" ? {
             q: query,
             type: "video",
             regionCode: region
@@ -8828,7 +9253,7 @@ async function fetchDiscoveryFeed(category, query, apiKey, settings, subscriptio
           ...(pageToken ? { pageToken } : {})
         }), signal, directCfg, 5500);
         const mappedItems = (d.items ?? []).map(mapYtFeedVideo).filter(Boolean);
-        if (mappedItems.length > 0 || category === "search") {
+        if (mappedItems.length > 0) {
           const finalItems = await enrichYtApiVideosWithDetails(mappedItems, apiKey.trim(), signal);
           feed = {
             videos: finalItems,
@@ -8840,7 +9265,7 @@ async function fetchDiscoveryFeed(category, query, apiKey, settings, subscriptio
     } catch {}
   }
 
-  // 3) Keyless Multi-Proxy Fallback (Piped + Invidious + RSS + Wisp)
+  // 3) Keyless Parallel Multi-Source Engine (Piped + Invidious + Direct YouTube HTML via Wisp/CORS)
   if (!feed || !feed.videos?.length) {
     if (category === "subscriptions") {
       const offset = Number(pageToken) || 0;
@@ -8860,53 +9285,61 @@ async function fetchDiscoveryFeed(category, query, apiKey, settings, subscriptio
     } else if (category === "home" || category === "trending") {
       feed = await fetchColdPopularFeed({ apiKey: "", region, signal, proxyCfg, invBases, pipedBases });
     } else {
-      // Search or Shorts
-      const qStr = category === "shorts" ? (query?.trim() ? `${query.trim()} #shorts` : "#shorts") : query;
-      for (const pBase of pipedBases) {
-        if (signal?.aborted) break;
-        try {
-          const res = await proxyFetchJson(`${pBase}/search?${new URLSearchParams({
-            q: qStr,
-            filter: "videos"
-          })}`, signal, proxyCfg, 5000);
-          const items = (Array.isArray(res?.items) ? res.items : []).map(mapPipedFeedVideo).filter(Boolean);
-          if (items.length > 0) {
-            const filteredItems = category === "shorts" ? items.filter(v => !v.durationSec || v.durationSec <= 180) : items;
-            feed = {
-              videos: filteredItems.length > 0 ? filteredItems : items,
-              next: "",
+      // Parallel Search Racing: Top 3 Piped + Top 3 Invidious + Direct YouTube HTML Search!
+      const qStr = (query || "").trim();
+      const pageNum = Number(pageToken) || 1;
+      const searchTasks = [];
+
+      if (pageNum === 1) {
+        for (const pBase of pipedBases.slice(0, 3)) {
+          searchTasks.push((async () => {
+            const res = await proxyFetchJson(`${pBase}/search?${new URLSearchParams({ q: qStr, filter: "videos" })}`, signal, proxyCfg, 5200);
+            const items = (Array.isArray(res?.items) ? res.items : []).map(mapPipedFeedVideo).filter(Boolean);
+            if (!items.length) throw new Error("Empty Piped search");
+            return {
+              videos: items,
+              next: items.length >= 12 ? "2" : "",
               source: `Piped (${new URL(pBase).hostname})`
             };
-            break;
-          }
-        } catch {}
+          })());
+        }
       }
-      if (!feed) {
-        for (const base of invBases) {
-          if (signal?.aborted) break;
-          try {
-            const path = category === "shorts" ? `search?${new URLSearchParams({
-              q: qStr,
-              type: "video",
-              duration: "short",
-              sort: "views",
-              region,
-              page: pageToken || "1"
-            })}` : `search?${new URLSearchParams({
-              q: qStr,
-              type: "video",
-              page: pageToken || "1"
-            })}`;
-            const raw = await proxyFetchJson(`${base}/api/v1/${path}`, signal, proxyCfg, 5000);
-            const arr = Array.isArray(raw) ? raw : [];
-            if (!arr.length && category !== "search") continue;
-            feed = {
-              videos: arr.map(r => mapInvFeedVideo(r, base)).filter(Boolean),
-              next: arr.length >= 18 ? String((Number(pageToken) || 1) + 1) : "",
-              source: `Invidious (${new URL(base).hostname})`
-            };
-            break;
-          } catch {}
+
+      for (const iBase of invBases.slice(0, 3)) {
+        searchTasks.push((async () => {
+          const raw = await proxyFetchJson(`${iBase}/api/v1/search?${new URLSearchParams({
+            q: qStr,
+            type: "video",
+            page: String(pageNum)
+          })}`, signal, proxyCfg, 5200);
+          const arr = Array.isArray(raw) ? raw : [];
+          const items = arr.map(r => mapInvFeedVideo(r, iBase)).filter(Boolean);
+          if (!items.length) throw new Error("Empty Invidious search");
+          return {
+            videos: items,
+            next: items.length >= 15 ? String(pageNum + 1) : "",
+            source: `Invidious (${new URL(iBase).hostname})`
+          };
+        })());
+      }
+
+      if (pageNum === 1) {
+        searchTasks.push((async () => {
+          const parsed = await fetchYouTubeHtmlSearch(qStr, "video", signal, proxyCfg);
+          if (!parsed.videos.length) throw new Error("Empty YT HTML search");
+          return {
+            videos: parsed.videos,
+            next: "2",
+            source: "YouTube Direct Search"
+          };
+        })());
+      }
+
+      try {
+        feed = await Promise.any(searchTasks);
+      } catch {
+        if (category === "search") {
+          feed = { videos: [], next: "", source: "Search" };
         }
       }
     }
@@ -8915,7 +9348,7 @@ async function fetchDiscoveryFeed(category, query, apiKey, settings, subscriptio
   if (!feed || (!feed.videos?.length && category !== "search")) {
     throw new Error("All configured YouTube, Wisp, Piped & Invidious sources were unreachable. Click Try again or check Proxies in Settings.");
   }
-  if (!signal.aborted && feed.videos?.length > 0) {
+  if (!signal?.aborted && feed.videos?.length > 0) {
     await writeStore("cache", cacheKey, {
       at: Date.now(),
       feed
@@ -8923,43 +9356,29 @@ async function fetchDiscoveryFeed(category, query, apiKey, settings, subscriptio
   }
   return feed;
 }
+
 function mapBrowseEntry(raw, kind, fromApi) {
   const sn = fromApi ? raw.snippet : raw;
   const id = fromApi ? typeof raw.id === "string" ? raw.id : raw.id?.[`${kind}Id`] : kind === "channel" ? raw.authorId : raw.playlistId;
   const valid = typeof id === "string" && (kind === "channel" ? CHANNEL_ID_RE.test(id) : /^[\w-]{10,150}$/.test(id));
   if (!valid) return null;
   const rawCount = fromApi ? raw.contentDetails?.itemCount : raw.videoCount;
-  const rawThumb = fromApi ? sn?.thumbnails?.high?.url ?? sn?.thumbnails?.medium?.url ?? sn?.thumbnails?.default?.url : kind === "channel" ? raw.authorThumbnails?.at(-1)?.url : raw.playlistThumbnail;
+  const rawThumb = fromApi ? sn?.thumbnails?.high?.url ?? sn?.thumbnails?.medium?.url ?? sn?.thumbnails?.default?.url : kind === "channel" ? raw.authorThumbnails?.at(-1)?.url : (raw.playlistThumbnail || raw.videos?.[0]?.videoThumbnails?.[0]?.url);
+  const av = kind === "channel" ? normalizeCreatorAvatarUrl(rawThumb) : safeHttpsUrl(rawThumb);
+  if (kind === "channel" && av) MEMORY_CHANNEL_AVATARS.set(id, av);
   return {
     id,
     kind,
     title: sn?.title ?? sn?.author ?? id,
     channel: sn?.channelTitle ?? sn?.author ?? "",
     description: sn?.description ?? "",
-    thumbnail: (kind === "channel" ? normalizeCreatorAvatarUrl(rawThumb) : safeHttpsUrl(rawThumb)) ?? "",
+    thumbnail: av ?? "",
+    subscribers: !fromApi && typeof raw.subCount === "number" && raw.subCount >= 0 ? raw.subCount : undefined,
+    verified: !fromApi ? Boolean(raw.authorVerified) : false,
     count: rawCount != null && Number.isFinite(Number(rawCount)) ? Number(rawCount) : undefined
   };
 }
-function mapBrowseVideo(raw, fromApi) {
-  const sn = fromApi ? raw.snippet : raw;
-  const vid = fromApi ? sn?.resourceId?.videoId ?? raw.id : raw.videoId;
-  if (typeof vid !== "string" || !VIDEO_ID_RE.test(vid) || !sn?.title || sn.title === "Private video" || sn.title === "Deleted video") {
-    return null;
-  }
-  const viewsNum = Number(fromApi ? raw.statistics?.viewCount : sn.viewCount);
-  return {
-    id: vid,
-    title: sn.title,
-    channel: sn.videoOwnerChannelTitle ?? sn.channelTitle ?? sn.author ?? "",
-    channelId: sn.videoOwnerChannelId ?? sn.channelId ?? sn.authorId ?? "",
-    channelAvatar: !fromApi ? normalizeCreatorAvatarUrl(raw.authorThumbnails?.at(-1)?.url) ?? undefined : undefined,
-    thumbnail: safeHttpsUrl(sn.thumbnails?.maxres?.url ?? sn.thumbnails?.standard?.url ?? sn.thumbnails?.high?.url ?? sn.thumbnails?.medium?.url) ?? `https://i.ytimg.com/vi/${vid}/maxresdefault.jpg`,
-    published: fromApi ? sn.publishedAt ?? "" : sn.published ? new Date(sn.published * 1000).toISOString() : "",
-    views: Number.isFinite(viewsNum) && viewsNum >= 0 ? viewsNum : undefined,
-    durationSec: parseVideoDurationSec(fromApi ? raw.contentDetails?.duration : sn.lengthSeconds ?? raw.duration),
-    isLive: Boolean(!fromApi && (raw.liveNow || raw.isLive))
-  };
-}
+
 async function fetchSubscriptionNotifications(subscriptions, settings, signal) {
   const activeSubs = (subscriptions || []).filter(s => s && CHANNEL_ID_RE.test(s.channelId) && s.notifyMode !== "none").slice(0, 12);
   if (!activeSubs.length) return [];
@@ -9010,24 +9429,32 @@ async function fetchSearchEntities(query, entityType, apiKey, settings, signal) 
     wispServers: settings.wispServers,
     customWispServer: settings.customWispServer
   };
-  if (apiKey?.trim()) {
+
+  // 1) Official YouTube Data API v3 (if valid YouTube Data API key)
+  if (isUsableYouTubeDataApiKey(apiKey)) {
     try {
       const res = await proxyFetchJson(`https://www.googleapis.com/youtube/v3/search?${new URLSearchParams({
         part: "snippet",
         type: entityType,
         q,
-        maxResults: "10",
+        maxResults: "16",
         key: apiKey.trim()
-      })}`, signal, { webProxyMode: "direct", webProxyProvider: "allorigins", customWebProxy: "" }, 5500);
+      })}`, signal, { webProxyMode: "direct", webProxyProvider: "allorigins", customWebProxy: "" }, 5200);
       const mapped = (res?.items || []).map(i => mapBrowseEntry(i, entityType, true)).filter(Boolean);
       if (mapped.length) return mapped;
     } catch {}
   }
-  const pipedBases = rankHealthyBases([...new Set([...(settings.pipedInstances || []), ...DEFAULT_PIPED_INSTANCES].map(u => safeHttpsUrl(u)?.replace(/\/$/, "")).filter(Boolean))]).slice(0, 2);
+
+  // 2) Parallel Race across Piped + Invidious + Direct YouTube HTML ytInitialData!
+  const pipedBases = rankHealthyBases([...new Set([...(settings.pipedInstances || []), ...DEFAULT_PIPED_INSTANCES].map(u => safeHttpsUrl(u)?.replace(/\/$/, "")).filter(Boolean))]).slice(0, 3);
+  const invBases = rankHealthyBases([...new Set([settings.instance, ...DEFAULT_INVIDIOUS_INSTANCES].map(u => safeHttpsUrl(u)?.replace(/\/$/, "")).filter(Boolean))]).slice(0, 3);
   const filterParam = entityType === "channel" ? "channels" : "playlists";
+
+  const entityTasks = [];
+
   for (const pBase of pipedBases) {
-    try {
-      const data = await proxyFetchJson(`${pBase}/search?q=${encodeURIComponent(q)}&filter=${filterParam}`, signal, proxyCfg, 5500);
+    entityTasks.push((async () => {
+      const data = await proxyFetchJson(`${pBase}/search?q=${encodeURIComponent(q)}&filter=${filterParam}`, signal, proxyCfg, 5000);
       const arr = Array.isArray(data?.items) ? data.items : [];
       const mapped = arr.map(item => {
         if (entityType === "channel") {
@@ -9060,18 +9487,32 @@ async function fetchSearchEntities(query, entityType, apiKey, settings, signal) 
           };
         }
       }).filter(Boolean);
-      if (mapped.length) return mapped;
-    } catch {}
+      if (!mapped.length) throw new Error("Empty Piped entities");
+      return mapped;
+    })());
   }
-  const invBases = rankHealthyBases([...new Set([settings.instance, ...DEFAULT_INVIDIOUS_INSTANCES].map(u => safeHttpsUrl(u)?.replace(/\/$/, "")).filter(Boolean))]).slice(0, 2);
+
   for (const iBase of invBases) {
-    try {
-      const arr = await proxyFetchJson(`${iBase}/api/v1/search?${new URLSearchParams({ q, type: entityType })}`, signal, proxyCfg, 5500);
+    entityTasks.push((async () => {
+      const arr = await proxyFetchJson(`${iBase}/api/v1/search?${new URLSearchParams({ q, type: entityType })}`, signal, proxyCfg, 5000);
       const mapped = (Array.isArray(arr) ? arr : []).map(i => mapBrowseEntry(i, entityType, false)).filter(Boolean);
-      if (mapped.length) return mapped;
-    } catch {}
+      if (!mapped.length) throw new Error("Empty Invidious entities");
+      return mapped;
+    })());
   }
-  return [];
+
+  entityTasks.push((async () => {
+    const parsed = await fetchYouTubeHtmlSearch(q, entityType, signal, proxyCfg);
+    const list = entityType === "channel" ? parsed.channels : parsed.playlists;
+    if (!list.length) throw new Error("Empty YT HTML entities");
+    return list;
+  })());
+
+  try {
+    return await Promise.any(entityTasks);
+  } catch {
+    return [];
+  }
 }
 
 async function fetchBrowseTarget(target, tab, pageToken, apiKey, settings, signal) {
@@ -9115,7 +9556,7 @@ async function fetchBrowseTarget(target, tab, pageToken, apiKey, settings, signa
   if (!validId) throw new Error("Invalid channel or playlist ID.");
 
   // 1) Try YouTube Data API v3 first if key is configured, with automatic fallback on 403/quota error!
-  if (apiKey?.trim() && tab !== "community") {
+  if (isUsableYouTubeDataApiKey(apiKey) && tab !== "community") {
     try {
       const ytFetch = (path, params) => proxyFetchJson(`https://www.googleapis.com/youtube/v3/${path}?${new URLSearchParams({ ...params, key: apiKey.trim() })}`, signal, {
         webProxyMode: "direct",
@@ -12122,6 +12563,8 @@ function YouTubeSearchBar({
   value,
   onChange,
   onSubmitQuery,
+  searchScope = "all",
+  onChangeSearchScope,
   onPastePlay,
   inputRef,
   searchHistory = [],
@@ -12129,7 +12572,7 @@ function YouTubeSearchBar({
   onClearSearchHistory,
   settings,
   library,
-  placeholder = "Search YouTube or paste link"
+  placeholder = "Search videos, channels, playlists or paste link"
 }) {
   const Button = SoftButton;
   const [open, setOpen] = React.useState(false);
@@ -12165,7 +12608,7 @@ function YouTubeSearchBar({
           if (!ctrl.signal.aborted) setSuggestions(list);
         })
         .catch(() => {});
-    }, 140);
+    }, 120);
     return () => {
       clearTimeout(timer);
       ctrl.abort();
@@ -12187,15 +12630,17 @@ function YouTubeSearchBar({
         remoteItems.push({ kind: "suggest", query: s, id: `sug:${s}` });
       }
     }
-    return [...recentMatches, ...remoteItems].slice(0, 11);
+    return [...recentMatches, ...remoteItems].slice(0, 10);
   }, [searchHistory, suggestions, trimmed]);
 
-  const commitChoice = qText => {
+  const commitChoice = (qText, overrideScope) => {
+    const chosenScope = overrideScope || searchScope || "all";
+    if (overrideScope && onChangeSearchScope) onChangeSearchScope(overrideScope);
     setDraftBeforeNav(null);
     setActiveIndex(-1);
     setOpen(false);
     onChange(qText);
-    onSubmitQuery(qText);
+    onSubmitQuery(qText, chosenScope);
   };
 
   const handleKeyDown = e => {
@@ -12247,27 +12692,42 @@ function YouTubeSearchBar({
     return React.createElement("span", { className: "font-medium text-foreground" }, fullText);
   };
 
+  const showDropdown = open && (combinedItems.length > 0 || trimmed.length > 0);
+
   return React.createElement("div", {
     ref: wrapRef,
-    className: "relative mx-auto flex max-w-xl flex-1 items-center gap-2 px-1"
+    className: "relative mx-auto flex max-w-2xl flex-1 items-center gap-2 px-1"
   }, React.createElement("form", {
     onSubmit: e => {
       e.preventDefault();
+      const q = value.trim();
       setDraftBeforeNav(null);
       setActiveIndex(-1);
       setOpen(false);
-      onSubmitQuery(value);
+      if (q) onSubmitQuery(q, searchScope);
     },
     className: "flex min-w-0 flex-1 items-center"
   }, React.createElement("div", {
     className: VENDOR.cn("yt-search-shell flex h-10 min-w-0 flex-1 items-center overflow-hidden rounded-full border border-border bg-background transition-shadow", open && "border-[#1c62b9] shadow-md")
-  }, open && React.createElement("span", {
-    className: "pl-3.5 pr-1 text-muted-foreground hidden sm:inline-flex"
+  }, onChangeSearchScope && React.createElement("select", {
+    "aria-label": "Search target type",
+    title: "Choose what to search (All, Videos, Channels, Playlists, Shorts)",
+    value: searchScope,
+    onChange: e => {
+      const nextScope = e.target.value;
+      onChangeSearchScope(nextScope);
+      if (value.trim() && !parseYouTubeInput(value.trim())) {
+        onSubmitQuery(value.trim(), nextScope);
+      }
+    },
+    className: "hidden h-full border-r border-border/70 bg-secondary/55 pl-3 pr-2 text-xs font-medium text-muted-foreground hover:text-foreground focus:outline-none sm:block cursor-pointer"
+  }, React.createElement("option", { value: "all" }, "All"), React.createElement("option", { value: "video" }, "Videos"), React.createElement("option", { value: "channel" }, "Channels"), React.createElement("option", { value: "playlist" }, "Playlists"), React.createElement("option", { value: "shorts" }, "Shorts")), open && React.createElement("span", {
+    className: "pl-3 pr-1 text-muted-foreground hidden md:inline-flex"
   }, React.createElement(Icons.Search, { className: "size-4" })), React.createElement("input", {
     ref: inputRef,
     type: "text",
     role: "combobox",
-    "aria-expanded": open && combinedItems.length > 0,
+    "aria-expanded": showDropdown,
     "aria-autocomplete": "list",
     "aria-label": "Search YouTube or paste video/playlist URL",
     value: value,
@@ -12280,7 +12740,7 @@ function YouTubeSearchBar({
     },
     onKeyDown: handleKeyDown,
     placeholder: placeholder,
-    className: VENDOR.cn("min-w-0 flex-1 bg-transparent pr-2 text-sm outline-none", open ? "pl-2 sm:pl-2" : "pl-4")
+    className: VENDOR.cn("min-w-0 flex-1 bg-transparent pr-2 text-sm outline-none", open ? "pl-2.5" : "pl-3.5")
   }), !value && !open && React.createElement("kbd", {
     className: "mr-2.5 hidden rounded border border-border/80 bg-secondary/70 px-1.5 py-0.5 font-mono text-[10px] text-muted-foreground sm:inline-block"
   }, "/"), value && React.createElement("button", {
@@ -12320,10 +12780,10 @@ function YouTubeSearchBar({
       setVoiceOpen(false);
       if (spoken && spoken.trim()) {
         onChange(spoken.trim());
-        onSubmitQuery(spoken.trim());
+        onSubmitQuery(spoken.trim(), searchScope);
       }
     }
-  }), open && combinedItems.length > 0 && React.createElement("div", {
+  }), showDropdown && React.createElement("div", {
     role: "listbox",
     "aria-label": "Search suggestions and recent searches",
     className: "yt-search-dropdown absolute left-1 right-12 top-[calc(100%+6px)] z-50 overflow-hidden rounded-2xl border border-border bg-popover py-2 text-popover-foreground shadow-2xl"
@@ -12335,45 +12795,39 @@ function YouTubeSearchBar({
       role: "option",
       "aria-selected": isSelected,
       onMouseEnter: () => setActiveIndex(idx),
-      className: VENDOR.cn("group flex items-center gap-3 px-4 py-2 text-sm transition-colors cursor-pointer", isSelected ? "bg-accent text-accent-foreground" : "hover:bg-accent/70")
+      className: VENDOR.cn("group flex items-center justify-between gap-2 px-4 py-1.5 text-sm transition-colors", isSelected ? "bg-secondary" : "hover:bg-secondary/70")
     }, React.createElement("button", {
       type: "button",
+      onMouseDown: e => e.preventDefault(),
       onClick: () => commitChoice(item.query),
-      className: "flex min-w-0 flex-1 items-center gap-3.5 text-left cursor-pointer"
-    }, isHist ? React.createElement(Icons.History, {
-      className: "size-4 shrink-0 text-muted-foreground"
-    }) : React.createElement(Icons.Search, {
-      className: "size-4 shrink-0 text-muted-foreground"
+      className: "flex min-w-0 flex-1 items-center gap-3 text-left cursor-pointer"
+    }, React.createElement(isHist ? Icons.History : Icons.Search, {
+      className: VENDOR.cn("size-4 shrink-0", isHist ? "text-primary" : "text-muted-foreground")
     }), React.createElement("span", {
       className: "truncate"
-    }, renderHighlightedSuggestion(item.query, trimmed))), React.createElement("div", {
-      className: "flex shrink-0 items-center gap-1"
-    }, React.createElement("button", {
+    }, renderHighlightedSuggestion(item.query, trimmed))), isHist && onRemoveSearchHistory && React.createElement("button", {
       type: "button",
-      title: "Put into search box",
-      "aria-label": `Fill ${item.query}`,
-      onClick: e => {
-        e.stopPropagation();
-        setDraftBeforeNav(null);
-        setActiveIndex(-1);
-        onChange(item.query);
-        inputRef?.current?.focus();
-      },
-      className: "rounded-full p-1 text-muted-foreground hover:bg-secondary hover:text-foreground cursor-pointer"
-    }, React.createElement(Icons.ArrowUpLeft, { className: "size-3.5" })), isHist && onRemoveSearchHistory && React.createElement("button", {
-      type: "button",
-      title: "Remove from search history",
       "aria-label": `Remove ${item.query} from search history`,
+      onMouseDown: e => e.preventDefault(),
       onClick: e => {
         e.stopPropagation();
         onRemoveSearchHistory(item.query);
       },
-      className: "rounded-full px-2 py-0.5 text-xs font-medium text-muted-foreground hover:bg-destructive/15 hover:text-destructive cursor-pointer"
-    }, "Remove")));
-  }), searchHistory.length > 1 && !trimmed && onClearSearchHistory && React.createElement("div", {
+      className: "shrink-0 rounded-full px-2 py-0.5 text-xs text-muted-foreground hover:bg-accent hover:text-destructive cursor-pointer"
+    }, "Remove"));
+  }), trimmed.length > 0 && !parseYouTubeInput(trimmed) && React.createElement("div", {
+    className: VENDOR.cn("flex flex-wrap items-center gap-1.5 px-4 py-2 text-xs", combinedItems.length > 0 && "mt-1 border-t border-border/70")
+  }, React.createElement("span", { className: "mr-1 text-muted-foreground" }, `Search "${trimmed.slice(0, 28)}" in:`), [["all", "All"], ["video", "Videos"], ["channel", "Channels"], ["playlist", "Playlists"], ["shorts", "Shorts"]].map(([sc, lbl]) => React.createElement("button", {
+    key: sc,
+    type: "button",
+    onMouseDown: e => e.preventDefault(),
+    onClick: () => commitChoice(trimmed, sc),
+    className: VENDOR.cn("rounded-full px-2.5 py-1 font-medium transition cursor-pointer", searchScope === sc ? "bg-primary text-primary-foreground" : "bg-secondary text-foreground hover:bg-accent")
+  }, lbl))), combinedItems.some(i => i.kind === "history") && onClearSearchHistory && React.createElement("div", {
     className: "mt-1 flex items-center justify-between border-t border-border/70 px-4 pt-2 pb-0.5 text-[11px] text-muted-foreground"
   }, React.createElement("span", null, "Recent searches"), React.createElement("button", {
     type: "button",
+    onMouseDown: e => e.preventDefault(),
     onClick: () => onClearSearchHistory(),
     className: "font-medium hover:text-destructive cursor-pointer"
   }, "Clear search history"))));
@@ -12551,14 +13005,18 @@ function ActiveShortMedia({
   settings,
   onWatchedShort
 }) {
-  const [useEmbed, setUseEmbed] = React.useState(settings.playerEngine === "yt-nocookie" || settings.playerEngine === "proxy-embed");
+  // Default Shorts to instant YT NoCookie playback unless user explicitly toggles Proxy Stream
+  const [useEmbed, setUseEmbed] = React.useState(settings.playerEngine !== "direct-only");
   const [muxedUrl, setMuxedUrl] = React.useState("");
   const [paused, setPaused] = React.useState(false);
   const [progress, setProgress] = React.useState(0);
   const videoElRef = React.useRef(null);
+  const iframeRef = React.useRef(null);
+  const initialMutedRef = React.useRef(muted);
 
   React.useEffect(() => {
-    setUseEmbed(settings.playerEngine === "yt-nocookie" || settings.playerEngine === "proxy-embed");
+    initialMutedRef.current = muted;
+    setUseEmbed(settings.playerEngine !== "direct-only");
     setMuxedUrl("");
     setPaused(false);
     setProgress(0);
@@ -12568,17 +13026,41 @@ function ActiveShortMedia({
     if (!isActive) return;
     const t = setTimeout(() => {
       onWatchedShort?.(shortItem);
-    }, 1200);
+    }, 1000);
     return () => clearTimeout(t);
   }, [isActive, shortItem.id]);
+
+  // Sync mute/unmute & play/pause via YouTube IFrame JS API postMessage WITHOUT remounting iframe!
+  React.useEffect(() => {
+    if (!useEmbed || !isActive) return;
+    const win = iframeRef.current?.contentWindow;
+    if (!win || typeof win.postMessage !== "function") return;
+    try {
+      win.postMessage(JSON.stringify({ event: "command", func: muted ? "mute" : "unMute", args: [] }), "*");
+    } catch {}
+  }, [muted, useEmbed, isActive]);
+
+  React.useEffect(() => {
+    if (!useEmbed || !isActive) return;
+    const win = iframeRef.current?.contentWindow;
+    if (!win || typeof win.postMessage !== "function") return;
+    try {
+      win.postMessage(JSON.stringify({ event: "command", func: paused ? "pauseVideo" : "playVideo", args: [] }), "*");
+    } catch {}
+  }, [paused, useEmbed, isActive]);
 
   React.useEffect(() => {
     if (!isActive || useEmbed) return;
     const ctrl = new AbortController();
+    // Crisp 4.2s auto-fallback to YT NoCookie if proxy stream takes too long!
+    const fallbackTimer = setTimeout(() => {
+      if (!ctrl.signal.aborted) setUseEmbed(true);
+    }, 4200);
     resolveProxiedVideoStreams(shortItem.id, 0, settings, ctrl.signal)
       .then(res => {
+        clearTimeout(fallbackTimer);
         if (ctrl.signal.aborted) return;
-        const muxed = (res?.streams || []).filter(s => s.kind === "muxed" && s.videoUrl).sort((a, b) => (b.height || 0) - (a.height || 0))[0];
+        const muxed = (res?.streams || []).filter(s => (s.kind === "muxed" || s.kind === "hls") && s.videoUrl).sort((a, b) => (b.height || 0) - (a.height || 0))[0];
         if (muxed?.videoUrl) {
           setMuxedUrl(muxed.videoUrl);
         } else {
@@ -12586,9 +13068,13 @@ function ActiveShortMedia({
         }
       })
       .catch(() => {
+        clearTimeout(fallbackTimer);
         if (!ctrl.signal.aborted) setUseEmbed(true);
       });
-    return () => ctrl.abort();
+    return () => {
+      clearTimeout(fallbackTimer);
+      ctrl.abort();
+    };
   }, [isActive, useEmbed, shortItem.id]);
 
   React.useEffect(() => {
@@ -12611,17 +13097,27 @@ function ActiveShortMedia({
     });
   }
 
-  const ytShortEmbed = `https://www.youtube-nocookie.com/embed/${shortItem.id}?autoplay=1&loop=1&playlist=${shortItem.id}&playsinline=1&rel=0&modestbranding=1&iv_load_policy=3${muted ? "&mute=1" : ""}`;
+  const ytShortEmbed = `https://www.youtube-nocookie.com/embed/${shortItem.id}?autoplay=1&loop=1&playlist=${shortItem.id}&playsinline=1&enablejsapi=1&rel=0&modestbranding=1&iv_load_policy=3${initialMutedRef.current ? "&mute=1" : ""}`;
 
   return React.createElement("div", {
     className: "relative h-full w-full bg-black select-none"
   }, useEmbed ? React.createElement("iframe", {
-    key: `${shortItem.id}-${muted ? "m" : "u"}`,
+    key: shortItem.id,
+    ref: iframeRef,
     src: ytShortEmbed,
     title: shortItem.title,
     allow: "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share",
     referrerPolicy: "strict-origin-when-cross-origin",
     allowFullScreen: true,
+    onLoad: () => {
+      try {
+        iframeRef.current?.contentWindow?.postMessage(JSON.stringify({
+          event: "command",
+          func: muted ? "mute" : "unMute",
+          args: []
+        }), "*");
+      } catch {}
+    },
     className: "h-full w-full border-0"
   }) : muxedUrl ? React.createElement("video", {
     ref: videoElRef,
@@ -12658,7 +13154,7 @@ function ActiveShortMedia({
   }, React.createElement("button", {
     type: "button",
     onClick: () => setUseEmbed(e => !e),
-    title: "Switch Short engine between Proxied Video & YT NoCookie",
+    title: "Switch Short engine between YT NoCookie & Proxied Video Stream",
     className: "pointer-events-auto rounded-full bg-black/55 px-2.5 py-1 text-[11px] font-semibold text-white/90 backdrop-blur-md hover:bg-black/80 cursor-pointer"
   }, useEmbed ? "YT Shorts" : "Proxy Stream"), React.createElement("button", {
     type: "button",
@@ -12674,10 +13170,24 @@ function ActiveShortMedia({
   })));
 }
 
+const SHORTS_QUICK_PILLS = [
+  { id: "", label: "For You" },
+  { id: "trending shorts", label: "Trending" },
+  { id: "funny shorts", label: "Comedy" },
+  { id: "gaming shorts", label: "Gaming" },
+  { id: "music shorts", label: "Music" },
+  { id: "science tech shorts", label: "Tech & Science" },
+  { id: "sports highlights shorts", label: "Sports" }
+];
+
 function ShortsFeedPlayer({
   shorts,
   hydratedDetails = {},
   loading,
+  error = "",
+  onRetry,
+  shortsTopicQuery = "",
+  onChangeShortsTopicQuery,
   hasMore,
   onLoadMore,
   likedShorts = [],
@@ -12709,6 +13219,13 @@ function ShortsFeedPlayer({
   const [muted, setMuted] = React.useState(false);
   const [dislikedSet, setDislikedSet] = React.useState(() => new Set());
   const [commentsOpenFor, setCommentsOpenFor] = React.useState(null);
+  const [shortSearchDraft, setShortSearchDraft] = React.useState(shortsTopicQuery || "");
+
+  React.useEffect(() => {
+    setShortSearchDraft(shortsTopicQuery || "");
+    setActiveIdx(0);
+    scrollerRef.current?.scrollTo?.({ top: 0, behavior: "instant" });
+  }, [shortsTopicQuery]);
 
   React.useEffect(() => {
     if (!initialShortId || !shorts.length) return;
@@ -12717,7 +13234,7 @@ function ShortsFeedPlayer({
       setActiveIdx(idx);
       slideRefs.current[idx]?.scrollIntoView?.({ behavior: "instant", block: "start" });
     }
-  }, [initialShortId]);
+  }, [initialShortId, shorts.length]);
 
   React.useEffect(() => {
     const root = scrollerRef.current;
@@ -12749,6 +13266,11 @@ function ShortsFeedPlayer({
   }, [activeIdx, shorts.length, hasMore, loading]);
 
   const scrollToIndex = nextIdx => {
+    if (!shorts.length) return;
+    if (nextIdx >= shorts.length && hasMore && !loading) {
+      onLoadMore?.();
+      return;
+    }
     const clamped = Math.max(0, Math.min(shorts.length - 1, nextIdx));
     setActiveIdx(clamped);
     slideRefs.current[clamped]?.scrollIntoView?.({ behavior: "smooth", block: "start" });
@@ -12768,48 +13290,101 @@ function ShortsFeedPlayer({
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
-  }, [activeIdx, shorts.length]);
-
-  if (!shorts.length && loading) {
-    return React.createElement("div", {
-      className: "flex h-[calc(100vh-8.5rem)] items-center justify-center"
-    }, React.createElement("div", {
-      className: "yt-short-stage relative aspect-[9/16] h-full max-h-[82vh] animate-pulse rounded-2xl bg-secondary/70 shadow-2xl flex items-center justify-center"
-    }, React.createElement(Icons.LoaderCircle, { className: "size-8 animate-spin text-muted-foreground" })));
-  }
+  }, [activeIdx, shorts.length, hasMore, loading]);
 
   const activeShortObj = shorts[activeIdx];
   const commentsShortId = commentsOpenFor === activeShortObj?.id ? activeShortObj.id : null;
 
   return React.createElement("div", {
-    className: "relative flex w-full items-center justify-center gap-4"
-  }, onSwitchToGrid && React.createElement("div", {
-    className: "absolute right-2 top-1 z-30 flex items-center gap-1.5"
-  }, React.createElement(Button, {
+    className: "space-y-2.5"
+  }, React.createElement("div", {
+    className: "flex flex-wrap items-center justify-between gap-2"
+  }, React.createElement("div", {
+    role: "toolbar",
+    "aria-label": "Shorts topics",
+    className: "yt-topic-bar flex min-w-0 flex-1 items-center gap-1.5 overflow-x-auto pb-0.5"
+  }, SHORTS_QUICK_PILLS.map(pill => React.createElement("button", {
+    key: pill.label,
+    type: "button",
+    onClick: () => onChangeShortsTopicQuery?.(pill.id),
+    className: VENDOR.cn("yt-chip shrink-0 px-3 py-1 text-xs cursor-pointer", shortsTopicQuery === pill.id ? "yt-chip-active" : "bg-secondary text-foreground hover:bg-accent")
+  }, pill.label))), React.createElement("form", {
+    onSubmit: e => {
+      e.preventDefault();
+      onChangeShortsTopicQuery?.(shortSearchDraft.trim());
+    },
+    className: "flex items-center gap-1.5"
+  }, React.createElement("div", {
+    className: "flex h-8 items-center rounded-full border border-border bg-secondary/75 px-3 text-xs"
+  }, React.createElement(Icons.Search, { className: "mr-1.5 size-3.5 text-muted-foreground" }), React.createElement("input", {
+    type: "text",
+    "aria-label": "Search Shorts",
+    placeholder: "Search Shorts…",
+    value: shortSearchDraft,
+    onChange: e => setShortSearchDraft(e.target.value),
+    className: "w-28 bg-transparent text-xs outline-none sm:w-36"
+  }), shortSearchDraft && React.createElement("button", {
+    type: "button",
+    "aria-label": "Clear Shorts search",
+    onClick: () => {
+      setShortSearchDraft("");
+      onChangeShortsTopicQuery?.("");
+    },
+    className: "ml-1 text-muted-foreground hover:text-foreground cursor-pointer"
+  }, React.createElement(Icons.X, { className: "size-3" }))), onSwitchToGrid && React.createElement(Button, {
     size: "sm",
     variant: "secondary",
+    type: "button",
     onClick: onSwitchToGrid,
     title: "Switch Shorts to grid overview",
-    className: "rounded-full text-xs shadow-md"
-  }, React.createElement(Icons.Film || Icons.Tv, { className: "size-3.5" }), "Grid view")), React.createElement("div", {
+    className: "h-8 rounded-full px-3 text-xs"
+  }, React.createElement(Icons.Film || Icons.Tv, { className: "size-3.5" }), "Grid view"))), !shorts.length && loading ? React.createElement("div", {
+    className: "flex h-[calc(100vh-10.5rem)] items-center justify-center"
+  }, React.createElement("div", {
+    className: "yt-short-stage relative aspect-[9/16] h-full max-h-[80vh] animate-pulse rounded-2xl bg-secondary/70 shadow-2xl flex flex-col items-center justify-center gap-3 p-6 text-center"
+  }, React.createElement(Icons.LoaderCircle, { className: "size-8 animate-spin text-primary" }), React.createElement("p", {
+    className: "text-xs font-medium text-muted-foreground"
+  }, "Loading YouTube Shorts…"))) : !shorts.length ? React.createElement("div", {
+    className: "flex h-[calc(100vh-10.5rem)] items-center justify-center"
+  }, React.createElement("div", {
+    role: "alert",
+    className: "flex max-w-md flex-col items-center gap-3 rounded-2xl border border-border bg-card p-6 text-center shadow-xl"
+  }, React.createElement(Icons.Zap, { className: "size-8 text-primary" }), React.createElement("p", {
+    className: "text-base font-bold"
+  }, "Couldn't load Shorts right now"), React.createElement("p", {
+    className: "text-xs text-muted-foreground"
+  }, error || "No Shorts matched that topic or the current proxy timed out."), React.createElement("div", {
+    className: "flex flex-wrap items-center justify-center gap-2 pt-1"
+  }, React.createElement(Button, {
+    size: "sm",
+    onClick: () => onRetry?.(),
+    className: "rounded-full px-4"
+  }, React.createElement(Icons.RefreshCw, { className: "size-3.5" }), "Retry Shorts"), shortsTopicQuery && React.createElement(Button, {
+    size: "sm",
+    variant: "secondary",
+    onClick: () => onChangeShortsTopicQuery?.(""),
+    className: "rounded-full px-4"
+  }, "Reset topic")))) : React.createElement("div", {
+    className: "relative flex w-full items-center justify-center gap-4"
+  }, React.createElement("div", {
     ref: scrollerRef,
     "aria-label": "YouTube Shorts vertical feed",
-    className: "yt-shorts-scroller flex h-[calc(100vh-7.75rem)] w-full flex-col items-center overflow-y-auto scroll-smooth"
+    className: "yt-shorts-scroller flex h-[calc(100vh-10.25rem)] w-full flex-col items-center overflow-y-auto scroll-smooth"
   }, shorts.map((s, idx) => {
     const isLiked = likedShorts.includes(s.id);
     const isDisliked = dislikedSet.has(s.id);
     const isSub = Boolean(s.channelId) && subscriptions.some(sub => sub.channelId === s.channelId);
     const effAvatar = s.channelAvatar || hydratedDetails[s.id]?.avatar || (s.channelId ? MEMORY_CHANNEL_AVATARS.get(s.channelId) : null) || null;
-    const handleText = s.channel ? `@${s.channel.replace(/\s+/g, "")}` : "@creator";
+    const handleText = s.channel ? `@${s.channel.replace(/\s+/g, "")}` : "@shorts";
     const isNearActive = Math.abs(idx - activeIdx) <= 1;
 
     return React.createElement("div", {
       key: s.id,
       "data-short-idx": idx,
       ref: el => { slideRefs.current[idx] = el; },
-      className: "yt-short-slide flex h-[calc(100vh-7.75rem)] w-full shrink-0 items-center justify-center py-2"
+      className: "yt-short-slide flex h-[calc(100vh-10.25rem)] w-full shrink-0 items-center justify-center py-1.5"
     }, React.createElement("div", {
-      className: "relative flex h-full max-h-[840px] items-end justify-center gap-3.5"
+      className: "relative flex h-full max-h-[820px] items-end justify-center gap-3.5"
     }, React.createElement("div", {
       className: "yt-short-stage relative aspect-[9/16] h-full overflow-hidden rounded-2xl bg-black shadow-2xl ring-1 ring-white/10"
     }, isNearActive ? React.createElement(ActiveShortMedia, {
@@ -12834,7 +13409,7 @@ function ShortsFeedPlayer({
       className: "flex min-w-0 items-center gap-2.5 text-left cursor-pointer"
     }, React.createElement(AvatarCircle, {
       src: effAvatar,
-      name: s.channel || "C",
+      name: s.channel || "S",
       sizeClass: "size-9 ring-1 ring-white/25"
     }), React.createElement("span", {
       className: "truncate text-sm font-bold tracking-tight text-white drop-shadow"
@@ -12853,7 +13428,7 @@ function ShortsFeedPlayer({
     }, `Original sound - ${s.channel || "YouTube Shorts"}`)), s.views != null && React.createElement("span", {
       className: "shrink-0 text-[11px] text-white/75"
     }, `${formatCompact(s.views)} views`)))), React.createElement("div", {
-      className: "yt-short-actions flex flex-col items-center gap-3.5 pb-2"
+      className: "yt-short-actions flex flex-col items-center gap-3 pb-2"
     }, React.createElement("div", {
       className: "flex flex-col items-center gap-1"
     }, React.createElement("button", {
@@ -12884,24 +13459,15 @@ function ShortsFeedPlayer({
       type: "button",
       "aria-label": "Comments",
       onClick: () => setCommentsOpenFor(cur => cur === s.id ? null : s.id),
-      className: VENDOR.cn("flex size-12 items-center justify-center rounded-full transition cursor-pointer shadow-md", commentsOpenFor === s.id ? "bg-primary text-primary-foreground" : "bg-secondary/90 text-foreground hover:bg-accent")
+      className: VENDOR.cn("flex size-12 items-center justify-center rounded-full transition cursor-pointer shadow-md", commentsOpenFor === s.id ? "bg-foreground text-background" : "bg-secondary/90 text-foreground hover:bg-accent")
     }, React.createElement(Icons.MessageSquare, { className: "size-5" })), React.createElement("span", {
       className: "text-[11px] font-medium text-muted-foreground"
     }, "Comments")), React.createElement("div", {
       className: "flex flex-col items-center gap-1"
     }, React.createElement("button", {
       type: "button",
-      "aria-label": "Save Short to Playlist or Watch Later",
-      onClick: () => onOpenPlaylistModal ? onOpenPlaylistModal({ id: s.id, title: s.title, channel: s.channel }) : onSaveLater({ id: s.id, title: s.title, channel: s.channel }),
-      className: "flex size-12 items-center justify-center rounded-full bg-secondary/90 text-foreground hover:bg-accent transition cursor-pointer shadow-md"
-    }, React.createElement(Icons.Bookmark, { className: "size-5" })), React.createElement("span", {
-      className: "text-[11px] font-medium text-muted-foreground"
-    }, "Save")), React.createElement("div", {
-      className: "flex flex-col items-center gap-1"
-    }, React.createElement("button", {
-      type: "button",
       "aria-label": "Share Short",
-      onClick: () => onShareShort(s.id),
+      onClick: () => onShareShort?.(s),
       className: "flex size-12 items-center justify-center rounded-full bg-secondary/90 text-foreground hover:bg-accent transition cursor-pointer shadow-md"
     }, React.createElement(Icons.Share2, { className: "size-5" })), React.createElement("span", {
       className: "text-[11px] font-medium text-muted-foreground"
@@ -12909,53 +13475,58 @@ function ShortsFeedPlayer({
       className: "flex flex-col items-center gap-1"
     }, React.createElement("button", {
       type: "button",
-      title: "Open in full Watch player (notes, chapters, SponsorBlock)",
-      "aria-label": "Open in full Watch player",
-      onClick: () => onOpenFullWatch(s.id),
-      className: "flex size-10 items-center justify-center rounded-full bg-secondary/70 text-foreground hover:bg-accent transition cursor-pointer"
-    }, React.createElement(Icons.Maximize, { className: "size-4" }))), React.createElement("button", {
+      "aria-label": "Save Short to Playlist",
+      title: "Save to Playlist / Watch Later",
+      onClick: () => onOpenPlaylistModal ? onOpenPlaylistModal(s) : onSaveLater?.(s),
+      className: "flex size-12 items-center justify-center rounded-full bg-secondary/90 text-foreground hover:bg-accent transition cursor-pointer shadow-md"
+    }, React.createElement(Icons.Bookmark, { className: "size-5" })), React.createElement("span", {
+      className: "text-[11px] font-medium text-muted-foreground"
+    }, "Save")), React.createElement("div", {
+      className: "flex flex-col items-center gap-1"
+    }, React.createElement("button", {
       type: "button",
-      title: s.channel || "Channel",
-      onClick: () => s.channelId ? onOpenChannel(s.channelId, s.channel) : onOpenFullWatch(s.id),
-      className: "mt-1 overflow-hidden rounded-xl border-2 border-border p-0.5 shadow-md cursor-pointer"
-    }, React.createElement(AvatarCircle, {
-      src: effAvatar,
-      name: s.channel || "S",
-      sizeClass: "size-9 rounded-lg"
-    })))));
-  })), commentsShortId && React.createElement("aside", {
-    "aria-label": "Short comments",
-    className: "hidden h-[calc(100vh-8.5rem)] w-96 shrink-0 flex-col overflow-y-auto rounded-2xl border border-border bg-card p-4 shadow-2xl lg:flex"
-  }, React.createElement("div", {
-    className: "mb-3 flex items-center justify-between border-b border-border pb-2.5"
-  }, React.createElement("h3", { className: "text-sm font-bold" }, "Comments"), React.createElement(Button, {
-    size: "icon",
-    variant: "ghost",
-    onClick: () => setCommentsOpenFor(null),
-    "aria-label": "Close comments"
-  }, React.createElement(Icons.X, { className: "size-4" }))), React.createElement(CommentsSection, {
-    id: commentsShortId,
-    apiKey: apiKey,
-    settings: settings,
-    onSeek: () => {},
-    onChannel: (cid, chTitle) => onOpenChannel(cid, chTitle)
-  })), React.createElement("div", {
-    className: "hidden flex-col gap-3 md:flex"
-  }, React.createElement("button", {
-    type: "button",
-    disabled: activeIdx <= 0,
-    onClick: () => scrollToIndex(activeIdx - 1),
-    "aria-label": "Previous Short",
-    title: "Previous Short (↑)",
-    className: "flex size-12 items-center justify-center rounded-full bg-secondary text-foreground shadow-md hover:bg-accent disabled:opacity-30 cursor-pointer"
-  }, React.createElement(Icons.ChevronUp, { className: "size-6" })), React.createElement("button", {
-    type: "button",
-    disabled: activeIdx >= shorts.length - 1 && !hasMore,
-    onClick: () => scrollToIndex(activeIdx + 1),
-    "aria-label": "Next Short",
-    title: "Next Short (↓)",
-    className: "flex size-12 items-center justify-center rounded-full bg-secondary text-foreground shadow-md hover:bg-accent disabled:opacity-30 cursor-pointer"
-  }, React.createElement(Icons.ChevronDown, { className: "size-6" }))));
+      "aria-label": "Open in full player",
+      title: "Open in full Watch mode",
+      onClick: () => onOpenFullWatch(s.id),
+      className: "flex size-10 items-center justify-center rounded-full bg-secondary/75 text-muted-foreground hover:bg-accent hover:text-foreground transition cursor-pointer"
+    }, React.createElement(Icons.Maximize, { className: "size-4" }))))));
+  }), loading && shorts.length > 0 && React.createElement("div", {
+      className: "py-6 text-center text-xs text-muted-foreground"
+    }, "Loading more Shorts…")), commentsShortId && React.createElement("aside", {
+      "aria-label": "Short comments panel",
+      className: "hidden h-[calc(100vh-10.5rem)] max-h-[820px] w-88 shrink-0 flex-col overflow-hidden rounded-2xl border border-border bg-card shadow-2xl lg:flex"
+    }, React.createElement("div", {
+      className: "flex items-center justify-between border-b border-border px-4 py-3"
+    }, React.createElement("h3", { className: "text-sm font-bold" }, "Comments"), React.createElement("button", {
+      type: "button",
+      "aria-label": "Close Short comments",
+      onClick: () => setCommentsOpenFor(null),
+      className: "rounded-full p-1 text-muted-foreground hover:bg-secondary hover:text-foreground cursor-pointer"
+    }, React.createElement(Icons.X, { className: "size-4" }))), React.createElement("div", {
+      className: "flex-1 overflow-y-auto p-3.5"
+    }, React.createElement(CommentThreadList, {
+      videoId: commentsShortId,
+      apiKey: apiKey,
+      settings: settings,
+      order: "relevance",
+      onSeek: () => onOpenFullWatch(commentsShortId)
+    }))), React.createElement("div", {
+      className: "hidden flex-col gap-3 xl:flex"
+    }, React.createElement("button", {
+      type: "button",
+      disabled: activeIdx <= 0,
+      onClick: () => scrollToIndex(activeIdx - 1),
+      "aria-label": "Previous Short",
+      title: "Previous Short (↑)",
+      className: "flex size-12 items-center justify-center rounded-full bg-secondary text-foreground shadow-md hover:bg-accent disabled:opacity-30 cursor-pointer"
+    }, React.createElement(Icons.ChevronUp, { className: "size-6" })), React.createElement("button", {
+      type: "button",
+      disabled: activeIdx >= shorts.length - 1 && !hasMore,
+      onClick: () => scrollToIndex(activeIdx + 1),
+      "aria-label": "Next Short",
+      title: "Next Short (↓)",
+      className: "flex size-12 items-center justify-center rounded-full bg-secondary text-foreground shadow-md hover:bg-accent disabled:opacity-30 cursor-pointer"
+    }, React.createElement(Icons.ChevronDown, { className: "size-6" })))));
 }
 
 function DeviceLibrarySection({
@@ -14374,6 +14945,8 @@ function DiscoverSection({
   onChangeCategory,
   activeQuery,
   onSearchQuery,
+  searchType = "all",
+  onChangeSearchType,
   browseTarget,
   onBrowse,
   active,
@@ -14427,10 +15000,11 @@ function DiscoverSection({
   const [channelFilter, setChannelFilter] = React.useState("");
   const [textFilter, setTextFilter] = React.useState("");
   const [homeTopic, setHomeTopic] = React.useState("all");
+  const [shortsTopicQuery, setShortsTopicQuery] = React.useState("");
   const [searchFiltersOpen, setSearchFiltersOpen] = React.useState(false);
-  const [searchTypeFilter, setSearchTypeFilter] = React.useState("all"); // all | video | shorts | channel | playlist | live
-  const [searchDateFilter, setSearchDateFilter] = React.useState("any"); // any | today | week | month | year
-  const [searchDurFilter, setSearchDurFilter] = React.useState("any"); // any | short | medium | long
+  const [searchTypeFilter, setSearchTypeFilterState] = React.useState(searchType || "all");
+  const [searchDateFilter, setSearchDateFilter] = React.useState("any");
+  const [searchDurFilter, setSearchDurFilter] = React.useState("any");
   const [openCardMenuId, setOpenCardMenuId] = React.useState(null);
   const [recentlyHiddenIds, setRecentlyHiddenIds] = React.useState([]);
   const [recentlyBlockedChans, setRecentlyBlockedChans] = React.useState([]);
@@ -14439,6 +15013,18 @@ function DiscoverSection({
   const [shortsViewMode, setShortsViewMode] = React.useState(settings.shortsScrollMode !== false ? "scroll" : "grid");
   const [selectedShortId, setSelectedShortId] = React.useState("");
   const subFileRef = React.useRef(null);
+
+  React.useEffect(() => {
+    if (searchType && searchType !== searchTypeFilter) {
+      setSearchTypeFilterState(searchType);
+    }
+  }, [searchType]);
+
+  const setSearchTypeFilter = nextType => {
+    setSearchTypeFilterState(nextType);
+    onChangeSearchType?.(nextType);
+    setPageToken("");
+  };
 
   React.useEffect(() => {
     setShortsViewMode(settings.shortsScrollMode !== false ? "scroll" : "grid");
@@ -14453,12 +15039,20 @@ function DiscoverSection({
 
   const effectiveTopicObj = YOUTUBE_HOME_TOPICS.find(t => t.id === homeTopic) || YOUTUBE_HOME_TOPICS[0];
   const isTopicRemoteSearch = category === "home" && effectiveTopicObj.query && !effectiveTopicObj.query.startsWith("__");
-  const effectiveCategory = isTopicRemoteSearch ? "search" : category;
-  const effectiveQuery = isTopicRemoteSearch ? effectiveTopicObj.query : activeQuery;
+  const effectiveCategory = isTopicRemoteSearch
+    ? "search"
+    : (category === "search" && searchTypeFilter === "shorts")
+    ? "shorts"
+    : category;
+  const effectiveQuery = isTopicRemoteSearch
+    ? effectiveTopicObj.query
+    : category === "shorts"
+    ? shortsTopicQuery
+    : activeQuery;
 
-  const prevCatKeyRef = React.useRef(`${effectiveCategory}:${effectiveQuery}:${region}`);
+  const prevCatKeyRef = React.useRef(`${category}:${effectiveCategory}:${effectiveQuery}:${region}:${searchTypeFilter}`);
   React.useEffect(() => {
-    const nextKey = `${effectiveCategory}:${effectiveQuery}:${region}`;
+    const nextKey = `${category}:${effectiveCategory}:${effectiveQuery}:${region}:${searchTypeFilter}`;
     if (prevCatKeyRef.current !== nextKey) {
       prevCatKeyRef.current = nextKey;
       setVideos([]);
@@ -14471,7 +15065,7 @@ function DiscoverSection({
       setRecentlyHiddenIds([]);
       setRecentlyBlockedChans([]);
     }
-  }, [effectiveCategory, effectiveQuery, region]);
+  }, [category, effectiveCategory, effectiveQuery, region, searchTypeFilter]);
 
   const switchCategory = cat => {
     if (cat !== "home") setHomeTopic("all");
@@ -14495,29 +15089,51 @@ function DiscoverSection({
 
   React.useEffect(() => {
     if (!active || browseTarget) return;
-    if (effectiveCategory === "search" && !effectiveQuery.trim()) return;
+    if (category === "search" && !activeQuery.trim()) return;
     const controller = new AbortController();
     setLoading(true);
     setError("");
+
+    // Dedicated Channel-Only or Playlist-Only Search Mode!
+    if (category === "search" && (searchTypeFilter === "channel" || searchTypeFilter === "playlist")) {
+      fetchSearchEntities(activeQuery.trim(), searchTypeFilter, apiKey, settings, controller.signal)
+        .then(items => {
+          if (controller.signal.aborted) return;
+          setSearchEntities(items);
+          setVideos([]);
+          setNextToken("");
+          setSourceLabel(searchTypeFilter === "channel" ? "Channels Search" : "Playlists Search");
+        })
+        .catch(err => {
+          if (!controller.signal.aborted) {
+            setError(err instanceof Error ? err.message : "Could not search channels/playlists.");
+          }
+        })
+        .finally(() => {
+          if (!controller.signal.aborted) setLoading(false);
+        });
+      return () => controller.abort();
+    }
+
+    // In "all" search mode, also load spotlight matching Channels & Playlists in parallel!
+    if (category === "search" && activeQuery.trim() && !pageToken && searchTypeFilter === "all") {
+      Promise.all([
+        fetchSearchEntities(activeQuery.trim(), "channel", apiKey, settings, controller.signal),
+        fetchSearchEntities(activeQuery.trim(), "playlist", apiKey, settings, controller.signal)
+      ]).then(([chans, pls]) => {
+        if (!controller.signal.aborted) {
+          setSearchEntities([...chans.slice(0, 3), ...pls.slice(0, 3)]);
+        }
+      }).catch(() => {});
+    } else if (category !== "search" || searchTypeFilter !== "all") {
+      if (!pageToken) setSearchEntities([]);
+    }
+
     const handlePartial = !pageToken ? partialRes => {
       if (controller.signal.aborted || !partialRes?.videos?.length) return;
       setVideos(prev => [...new Map([...partialRes.videos, ...prev].map(v => [v.id, v])).values()]);
       if (partialRes.source) setSourceLabel(partialRes.source);
     } : null;
-
-    // Fetch matching Channels & Playlists alongside videos on Search!
-    if (category === "search" && effectiveQuery.trim() && !pageToken && (searchTypeFilter === "all" || searchTypeFilter === "channel" || searchTypeFilter === "playlist")) {
-      Promise.all([
-        searchTypeFilter === "playlist" ? Promise.resolve([]) : fetchSearchEntities(effectiveQuery, "channel", apiKey, settings, controller.signal),
-        searchTypeFilter === "channel" ? Promise.resolve([]) : fetchSearchEntities(effectiveQuery, "playlist", apiKey, settings, controller.signal)
-      ]).then(([chans, pls]) => {
-        if (!controller.signal.aborted) {
-          setSearchEntities([...chans.slice(0, searchTypeFilter === "channel" ? 12 : 2), ...pls.slice(0, searchTypeFilter === "playlist" ? 12 : 2)]);
-        }
-      }).catch(() => {});
-    } else if (category !== "search") {
-      setSearchEntities([]);
-    }
 
     fetchDiscoveryFeed(
       effectiveCategory,
@@ -14546,7 +15162,7 @@ function DiscoverSection({
       if (!controller.signal.aborted) setLoading(false);
     });
     return () => controller.abort();
-  }, [active, browseTarget, effectiveCategory, effectiveQuery, searchTypeFilter, apiKey, settings.instance, settings.webProxyMode, settings.webProxyProvider, settings.wispEnabled, subscriptions, pageToken, refreshCounter, region, tasteProfile.signature]);
+  }, [active, browseTarget, category, effectiveCategory, effectiveQuery, activeQuery, searchTypeFilter, apiKey, settings.instance, settings.webProxyMode, settings.webProxyProvider, settings.wispEnabled, subscriptions, pageToken, refreshCounter, region, tasteProfile.signature]);
 
   const watchedIds = React.useMemo(() => {
     const s = new Set();
@@ -14561,9 +15177,12 @@ function DiscoverSection({
   const blockedChanSet = React.useMemo(() => new Set(blockedChannels.map(b => b.channelId || b.title?.toLowerCase())), [blockedChannels]);
 
   const displayedVideos = React.useMemo(() => {
+    // Isolate Shorts vertical feed from stale For You text/channel/watched filters!
+    if (category === "shorts") {
+      return videos.filter(v => !notIntSet.has(v.id));
+    }
     const forceHideWatched = hideWatched || (category === "home" && homeTopic === "unwatched");
     let list = filterAndSortFeed(videos, category === "home" && homeTopic === "recent" ? "newest" : sort, channelFilter, textFilter, forceHideWatched, watchedIds);
-    // Filter out previously dismissed videos/channels (unless in recentlyHiddenIds so inline Undo card shows!)
     list = list.filter(v => {
       if (notIntSet.has(v.id) && !recentlyHiddenIds.includes(v.id)) return false;
       const bKey = v.channelId || v.channel?.toLowerCase();
@@ -14575,7 +15194,7 @@ function DiscoverSection({
     }
     if (category === "search") {
       if (searchTypeFilter === "channel" || searchTypeFilter === "playlist") return [];
-      if (searchTypeFilter === "shorts") list = list.filter(v => v.isShort || (v.durationSec && v.durationSec <= 65));
+      if (searchTypeFilter === "shorts") list = list.filter(v => v.isShort || !v.durationSec || v.durationSec <= 180);
       if (searchTypeFilter === "live") list = list.filter(v => v.isLive);
       if (searchDurFilter === "short") list = list.filter(v => v.durationSec && v.durationSec < 240);
       else if (searchDurFilter === "medium") list = list.filter(v => v.durationSec && v.durationSec >= 240 && v.durationSec <= 1200);
@@ -14592,20 +15211,103 @@ function DiscoverSection({
   const hydratedDetails = useHydratedMediaDetails(displayedVideos, historyMap, settings, active && !browseTarget);
   const loadedChannelNames = React.useMemo(() => [...new Set(videos.map(v => v.channel).filter(Boolean))].sort(), [videos]);
 
-  const isCurrentQuerySaved = category === "search" && !!activeQuery.trim() && savedSearches.some(s => s.query.toLowerCase() === activeQuery.trim().toLowerCase());
+  const isCurrentQuerySaved = category === "search" && !!activeQuery.trim() && savedSearches.some(s => s.query.toLowerCase() === activeQuery.trim().toLowerCase() && (s.type || "video") === (searchTypeFilter === "channel" || searchTypeFilter === "playlist" ? searchTypeFilter : "video"));
   const toggleSaveCurrentSearch = () => {
     const q = activeQuery.trim();
     if (!q) return;
+    const targetType = searchTypeFilter === "channel" || searchTypeFilter === "playlist" ? searchTypeFilter : "video";
     if (isCurrentQuerySaved) {
-      setSavedSearches(savedSearches.filter(s => s.query.toLowerCase() !== q.toLowerCase()));
+      setSavedSearches(savedSearches.filter(s => !(s.query.toLowerCase() === q.toLowerCase() && (s.type || "video") === targetType)));
     } else {
-      setSavedSearches([{ id: safeUUID(), query: q.slice(0, 200), type: "video", createdAt: Date.now() }, ...savedSearches]);
+      setSavedSearches([{ id: safeUUID(), query: q.slice(0, 200), type: targetType, createdAt: Date.now() }, ...savedSearches]);
     }
   };
 
   const nowMs = Date.now();
   const isShortsScrollActive = category === "shorts" && shortsViewMode === "scroll" && !browseTarget;
-  const activeGridClass = getFeedGridClass(settings.gridColumns, category === "shorts", category);
+  const activeGridClass = getFeedGridClass(settings.gridColumns, category === "shorts" || (category === "search" && searchTypeFilter === "shorts"), category);
+
+  const renderEntityCard = ent => {
+    const isSubbed = ent.kind === "channel" && subIdsSet.has(ent.id);
+    if (ent.kind === "channel") {
+      return React.createElement("article", {
+        key: `channel-${ent.id}`,
+        className: "flex flex-wrap items-center justify-between gap-4 rounded-2xl border border-border/70 bg-card/70 p-4 hover:bg-card transition"
+      }, React.createElement("button", {
+        type: "button",
+        onClick: () => onBrowse({ kind: "channel", id: ent.id, title: ent.title }),
+        className: "flex min-w-0 flex-1 items-center gap-4 text-left cursor-pointer"
+      }, React.createElement(AvatarCircle, {
+        src: ent.thumbnail,
+        name: ent.title,
+        sizeClass: "size-16 shrink-0 ring-1 ring-border"
+      }), React.createElement("div", {
+        className: "min-w-0 flex-1"
+      }, React.createElement("div", {
+        className: "flex items-center gap-1.5"
+      }, React.createElement("p", { className: "truncate text-base font-bold text-foreground" }, ent.title), ent.verified && React.createElement("span", {
+        title: "Verified channel",
+        className: "inline-flex size-4 shrink-0 items-center justify-center rounded-full bg-muted-foreground/30 text-[10px] text-foreground"
+      }, "✓")), React.createElement("p", {
+        className: "mt-0.5 truncate text-xs text-muted-foreground"
+      }, [
+        ent.handle || `@${(ent.title || "").replace(/\s+/g, "").toLowerCase()}`,
+        ent.subscribers != null ? `${formatCompact(ent.subscribers)} subscribers` : "Channel",
+        ent.count != null ? `${ent.count} videos` : null
+      ].filter(Boolean).join(" · ")), ent.description && React.createElement("p", {
+        className: "mt-1 line-clamp-2 text-xs text-muted-foreground/90"
+      }, ent.description))), React.createElement("div", {
+        className: "flex shrink-0 items-center gap-2"
+      }, React.createElement(Button, {
+        size: "sm",
+        variant: isSubbed ? "secondary" : "default",
+        onClick: () => onToggleSubscribe(ent.id, ent.title, ent.thumbnail),
+        className: !isSubbed ? "bg-foreground text-background rounded-full px-4 font-semibold" : "rounded-full px-3.5"
+      }, isSubbed ? "Subscribed" : "Subscribe"), React.createElement(Button, {
+        size: "sm",
+        variant: "ghost",
+        onClick: () => onBrowse({ kind: "channel", id: ent.id, title: ent.title }),
+        className: "rounded-full text-xs"
+      }, "Open channel")));
+    }
+
+    // Rich Playlist Card!
+    return React.createElement("article", {
+      key: `playlist-${ent.id}`,
+      className: "flex flex-col justify-between gap-3 rounded-2xl border border-border/70 bg-card/70 p-3.5 hover:bg-card transition sm:flex-row sm:items-center"
+    }, React.createElement("button", {
+      type: "button",
+      onClick: () => onBrowse({ kind: "playlist", id: ent.id, title: ent.title }),
+      className: "flex min-w-0 flex-1 items-center gap-3.5 text-left cursor-pointer"
+    }, React.createElement("div", {
+      className: "yt-thumb relative aspect-video w-36 shrink-0 overflow-hidden bg-secondary sm:w-44"
+    }, ent.thumbnail ? React.createElement("img", {
+      src: ent.thumbnail,
+      alt: "",
+      loading: "lazy",
+      referrerPolicy: "no-referrer",
+      className: "h-full w-full object-cover"
+    }) : React.createElement("div", {
+      className: "flex h-full w-full items-center justify-center text-muted-foreground"
+    }, React.createElement(Icons.ListVideo, { className: "size-8 opacity-60" })), React.createElement("span", {
+      className: "absolute inset-x-0 bottom-0 flex items-center justify-end gap-1 bg-black/80 px-2 py-1 text-[11px] font-semibold text-white"
+    }, React.createElement(Icons.ListVideo, { className: "size-3.5" }), ent.count != null ? `${ent.count} videos` : "Playlist")), React.createElement("div", {
+      className: "min-w-0 flex-1"
+    }, React.createElement("p", {
+      className: "line-clamp-2 text-sm font-bold leading-snug text-foreground"
+    }, ent.title), React.createElement("p", {
+      className: "mt-1 truncate text-xs text-muted-foreground"
+    }, ent.channel ? `Playlist · ${ent.channel}` : "YouTube Playlist"), React.createElement("p", {
+      className: "mt-1 text-[11px] font-medium text-primary"
+    }, "View full playlist →"))), React.createElement("div", {
+      className: "flex shrink-0 items-center gap-2"
+    }, React.createElement(Button, {
+      size: "sm",
+      variant: "secondary",
+      onClick: () => onBrowse({ kind: "playlist", id: ent.id, title: ent.title }),
+      className: "rounded-full text-xs"
+    }, React.createElement(Icons.ListVideo, { className: "size-3.5" }), "View playlist")));
+  };
 
   return React.createElement("section", {
     className: "discovery-panel pt-1"
@@ -14616,9 +15318,9 @@ function DiscoverSection({
     className: "inline-flex items-center gap-1 rounded-full bg-secondary px-2.5 py-1 text-xs"
   }, React.createElement("button", {
     type: "button",
-    onClick: () => s.type && s.type !== "video" ? onBrowse({ kind: "search", type: s.type, query: s.query }) : onSearchQuery(s.query),
+    onClick: () => onSearchQuery(s.query, s.type && s.type !== "video" ? s.type : "all"),
     className: "font-medium hover:text-primary cursor-pointer"
-  }, s.type !== "video" ? `[${s.type}] ` : "", s.query), React.createElement("button", {
+  }, s.type && s.type !== "video" ? `[${s.type}] ` : "", s.query), React.createElement("button", {
     type: "button",
     "aria-label": `Remove saved search ${s.query}`,
     onClick: () => setSavedSearches(savedSearches.filter(x => x.id !== s.id)),
@@ -14643,7 +15345,7 @@ function DiscoverSection({
     onOpen: onBrowse,
     onPlay: vid => onPlay(vid)
   }) : React.createElement(React.Fragment, null, React.createElement("div", {
-    className: VENDOR.cn("discovery-categories flex flex-wrap items-center gap-2", isShortsScrollActive ? "mb-3" : "mb-3")
+    className: "discovery-categories mb-3 flex flex-wrap items-center gap-2"
   }, React.createElement(Button, {
     variant: category === "home" ? "default" : "secondary",
     className: VENDOR.cn("yt-chip", category === "home" && "yt-chip-active"),
@@ -14750,7 +15452,25 @@ function DiscoverSection({
     title: `From your watch history: ${tp.query}`,
     onClick: () => onSearchQuery(tp.query),
     className: "yt-chip shrink-0 bg-secondary px-3.5 capitalize text-foreground hover:bg-accent cursor-pointer"
-  }, tp.query))), category === "search" && searchFiltersOpen && React.createElement("div", {
+  }, tp.query))), category === "search" && activeQuery && React.createElement("div", {
+    role: "tablist",
+    "aria-label": "Search result type",
+    className: "yt-topic-bar mb-4 flex items-center gap-2 overflow-x-auto border-b border-border/60 pb-2.5"
+  }, [
+    ["all", "All", Icons.Sparkles],
+    ["video", "Videos", Icons.Film || Icons.Tv],
+    ["channel", "Channels", Icons.Radio],
+    ["playlist", "Playlists", Icons.ListVideo],
+    ["shorts", "Shorts", Icons.Zap],
+    ["live", "Live", Icons.Activity]
+  ].map(([id, lbl, IconComp]) => React.createElement("button", {
+    key: id,
+    type: "button",
+    role: "tab",
+    "aria-selected": searchTypeFilter === id,
+    onClick: () => setSearchTypeFilter(id),
+    className: VENDOR.cn("yt-chip inline-flex shrink-0 items-center gap-1.5 px-3.5 cursor-pointer", searchTypeFilter === id ? "yt-chip-active" : "bg-secondary text-foreground hover:bg-accent")
+  }, React.createElement(IconComp, { className: "size-3.5" }), lbl))), category === "search" && searchFiltersOpen && React.createElement("div", {
     "aria-label": "Search filters",
     className: "mb-5 grid gap-4 rounded-2xl border border-border/70 bg-card/65 p-4 text-xs sm:grid-cols-4"
   }, React.createElement("div", { className: "space-y-1.5" }, React.createElement("p", { className: "font-bold uppercase tracking-wider text-muted-foreground" }, "Type"), [["all", "All"], ["video", "Videos"], ["shorts", "Shorts"], ["channel", "Channels"], ["playlist", "Playlists"], ["live", "Live"]].map(([id, lbl]) => React.createElement("button", {
@@ -14777,6 +15497,16 @@ function DiscoverSection({
     shorts: displayedVideos,
     hydratedDetails: hydratedDetails,
     loading: loading,
+    error: error,
+    onRetry: () => {
+      setPageToken("");
+      setRefreshCounter(c => c + 1);
+    },
+    shortsTopicQuery: shortsTopicQuery,
+    onChangeShortsTopicQuery: q => {
+      setPageToken("");
+      setShortsTopicQuery(q);
+    },
     hasMore: Boolean(nextToken),
     onLoadMore: () => nextToken && setPageToken(nextToken),
     likedShorts: likedShorts,
@@ -14799,7 +15529,7 @@ function DiscoverSection({
     className: "flex flex-wrap items-center gap-2.5"
   }, React.createElement("h2", {
     className: "min-w-0 break-words text-lg font-bold tracking-tight"
-  }, category === "home" ? (homeTopic !== "all" ? effectiveTopicObj.label : tasteProfile.hasSignals ? "Recommended for you" : "Recommended") : category === "trending" ? "Trending" : category === "shorts" ? "Shorts" : category === "search" ? `Results for “${activeQuery}”` : "Latest from your subscriptions"), sourceLabel && React.createElement("span", {
+  }, category === "home" ? (homeTopic !== "all" ? effectiveTopicObj.label : tasteProfile.hasSignals ? "Recommended for you" : "Recommended") : category === "trending" ? "Trending" : category === "shorts" ? "Shorts" : category === "search" ? `${searchTypeFilter === "channel" ? "Channel results" : searchTypeFilter === "playlist" ? "Playlist results" : searchTypeFilter === "shorts" ? "Shorts results" : "Results"} for “${activeQuery}”` : "Latest from your subscriptions"), sourceLabel && React.createElement("span", {
     className: "rounded-full bg-secondary/80 px-2.5 py-0.5 text-[11px] font-medium text-muted-foreground"
   }, sourceLabel)), React.createElement("div", {
     className: "flex flex-wrap items-center gap-2.5"
@@ -14813,7 +15543,7 @@ function DiscoverSection({
       setRegion(e.target.value);
     },
     className: "rounded-full bg-secondary px-3 py-1.5 text-xs font-medium text-foreground cursor-pointer"
-  }, [["US", "United States"], ["IE", "Ireland"], ["GB", "United Kingdom"], ["IN", "India"], ["CA", "Canada"], ["AU", "Australia"], ["DE", "Germany"], ["FR", "France"], ["JP", "Japan"], ["BR", "Brazil"]].map(([code, name]) => React.createElement("option", { key: code, value: code }, name)))))), React.createElement("details", {
+  }, [["US", "United States"], ["IE", "Ireland"], ["GB", "United Kingdom"], ["IN", "India"], ["CA", "Canada"], ["AU", "Australia"], ["DE", "Germany"], ["FR", "France"], ["JP", "Japan"], ["BR", "Brazil"]].map(([code, name]) => React.createElement("option", { key: code, value: code }, name)))))), !(category === "search" && (searchTypeFilter === "channel" || searchTypeFilter === "playlist")) && React.createElement("details", {
     className: "feed-filters mb-5 border-b border-border/70 pb-3.5"
   }, React.createElement("summary", {
     className: "cursor-pointer text-xs font-medium text-muted-foreground hover:text-foreground"
@@ -14870,36 +15600,9 @@ function DiscoverSection({
     role: "status",
     className: "mb-4 text-sm text-muted-foreground"
   }, statusNotice), category === "search" && searchEntities.length > 0 && React.createElement("div", {
-    className: "mb-6 grid gap-3 sm:grid-cols-2"
-  }, searchEntities.map(ent => {
-    const isSubbed = ent.kind === "channel" && subIdsSet.has(ent.id);
-    return React.createElement("article", {
-      key: `${ent.kind}-${ent.id}`,
-      className: "flex items-center justify-between gap-3 rounded-2xl border border-border/70 bg-card/65 p-3.5 hover:bg-card transition"
-    }, React.createElement("button", {
-      type: "button",
-      onClick: () => onBrowse({ kind: ent.kind, id: ent.id, title: ent.title }),
-      className: "flex min-w-0 flex-1 items-center gap-3.5 text-left cursor-pointer"
-    }, React.createElement(AvatarCircle, {
-      src: ent.thumbnail,
-      name: ent.title,
-      sizeClass: "size-14 shrink-0"
-    }), React.createElement("div", {
-      className: "min-w-0 flex-1"
-    }, React.createElement("p", { className: "truncate text-sm font-bold text-foreground" }, ent.title), React.createElement("p", {
-      className: "mt-0.5 truncate text-xs text-muted-foreground"
-    }, ent.kind === "channel" ? (ent.subscribers != null ? `Channel · ${formatCompact(ent.subscribers)} subscribers` : "Channel") : `Playlist${ent.channel ? ` · ${ent.channel}` : ""}${ent.count != null ? ` · ${ent.count} videos` : ""}`))), ent.kind === "channel" ? React.createElement(Button, {
-      size: "sm",
-      variant: isSubbed ? "secondary" : "default",
-      onClick: () => onToggleSubscribe(ent.id, ent.title, ent.thumbnail),
-      className: !isSubbed ? "bg-foreground text-background rounded-full px-4 font-semibold" : "rounded-full px-3.5"
-    }, isSubbed ? "Subscribed" : "Subscribe") : React.createElement(Button, {
-      size: "sm",
-      variant: "secondary",
-      onClick: () => onBrowse({ kind: "playlist", id: ent.id, title: ent.title }),
-      className: "rounded-full"
-    }, "View playlist"));
-  })), category === "subscriptions" && subscriptions.length > 0 && React.createElement("details", {
+    "aria-label": searchTypeFilter === "channel" ? "Channel results" : searchTypeFilter === "playlist" ? "Playlist results" : "Matching channels and playlists",
+    className: VENDOR.cn("mb-6 grid gap-3", searchTypeFilter === "channel" || searchTypeFilter === "playlist" ? "grid-cols-1" : "sm:grid-cols-2")
+  }, searchEntities.map(renderEntityCard)), category === "subscriptions" && subscriptions.length > 0 && React.createElement("details", {
     className: "mb-5 border-b border-border pb-4"
   }, React.createElement("summary", {
     className: "cursor-pointer text-sm text-muted-foreground"
@@ -14942,7 +15645,7 @@ function DiscoverSection({
     id: "discovery-key",
     type: "password",
     autoComplete: "off",
-    placeholder: "Paste YouTube Data API v3 key",
+    placeholder: "Paste YouTube Data API v3 key (AIza…)",
     value: keyDraft,
     onChange: e => setKeyDraft(e.target.value),
     className: "min-w-0 flex-1 rounded-full bg-secondary px-3.5 py-1.5 text-xs"
@@ -14956,7 +15659,16 @@ function DiscoverSection({
     gridClass: activeGridClass,
     count: 6,
     spacious: category === "home"
-  }) : React.createElement("div", {
+  }) : (category === "search" && (searchTypeFilter === "channel" || searchTypeFilter === "playlist")) ? (!loading && !error && searchEntities.length === 0 ? React.createElement("div", {
+    className: "rounded-2xl border border-dashed border-border py-10 text-center"
+  }, React.createElement("p", {
+    className: "text-sm text-muted-foreground"
+  }, `No ${searchTypeFilter}s found for “${activeQuery}”. Try another keyword or switch to All.`), React.createElement(Button, {
+    variant: "secondary",
+    size: "sm",
+    className: "mt-3 rounded-full",
+    onClick: () => setSearchTypeFilter("all")
+  }, "Show all results")) : null) : React.createElement("div", {
     className: activeGridClass
   }, displayedVideos.map(v => {
     const isDismissed = notIntSet.has(v.id);
@@ -14992,91 +15704,120 @@ function DiscoverSection({
 
     return React.createElement("article", {
       key: v.id,
-      className: VENDOR.cn("yt-video-card group relative flex min-w-0 flex-col justify-between", isForYouSpacious && "yt-video-card-foryou")
-    }, React.createElement("div", null, React.createElement("button", {
+      className: "yt-feed-card group relative flex flex-col gap-3"
+    }, React.createElement("button", {
       type: "button",
-      className: "block w-full text-left cursor-pointer",
+      "aria-label": `Watch ${v.title}`,
       onClick: () => {
-        if (category === "shorts") {
+        if (category === "shorts" && settings.shortsScrollMode !== false) {
           setSelectedShortId(v.id);
           setShortsViewMode("scroll");
         } else {
           onPlay(v.id);
         }
       },
-      "aria-label": `Watch ${v.title}`
+      className: "text-left cursor-pointer"
+    }, React.createElement("div", {
+      className: "relative"
     }, React.createElement(SafeThumb, {
       videoId: v.id,
       src: v.thumbnail,
-      aspectClass: category === "shorts" ? "aspect-[9/16]" : undefined,
-      className: "w-full",
-      progress: prog,
-      completed: hist?.completed,
-      isLive: v.isLive,
-      durationText: effDur ? formatDuration(effDur) : undefined,
-      badgeText: hist?.completed ? "Watched" : undefined
-    })), React.createElement("div", {
-      className: VENDOR.cn("flex items-start", isForYouSpacious ? "mt-3.5 gap-3.5" : "mt-3 gap-3")
-    }, category !== "shorts" && v.channel && React.createElement("button", {
+      aspectClass: (category === "shorts" || (category === "search" && searchTypeFilter === "shorts")) ? "aspect-[9/16]" : undefined
+    }), effDur != null && effDur > 0 && React.createElement("span", {
+      "aria-label": `Duration ${formatDuration(effDur)}`,
+      className: "yt-duration-badge"
+    }, formatDuration(effDur)), v.isLive && React.createElement("span", {
+      className: "absolute bottom-1.5 left-1.5 rounded bg-[#ff0033] px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-wider text-white"
+    }, "LIVE"), prog > 0 && React.createElement("div", {
+      className: "absolute inset-x-0 bottom-0 h-1 overflow-hidden rounded-b-[9px] bg-black/65"
+    }, React.createElement("div", {
+      className: "h-full bg-[#ff0033]",
+      style: { width: `${Math.min(100, Math.round(prog * 100))}%` }
+    })))), React.createElement("div", {
+      className: "flex items-start gap-3 px-0.5"
+    }, v.channel && React.createElement("button", {
       type: "button",
-      className: "mt-0.5 shrink-0 rounded-full cursor-pointer",
-      title: v.channel,
-      onClick: () => v.channelId ? onBrowse({ kind: "channel", id: v.channelId, title: v.channel }) : onPlay(v.id)
+      title: v.channelId ? `Open ${v.channel}` : v.channel,
+      onClick: () => v.channelId && onBrowse({ kind: "channel", id: v.channelId, title: v.channel }),
+      className: VENDOR.cn("mt-0.5 shrink-0", v.channelId ? "cursor-pointer hover:opacity-85" : "cursor-default")
     }, React.createElement(AvatarCircle, {
       src: effAvatar,
       name: v.channel,
       sizeClass: isForYouSpacious ? "size-10" : "size-9"
     })), React.createElement("div", {
-      className: "min-w-0 flex-1"
+      className: "min-w-0 flex-1 pr-5"
     }, React.createElement("button", {
       type: "button",
-      onClick: () => category === "shorts" ? (setSelectedShortId(v.id), setShortsViewMode("scroll")) : onPlay(v.id),
-      className: "block w-full text-left cursor-pointer"
-    }, React.createElement("h3", {
-      className: VENDOR.cn("line-clamp-2 font-semibold leading-snug text-foreground group-hover:text-primary transition-colors", isForYouSpacious ? "text-[16px]" : "text-[15px]")
-    }, formatDisplayTitle(v.title, settings.deShoutTitles))), React.createElement("p", {
-      className: VENDOR.cn("mt-1 truncate text-muted-foreground", isForYouSpacious ? "text-[13.5px]" : "text-[13px]")
-    }, v.channelId ? React.createElement("button", {
+      onClick: () => {
+        if (category === "shorts" && settings.shortsScrollMode !== false) {
+          setSelectedShortId(v.id);
+          setShortsViewMode("scroll");
+        } else {
+          onPlay(v.id);
+        }
+      },
+      className: VENDOR.cn("line-clamp-2 text-left font-semibold leading-snug text-foreground group-hover:text-primary cursor-pointer", isForYouSpacious ? "text-[16px]" : "text-[15px]")
+    }, formatDisplayTitle(v.title, settings.deShoutTitles)), v.channel && (v.channelId ? React.createElement("button", {
       type: "button",
-      className: "max-w-full truncate hover:text-foreground transition-colors cursor-pointer",
-      onClick: () => onBrowse({ kind: "channel", id: v.channelId, title: v.channel })
-    }, v.channel) : v.channel), v.recReason && category === "home" && React.createElement("p", {
-      className: "mt-0.5 truncate text-[11.5px] font-medium text-primary/90"
-    }, v.recReason), React.createElement("p", {
-      className: "mt-0.5 text-[13px] text-muted-foreground"
-    }, settings.showMetrics !== false && React.createElement("span", {
-      title: v.views != null ? `${v.views.toLocaleString("en")} views` : undefined
-    }, v.views != null ? `${formatCompact(v.views)} views` : "Views unavailable"), v.published && Number.isFinite(Date.parse(v.published)) && React.createElement(React.Fragment, null, settings.showMetrics !== false ? " · " : "", React.createElement("time", {
-      dateTime: v.published,
-      title: new Date(v.published).toLocaleString()
-    }, relativeDates ? formatRelativeDate(v.published, nowMs) : new Date(v.published).toLocaleDateString())))), React.createElement("div", {
-      className: "relative shrink-0",
-      onClick: e => e.stopPropagation()
+      onClick: () => onBrowse({ kind: "channel", id: v.channelId, title: v.channel }),
+      className: "mt-1 block max-w-full truncate text-[13px] text-muted-foreground hover:text-foreground cursor-pointer"
+    }, v.channel) : React.createElement("p", {
+      className: "mt-1 truncate text-[13px] text-muted-foreground"
+    }, v.channel)), settings.showMetrics && React.createElement("p", {
+      className: "mt-0.5 flex flex-wrap items-center gap-x-1.5 text-[13px] text-muted-foreground"
+    }, v.views != null && React.createElement("span", null, formatCompact(v.views), " views"), v.views != null && v.published && React.createElement("span", null, "•"), v.published && React.createElement("span", null, Number.isFinite(Date.parse(v.published)) ? (relativeDates ? formatRelativeDate(v.published, nowMs) : formatExactDate(v.published)) : v.published)), v.recReason && category === "home" && React.createElement("p", {
+      className: "mt-1 truncate text-[11px] font-medium text-primary/85"
+    }, v.recReason))), React.createElement("div", {
+      className: "yt-card-quick absolute top-2 right-2 flex gap-1 rounded-lg bg-black/80 p-1 text-white backdrop-blur-sm"
+    }, React.createElement("button", {
+      type: "button",
+      title: "Add to Queue",
+      "aria-label": `Queue ${v.title}`,
+      onClick: () => onQuickQueue(v),
+      className: "rounded p-1 hover:bg-white/20 cursor-pointer"
+    }, React.createElement(Icons.ListPlus, { className: "size-3.5" })), React.createElement("button", {
+      type: "button",
+      title: "Watch Later",
+      "aria-label": `Save ${v.title} for later`,
+      onClick: () => onQuickLater(v),
+      className: "rounded p-1 hover:bg-white/20 cursor-pointer"
+    }, React.createElement(Icons.Clock, { className: "size-3.5" })), React.createElement("button", {
+      type: "button",
+      title: "Save to Playlist",
+      "aria-label": `Add ${v.title} to playlist`,
+      onClick: () => onOpenPlaylistModal(v),
+      className: "rounded p-1 hover:bg-white/20 cursor-pointer"
+    }, React.createElement(Icons.FolderPlus, { className: "size-3.5" }))), React.createElement("div", {
+      className: "absolute right-0 bottom-1"
     }, React.createElement("button", {
       type: "button",
       "aria-label": `More options for ${v.title}`,
-      onClick: () => setOpenCardMenuId(cur => cur === v.id ? null : v.id),
-      className: "rounded-full p-1.5 text-muted-foreground hover:bg-secondary hover:text-foreground transition cursor-pointer"
+      title: "More options",
+      onClick: e => {
+        e.stopPropagation();
+        setOpenCardMenuId(cur => cur === v.id ? null : v.id);
+      },
+      className: "rounded-full p-1.5 text-muted-foreground opacity-80 hover:bg-secondary hover:text-foreground group-hover:opacity-100 cursor-pointer"
     }, React.createElement(Icons.MoreVertical, { className: "size-4" })), isMenuOpen && React.createElement("div", {
-      role: "menu",
-      className: "absolute right-0 top-full z-30 mt-1 w-56 overflow-hidden rounded-xl border border-border bg-popover py-1.5 text-xs shadow-2xl"
+      onClick: e => e.stopPropagation(),
+      className: "absolute right-0 bottom-8 z-30 w-56 overflow-hidden rounded-xl border border-border bg-popover py-1.5 text-xs text-popover-foreground shadow-2xl"
     }, React.createElement("button", {
       type: "button",
-      onClick: () => { onQuickQueue({ id: v.id, title: v.title, channel: v.channel }); setOpenCardMenuId(null); },
+      onClick: () => { onQuickQueue(v); setOpenCardMenuId(null); },
       className: "flex w-full items-center gap-2.5 px-3.5 py-2 text-left hover:bg-secondary cursor-pointer"
     }, React.createElement(Icons.ListPlus, { className: "size-4" }), "Add to queue"), React.createElement("button", {
       type: "button",
-      onClick: () => { onQuickLater({ id: v.id, title: v.title, channel: v.channel }); setOpenCardMenuId(null); },
+      onClick: () => { onQuickLater(v); setOpenCardMenuId(null); },
       className: "flex w-full items-center gap-2.5 px-3.5 py-2 text-left hover:bg-secondary cursor-pointer"
     }, React.createElement(Icons.Clock, { className: "size-4" }), "Save to Watch later"), React.createElement("button", {
       type: "button",
-      onClick: () => { onOpenPlaylistModal({ id: v.id, title: v.title, channel: v.channel }); setOpenCardMenuId(null); },
+      onClick: () => { onOpenPlaylistModal(v); setOpenCardMenuId(null); },
       className: "flex w-full items-center gap-2.5 px-3.5 py-2 text-left hover:bg-secondary cursor-pointer"
-    }, React.createElement(Icons.Bookmark, { className: "size-4" }), "Save to playlist"), React.createElement("button", {
+    }, React.createElement(Icons.FolderPlus, { className: "size-4" }), "Save to playlist"), React.createElement("button", {
       type: "button",
       onClick: () => { onShareVideo?.(v.id, v.title); setOpenCardMenuId(null); },
       className: "flex w-full items-center gap-2.5 px-3.5 py-2 text-left hover:bg-secondary cursor-pointer"
-    }, React.createElement(Icons.Share2, { className: "size-4" }), "Share"), React.createElement("div", { className: "my-1 border-t border-border/60" }), onMarkNotInterested && React.createElement("button", {
+    }, React.createElement(Icons.Share2, { className: "size-4" }), "Share"), category === "home" && onMarkNotInterested && React.createElement(React.Fragment, null, React.createElement("div", { className: "my-1 border-t border-border/60" }), React.createElement("button", {
       type: "button",
       onClick: () => {
         setRecentlyHiddenIds(prev => [...prev, v.id]);
@@ -15092,7 +15833,7 @@ function DiscoverSection({
         setOpenCardMenuId(null);
       },
       className: "flex w-full items-center gap-2.5 px-3.5 py-2 text-left hover:bg-secondary cursor-pointer"
-    }, React.createElement(Icons.Ban, { className: "size-4" }), "Don't recommend channel")))))) ;
+    }, React.createElement(Icons.Ban, { className: "size-4" }), "Don't recommend channel")))));
   })), loading && videos.length > 0 && React.createElement("div", {
     role: "status",
     className: "flex items-center justify-center gap-2 py-8 text-sm text-muted-foreground"
@@ -15107,21 +15848,18 @@ function DiscoverSection({
     onClick: () => {
       setChannelFilter("");
       setTextFilter("");
-      setHomeTopic("all");
-      setSearchTypeFilter("all");
-      setSearchDateFilter("any");
-      setSearchDurFilter("any");
       setHideWatched(false);
+      setSearchTypeFilter("all");
+      setSearchDurFilter("any");
+      setSearchDateFilter("any");
     }
-  }, "Reset filters")), !loading && !error && !videos.length && !searchEntities.length && React.createElement("p", {
-    className: "py-12 text-center text-muted-foreground"
-  }, category === "subscriptions" && !subscriptions.length ? "No subscriptions yet. Subscribe to channels while watching or import a YouTube CSV / OPML file." : category === "search" ? "No results found." : "No videos available."), nextToken && !loading && React.createElement("div", {
+  }, "Reset filters")), nextToken && !loading && !(category === "search" && (searchTypeFilter === "channel" || searchTypeFilter === "playlist")) && React.createElement("div", {
     className: "mt-6 text-center"
   }, React.createElement(Button, {
     variant: "secondary",
     className: "rounded-full px-6",
     onClick: () => setPageToken(nextToken)
-  }, "Load more")))));
+  }, "Load more"))))) ;
 }
 const isoDateDay = ts => {
   const d = new Date(ts);
@@ -15206,7 +15944,84 @@ function computeWrappedStats(history, viewCounts = {}, sinceMs = 0) {
     recent14
   };
 }
-async function generateGeminiRecap(geminiKey, stats, signal) {
+function buildLocalPersonalityRecap(stats) {
+  const topCh = stats.topChannels[0]?.channel || "eclectic creators";
+  const secondCh = stats.topChannels[1]?.channel;
+  const hrs = stats.totalSeconds / 3600;
+  const archetype = hrs >= 25
+    ? "The Grandmaster Rabbit-Hole Explorer"
+    : stats.completionPct >= 75
+    ? "The Focused Deep-Dive Connoisseur"
+    : stats.streak >= 5
+    ? "The Daily Curiosity Streaker"
+    : stats.favoriteHour != null && (stats.favoriteHour >= 22 || stats.favoriteHour <= 3)
+    ? "The Midnight Knowledge Owl"
+    : "The Curated Taste Navigator";
+
+  const timeVibe = stats.favoriteHour == null
+    ? ""
+    : stats.favoriteHour >= 22 || stats.favoriteHour <= 4
+    ? " Late-night sessions are clearly when your best discoveries happen."
+    : stats.favoriteHour < 12
+    ? " Morning watch sessions power your day."
+    : " Peak afternoon & evening sessions anchor your routine.";
+
+  return `${archetype}\nYou logged ${formatWatchTime(stats.totalSeconds)} across ${stats.videos} videos (${stats.plays} total plays) with a ${stats.completionPct}% completion rate${stats.streak > 1 ? ` and a ${stats.streak}-day streak` : ""}. ${topCh}${secondCh ? ` and ${secondCh}` : ""} led your rotation${stats.nichest ? `, while "${stats.nichest.title}" was your sharpest hidden-gem find` : ""}.${timeVibe}`;
+}
+
+const GOOGLE_WRAPPED_MODELS_PRIORITY = [
+  "gemini-3.8-flash",
+  "gemini-3.5-flash-lite",
+  "gemini-flash-latest",
+  "gemini-3.6-flash",
+  "gemini-3.5-flash",
+  "gemini-3-flash-preview",
+  "gemini-2.5-flash-lite",
+  "gemini-2.5-flash",
+  "gemini-2.0-flash"
+];
+
+const CACHED_WORKING_AI_ROUTE = new Map();
+
+async function discoverGoogleGenerativeModels(cleanKey, signal) {
+  try {
+    const ctrl = signal ? AbortSignal.any([signal, AbortSignal.timeout(3500)]) : AbortSignal.timeout(3500);
+    const resp = await fetch("https://generativelanguage.googleapis.com/v1beta/models?pageSize=100", {
+      method: "GET",
+      signal: ctrl,
+      credentials: "omit",
+      headers: { "x-goog-api-key": cleanKey }
+    });
+    if (!resp.ok) return { status: resp.status, models: [] };
+    const data = await resp.json();
+    const rawModels = Array.isArray(data?.models) ? data.models : [];
+    const usable = rawModels
+      .filter(m => Array.isArray(m?.supportedGenerationMethods) && m.supportedGenerationMethods.includes("generateContent"))
+      .map(m => String(m.name || "").replace(/^models\//, ""))
+      .filter(id => /^gemini-/i.test(id) && !/tts|embedding|imagen|veo|audio|vision|robotics|computer-use|aqa/i.test(id));
+    // Rank 3.x / 4.x / flash-latest ahead of 2.5 (Google restricts 2.5 on newly created AQ. keys with 404 even when listed!)
+    const scoreModel = id => {
+      if (id === "gemini-3.8-flash") return 100;
+      if (id === "gemini-3.5-flash-lite") return 98;
+      if (id === "gemini-flash-latest") return 96;
+      if (/^gemini-[34].*flash/i.test(id) && !/preview|exp/i.test(id)) return 94;
+      if (/^gemini-[34].*flash/i.test(id)) return 90;
+      if (/^gemini-[34]/i.test(id)) return 84;
+      if (id === "gemini-2.5-flash-lite") return 45;
+      if (id === "gemini-2.5-flash") return 35;
+      return 50;
+    };
+    usable.sort((a, b) => scoreModel(b) - scoreModel(a));
+    return { status: 200, models: usable };
+  } catch {
+    return { status: 0, models: [] };
+  }
+}
+
+async function generateGeminiRecap(rawKey, stats, signal, preferredModel = "auto") {
+  const cleanKey = (rawKey || "").trim().replace(/^["']+|["']+$/g, "").trim();
+  if (!cleanKey) throw new Error("Please enter an API key first.");
+
   const facts = {
     watchTime: formatWatchTime(stats.totalSeconds),
     videos: stats.videos,
@@ -15218,28 +16033,171 @@ async function generateGeminiRecap(geminiKey, stats, signal) {
     favoriteHour: stats.favoriteHour,
     streakDays: stats.streak
   };
-  const resp = await fetch("https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent", {
-    method: "POST",
-    signal: signal ?? null,
-    credentials: "omit",
-    headers: {
-      "Content-Type": "application/json",
-      "x-goog-api-key": geminiKey
-    },
-    body: JSON.stringify({
-      contents: [{
-        parts: [{
-          text: `Write a fun, upbeat "Wrapped" recap (max 120 words, plain text, no markdown) of this person's video watching. Give them a playful viewer personality title on the first line. Facts: ${JSON.stringify(facts)}`
-        }]
-      }]
-    })
-  });
-  if (!resp.ok) {
-    throw new Error(resp.status === 400 || resp.status === 403 ? "Gemini rejected the key." : `Gemini error ${resp.status}`);
+  const promptText = `Write a fun, upbeat "Wrapped" recap (max 120 words, plain text, no markdown) of this person's video watching. Give them a playful viewer personality title on the first line. Facts: ${JSON.stringify(facts)}`;
+
+  // Support OpenAI / Groq / OpenRouter keys automatically if pasted!
+  if (/^(sk-or-|gsk_|sk-(?!ant-))/i.test(cleanKey)) {
+    const isGroq = /^gsk_/i.test(cleanKey);
+    const isOpenRouter = /^sk-or-/i.test(cleanKey);
+    const endpoint = isGroq
+      ? "https://api.groq.com/openai/v1/chat/completions"
+      : isOpenRouter
+      ? "https://openrouter.ai/api/v1/chat/completions"
+      : "https://api.openai.com/v1/chat/completions";
+    const model = preferredModel && preferredModel !== "auto"
+      ? preferredModel
+      : isGroq
+      ? "llama-3.3-70b-versatile"
+      : isOpenRouter
+      ? "google/gemini-2.5-flash"
+      : "gpt-4o-mini";
+    const resp = await fetch(endpoint, {
+      method: "POST",
+      signal: signal ?? null,
+      credentials: "omit",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${cleanKey}`
+      },
+      body: JSON.stringify({
+        model,
+        messages: [{ role: "user", content: promptText }],
+        max_tokens: 260
+      })
+    });
+    if (!resp.ok) {
+      throw new Error(`AI provider returned HTTP ${resp.status}. Please check your API key.`);
+    }
+    const json = await resp.json();
+    const out = json?.choices?.[0]?.message?.content?.trim();
+    if (!out) throw new Error("AI provider returned an empty recap.");
+    return { text: out, via: `${isGroq ? "Groq" : isOpenRouter ? "OpenRouter" : "OpenAI"} · ${model}` };
   }
-  const json = await resp.json();
-  return json.candidates?.[0]?.content?.parts?.map(p => p.text ?? "").join("").trim() || "No summary returned.";
+
+  // Google AI Studio (AQ.* or AIza*) AND Google Cloud Vertex AI Express Mode (AQ.*)
+  const isAqKey = cleanKey.startsWith("AQ.");
+  const geminiBody = JSON.stringify({
+    contents: [{
+      role: "user",
+      parts: [{ text: promptText }]
+    }]
+  });
+
+  const parseGeminiJson = json =>
+    json?.candidates?.[0]?.content?.parts?.map(p => p?.text ?? "").join("").trim() || "";
+
+  const tryPostGemini = async (url, sendKeyInQuery = false) => {
+    const finalUrl = sendKeyInQuery ? `${url}${url.includes("?") ? "&" : "?"}key=${encodeURIComponent(cleanKey)}` : url;
+    const headers = { "Content-Type": "application/json" };
+    if (!sendKeyInQuery) headers["x-goog-api-key"] = cleanKey;
+    const resp = await fetch(finalUrl, {
+      method: "POST",
+      signal: signal ?? null,
+      credentials: "omit",
+      headers,
+      body: geminiBody
+    });
+    let errBody = null;
+    if (!resp.ok) {
+      try { errBody = await resp.json(); } catch {}
+      return { ok: false, status: resp.status, message: errBody?.error?.message || "", reason: errBody?.error?.details?.[0]?.reason || "" };
+    }
+    const json = await resp.json();
+    const text = parseGeminiJson(json);
+    return { ok: Boolean(text), status: 200, text, message: text ? "" : "Empty response" };
+  };
+
+  // Check cached winning route for this key prefix
+  const cacheKeyId = `${cleanKey.slice(0, 12)}:${preferredModel}`;
+  const cachedRoute = CACHED_WORKING_AI_ROUTE.get(cacheKeyId);
+  if (cachedRoute) {
+    const hit = await tryPostGemini(cachedRoute.url, cachedRoute.queryKey);
+    if (hit.ok) return { text: hit.text, via: cachedRoute.via };
+    CACHED_WORKING_AI_ROUTE.delete(cacheKeyId);
+  }
+
+  // Discover available models on AI Studio (fast, non-fatal if Vertex key rejects models.list)
+  const discovered = preferredModel && preferredModel !== "auto"
+    ? { status: 200, models: [preferredModel] }
+    : await discoverGoogleGenerativeModels(cleanKey, signal);
+
+  const modelCandidates = preferredModel && preferredModel !== "auto"
+    ? [preferredModel]
+    : [...new Set([...discovered.models.slice(0, 5), ...GOOGLE_WRAPPED_MODELS_PRIORITY])];
+
+  let lastErrorDetail = "";
+  let studioAuthRejected = discovered.status === 401 || discovered.status === 403;
+
+  // Surface A: Google AI Studio (generativelanguage.googleapis.com/v1beta)
+  // Always send AQ. & AIza keys in x-goog-api-key header (never ?key= first, which 404s on new AQ. keys!)
+  if (!studioAuthRejected) {
+    for (const model of modelCandidates) {
+      const studioUrl = `https://generativelanguage.googleapis.com/v1beta/models/${encodeURIComponent(model)}:generateContent`;
+      const res = await tryPostGemini(studioUrl, false);
+      if (res.ok) {
+        const via = `Google AI Studio · ${model}`;
+        CACHED_WORKING_AI_ROUTE.set(cacheKeyId, { url: studioUrl, queryKey: false, via });
+        return { text: res.text, via };
+      }
+      if (res.message) lastErrorDetail = res.message;
+      // 404 = model restricted/not found for new key (e.g. gemini-2.5-flash on new AQ. keys) -> try next model!
+      if (res.status === 404 || res.status === 429 || res.status >= 500) {
+        continue;
+      }
+      // 401 / 403 on Studio: if AQ. key, it is likely a Google Cloud Vertex AI Express Mode key!
+      if (res.status === 401 || res.status === 403) {
+        studioAuthRejected = true;
+        break;
+      }
+    }
+  }
+
+  // Surface B: Google Cloud Vertex AI Express Mode (aiplatform.googleapis.com/v1beta1 & v1/publishers/google/models/{model}:generateContent)
+  // Vertex AI Express Mode mints AQ.Ab8... keys that only authenticate on aiplatform.googleapis.com!
+  if (isAqKey || studioAuthRejected) {
+    const vertexModels = preferredModel && preferredModel !== "auto"
+      ? [preferredModel]
+      : ["gemini-3.8-flash", "gemini-3.5-flash-lite", "gemini-3.5-flash", "gemini-2.5-flash-lite", "gemini-2.5-flash", "gemini-2.0-flash"];
+    const vertexBases = [
+      "https://aiplatform.googleapis.com/v1beta1/publishers/google/models",
+      "https://aiplatform.googleapis.com/v1/publishers/google/models"
+    ];
+    for (const vBase of vertexBases) {
+      let baseAuthRejected = false;
+      for (const model of vertexModels) {
+        const vUrl = `${vBase}/${encodeURIComponent(model)}:generateContent`;
+        let res = await tryPostGemini(vUrl, false);
+        if (!res.ok && (res.status === 401 || res.status === 404)) {
+          // Some Vertex Express edges accept ?key= alongside or instead of header
+          const alt = await tryPostGemini(vUrl, true);
+          if (alt.ok) res = alt;
+        }
+        if (res.ok) {
+          const via = `Vertex AI Express · ${model}`;
+          CACHED_WORKING_AI_ROUTE.set(cacheKeyId, { url: vUrl, queryKey: false, via });
+          return { text: res.text, via };
+        }
+        if (res.message) lastErrorDetail = res.message;
+        if (res.status === 404 || res.status === 429) continue;
+        if (res.status === 401 || res.status === 403) {
+          baseAuthRejected = true;
+          break;
+        }
+      }
+      if (baseAuthRejected && vBase.includes("/v1/")) break;
+    }
+  }
+
+  if (studioAuthRejected) {
+    throw new Error(lastErrorDetail
+      ? `API key rejected: ${lastErrorDetail}`
+      : "Google rejected this API key (check that the key is active in Google AI Studio or Vertex AI Express Mode).");
+  }
+  throw new Error(lastErrorDetail
+    ? `Could not generate recap: ${lastErrorDetail}`
+    : "No compatible Gemini / Vertex model responded for this key. Check your key or click 'Instant Local Recap' below.");
 }
+
 const PERIOD_DAYS = {
   all: 0,
   year: 365,
@@ -15258,13 +16216,18 @@ function WrappedSection({
   const [period, setPeriod] = React.useState("all");
   const [viewCache, setViewCache] = React.useState({});
   const [geminiKey, setGeminiKey] = React.useState("");
+  const [geminiModel, setGeminiModel] = React.useState("auto");
   const [recapText, setRecapText] = React.useState("");
+  const [recapVia, setRecapVia] = React.useState("");
   const [recapLoading, setRecapLoading] = React.useState(false);
   const [recapError, setRecapError] = React.useState("");
   const [copiedMsg, setCopiedMsg] = React.useState("");
   React.useEffect(() => {
-    readStore("meta", "gemini-key").then(k => setGeminiKey(k ?? ""));
-  }, []);
+    readStore("meta", "gemini-key").then(k => {
+      if (k) setGeminiKey(k);
+      else if (apiKey && /^AQ\./.test(apiKey.trim())) setGeminiKey(apiKey.trim());
+    });
+  }, [apiKey]);
   const sinceMs = React.useMemo(() => PERIOD_DAYS[period] ? Date.now() - PERIOD_DAYS[period] * 86400000 : 0, [period]);
   React.useEffect(() => {
     if (!active) return;
@@ -15274,14 +16237,15 @@ function WrappedSection({
     (async () => {
       const found = {};
       try {
-        if (apiKey) {
-          const res = await (await fetch(`https://www.googleapis.com/youtube/v3/videos?part=statistics&id=${toLookup.join(",")}&key=${encodeURIComponent(apiKey)}`, {
+        if (isUsableYouTubeDataApiKey(apiKey)) {
+          const res = await (await fetch(`https://www.googleapis.com/youtube/v3/videos?part=statistics&id=${toLookup.join(",")}&key=${encodeURIComponent(apiKey.trim())}`, {
             signal: controller.signal
           })).json();
           for (const item of res.items ?? []) {
             if (item.statistics?.viewCount) found[item.id] = Number(item.statistics.viewCount);
           }
-        } else {
+        }
+        if (Object.keys(found).length === 0) {
           await Promise.all(toLookup.slice(0, 20).map(async vid => {
             try {
               const res = await (await fetch(`https://returnyoutubedislikeapi.com/votes?videoId=${vid}`, {
@@ -15311,12 +16275,19 @@ function WrappedSection({
     setRecapLoading(true);
     setRecapError("");
     try {
-      setRecapText(await generateGeminiRecap(geminiKey.trim(), stats));
+      const res = await generateGeminiRecap(geminiKey.trim(), stats, undefined, geminiModel);
+      setRecapText(typeof res === "string" ? res : res.text);
+      setRecapVia(typeof res === "object" && res?.via ? res.via : "");
     } catch (err) {
       setRecapError(err instanceof Error ? err.message : "Could not reach Gemini.");
     } finally {
       setRecapLoading(false);
     }
+  };
+  const runLocalRecap = () => {
+    setRecapError("");
+    setRecapText(buildLocalPersonalityRecap(stats));
+    setRecapVia("On-Device Personality Engine");
   };
   const favHourLabel = stats.favoriteHour === undefined ? "" : new Date(2000, 0, 1, stats.favoriteHour).toLocaleTimeString([], {
     hour: "numeric"
@@ -15325,265 +16296,206 @@ function WrappedSection({
     const lines = [`# My YouTube Watcher Wrapped (${period === "all" ? "All Time" : `Past ${period}`})`, "", `- **Total Watch Time:** ${formatWatchTime(stats.totalSeconds)}`, `- **Videos Watched:** ${stats.videos} (${stats.plays} plays, ${stats.completionPct}% completed)`, `- **Longest Streak:** ${stats.streak} day${stats.streak === 1 ? "" : "s"}`, `- **SponsorBlock Saved:** ${formatWatchTime(sponsorStats.savedSeconds)} (${sponsorStats.skippedCount} segments skipped)`, "", "## Top Channels", ...stats.topChannels.map((c, i) => `${i + 1}. **${c.channel}** — ${formatWatchTime(c.seconds)} (${c.videos} videos)`), "", "## Top Videos", ...stats.topVideos.map((v, i) => `${i + 1}. **${v.title}** (${v.channel}) — ${formatWatchTime(v.totalWatchSeconds)}`), ...(recapText ? ["", "## AI Personality Recap", recapText] : [])];
     triggerDownload(`youtube-wrapped-${period}.md`, lines.join("\n"), "text/markdown;charset=utf-8");
   };
-  const copySummaryText = async () => {
-    const summary = `My YouTube Watcher Wrapped: ${formatWatchTime(stats.totalSeconds)} across ${stats.videos} videos · Top channel: ${stats.topChannels[0]?.channel ?? "—"} · ${stats.streak}-day streak!`;
+  const copyShareableSummary = async () => {
+    const summary = `My YouTube Watcher Wrapped: ${formatWatchTime(stats.totalSeconds)} across ${stats.videos} videos · Top channel: ${stats.topChannels[0]?.channel ?? "—"} · ${stats.streak}d streak · ${formatWatchTime(sponsorStats.savedSeconds)} saved with SponsorBlock!`;
     try {
       await navigator.clipboard.writeText(summary);
-      setCopiedMsg("Summary copied!");
+      setCopiedMsg("Copied summary!");
       setTimeout(() => setCopiedMsg(""), 2500);
-    } catch {}
+    } catch {
+      setCopiedMsg("Clipboard unavailable");
+    }
   };
-  const maxHourVal = Math.max(1, ...stats.hourly);
-  const maxDay14Val = Math.max(1, ...stats.recent14.map(d => d.seconds));
-  const maxWeekdayVal = Math.max(1, ...stats.weekdays);
-  const maxTopChannelVal = Math.max(1, ...stats.topChannels.map(c => c.seconds));
-  const StatCard = ({
-    icon,
-    label,
-    value,
-    sub
-  }) => React.createElement("div", {
-    className: "rounded-xl bg-card p-4"
-  }, React.createElement("div", {
-    className: "flex items-center gap-2 text-sm text-muted-foreground"
-  }, icon, label), React.createElement("div", {
-    className: "mt-1 truncate text-2xl font-bold",
-    title: value
-  }, value), sub && React.createElement("div", {
-    className: "truncate text-sm text-muted-foreground"
-  }, sub));
+  const maxChannelSec = stats.topChannels[0]?.seconds || 1;
+  const maxHourSec = Math.max(1, ...stats.hourly);
+  const maxWeekdaySec = Math.max(1, ...stats.weekdays);
   return React.createElement("section", {
     "aria-label": "Wrapped",
-    className: "space-y-6"
+    className: "space-y-6 pt-2"
   }, React.createElement("div", {
-    className: "rounded-2xl bg-gradient-to-br from-primary/85 to-accent p-6 text-primary-foreground shadow-lg"
-  }, React.createElement("div", {
-    className: "flex flex-wrap items-start justify-between gap-4"
+    className: "flex flex-wrap items-center justify-between gap-3 rounded-2xl bg-gradient-to-br from-primary/20 via-card to-card p-6"
   }, React.createElement("div", null, React.createElement("p", {
-    className: "text-sm uppercase tracking-widest opacity-80"
+    className: "text-xs font-semibold tracking-wider text-primary uppercase"
   }, "Your Wrapped"), React.createElement("h2", {
-    className: "mt-1 text-4xl font-black"
-  }, formatWatchTime(stats.totalSeconds)), React.createElement("p", {
-    className: "mt-1 opacity-90"
-  }, "spent watching ", stats.videos, " videos \xB7 ", stats.plays, " plays \xB7 ", stats.completionPct, "% completion rate"), sponsorStats.skippedCount > 0 && React.createElement("p", {
-    className: "mt-1 text-xs opacity-85"
-  }, "\u26A1 SponsorBlock saved you ", React.createElement("b", null, formatWatchTime(sponsorStats.savedSeconds)), " across", " ", sponsorStats.skippedCount, " segments")), stats.videos > 0 && React.createElement("div", {
-    className: "flex flex-wrap gap-2"
-  }, React.createElement(Button, {
+    className: "mt-1 text-2xl font-extrabold tracking-tight"
+  }, stats.videos > 0 ? `${formatWatchTime(stats.totalSeconds)} watched` : "Your Personal Watch Analytics"), React.createElement("p", {
+    className: "mt-1 text-xs text-muted-foreground"
+  }, "100% computed privately on this device from your watch history.")), React.createElement("div", {
+    className: "flex flex-wrap items-center gap-2"
+  }, stats.videos > 0 && React.createElement(React.Fragment, null, React.createElement(Button, {
     size: "sm",
     variant: "secondary",
-    onClick: () => void copySummaryText()
-  }, React.createElement(Icons.Share2, {
-    className: "size-3.5"
-  }), copiedMsg || "Copy Summary"), React.createElement(Button, {
+    onClick: copyShareableSummary
+  }, React.createElement(Icons.Share2, null), copiedMsg || "Copy Summary"), React.createElement(Button, {
     size: "sm",
     variant: "secondary",
     onClick: exportWrappedMarkdown
-  }, React.createElement(Icons.Download, {
-    className: "size-3.5"
-  }), "Export .md"))), React.createElement("div", {
-    className: "mt-4 flex flex-wrap gap-2"
-  }, Object.keys(PERIOD_DAYS).map(p => React.createElement(Button, {
+  }, React.createElement(Icons.Download, null), "Export .md")), ["all", "year", "month", "week"].map(p => React.createElement(Button, {
     key: p,
     size: "sm",
-    variant: period === p ? "secondary" : "ghost",
-    className: "rounded-full",
+    variant: period === p ? "default" : "secondary",
     onClick: () => setPeriod(p)
-  }, p === "all" ? "All time" : `Past ${p}`)))), stats.videos > 0 ? React.createElement(React.Fragment, null, React.createElement("div", {
-    className: "grid gap-3 sm:grid-cols-2 lg:grid-cols-3"
-  }, React.createElement(StatCard, {
-    icon: React.createElement(Icons.Tv, {
-      className: "size-4"
-    }),
-    label: "Most watched channel",
-    value: stats.topChannels[0]?.channel ?? "—",
-    sub: stats.topChannels[0] && `${formatWatchTime(stats.topChannels[0].seconds)} · ${stats.topChannels[0].videos} videos`
-  }), React.createElement(StatCard, {
-    icon: React.createElement(Icons.Gem, {
-      className: "size-4"
-    }),
-    label: "Nichest video",
-    value: stats.nichest?.title ?? "Finding…",
-    sub: stats.nichest && `only ${formatCompact(stats.nichest.views)} views`
-  }), React.createElement(StatCard, {
-    icon: React.createElement(Icons.Repeat, {
-      className: "size-4"
-    }),
-    label: "Most rewatched",
-    value: stats.mostRewatched?.title ?? "No rewatches yet",
-    sub: stats.mostRewatched && `${stats.mostRewatched.watchCount} plays`
-  }), React.createElement(StatCard, {
-    icon: React.createElement(Icons.Flame, {
-      className: "size-4"
-    }),
-    label: "Longest streak",
-    value: `${stats.streak} day${stats.streak === 1 ? "" : "s"}`,
-    sub: `${stats.completed} videos finished`
-  }), React.createElement(StatCard, {
-    icon: React.createElement(Icons.Clock, {
-      className: "size-4"
-    }),
-    label: "Biggest day",
-    value: stats.longestDay ? formatWatchTime(stats.longestDay.seconds) : "—",
-    sub: stats.longestDay && new Date(stats.longestDay.day).toLocaleDateString()
-  }), React.createElement(StatCard, {
-    icon: React.createElement(Icons.Sun, {
-      className: "size-4"
-    }),
-    label: "Favorite hour",
-    value: favHourLabel || "—",
-    sub: sponsorStats.savedSeconds > 0 ? `${formatWatchTime(sponsorStats.savedSeconds)} sponsors skipped` : "Peak viewing hour"
-  })), React.createElement("div", {
-    className: "grid gap-6 lg:grid-cols-2"
+  }, p === "all" ? "All Time" : p === "year" ? "Year" : p === "month" ? "30 Days" : "7 Days")))), stats.videos > 0 ? React.createElement(React.Fragment, null, React.createElement("div", {
+    className: "grid gap-3 sm:grid-cols-2 lg:grid-cols-4"
   }, React.createElement("div", {
     className: "rounded-xl bg-card p-4"
-  }, React.createElement("div", {
-    className: "mb-3 flex items-center justify-between"
-  }, React.createElement("h3", {
-    className: "flex items-center gap-2 font-bold"
-  }, React.createElement(Icons.BarChart3, {
-    className: "size-4 text-primary"
-  }), "24-Hour Viewing Rhythm"), React.createElement("span", {
-    className: "text-xs text-muted-foreground"
-  }, "Local time")), React.createElement("div", {
-    className: "flex h-36 items-end gap-1 pt-4"
-  }, stats.hourly.map((sec, hr) => {
-    const pct = sec > 0 ? Math.max(8, Math.round(sec / maxHourVal * 100)) : 3;
-    const hrLabel = new Date(2000, 0, 1, hr).toLocaleTimeString([], {
-      hour: "numeric"
-    });
-    return React.createElement("div", {
-      key: hr,
-      className: "group flex flex-1 flex-col items-center gap-1 h-full justify-end"
-    }, React.createElement("div", {
-      title: `${hrLabel}: ${formatWatchTime(sec)}`,
-      className: VENDOR.cn("w-full rounded-t transition-all", sec > 0 ? "bg-primary/85 group-hover:bg-primary" : "bg-secondary"),
-      style: {
-        height: `${pct}%`
-      }
-    }), React.createElement("span", {
-      className: "text-[9px] text-muted-foreground"
-    }, hr % 4 === 0 ? `${hr}h` : ""));
-  }))), React.createElement("div", {
-    className: "rounded-xl bg-card p-4 space-y-4"
-  }, React.createElement("div", null, React.createElement("div", {
-    className: "mb-2 flex items-center justify-between"
-  }, React.createElement("h3", {
-    className: "font-bold"
-  }, "Last 14 Days"), React.createElement("span", {
-    className: "text-xs text-muted-foreground"
-  }, "Daily watch time")), React.createElement("div", {
-    className: "flex h-24 items-end gap-1.5 pt-2"
-  }, stats.recent14.map(d => {
-    const pct = d.seconds > 0 ? Math.max(10, Math.round(d.seconds / maxDay14Val * 100)) : 4;
-    return React.createElement("div", {
-      key: d.day,
-      className: "group flex flex-1 flex-col items-center justify-end h-full gap-1"
-    }, React.createElement("div", {
-      title: `${d.label}: ${formatWatchTime(d.seconds)}`,
-      className: VENDOR.cn("w-full rounded-t transition-all", d.seconds > 0 ? "bg-primary/85 group-hover:bg-primary" : "bg-secondary"),
-      style: {
-        height: `${pct}%`
-      }
-    }));
-  }))), React.createElement("div", {
-    className: "border-t border-border pt-3"
   }, React.createElement("p", {
-    className: "mb-2 text-xs font-semibold text-muted-foreground"
-  }, "By Day of Week"), React.createElement("div", {
-    className: "grid grid-cols-7 gap-2 text-center text-xs"
-  }, WEEKDAY_LABELS.map((lbl, idx) => {
-    const sec = stats.weekdays[idx] || 0;
-    const pct = sec > 0 ? Math.max(12, Math.round(sec / maxWeekdayVal * 100)) : 0;
-    return React.createElement("div", {
-      key: lbl,
-      className: "rounded-md bg-secondary/70 p-1.5",
-      title: `${lbl}: ${formatWatchTime(sec)}`
-    }, React.createElement("div", {
-      className: "font-semibold"
-    }, lbl), React.createElement("div", {
-      className: "mt-1 h-1.5 w-full overflow-hidden rounded-full bg-background"
-    }, React.createElement("div", {
-      className: "h-full bg-primary",
-      style: {
-        width: `${pct}%`
-      }
-    })), React.createElement("div", {
-      className: "mt-1 text-[10px] text-muted-foreground"
-    }, sec > 0 ? formatWatchTime(sec) : "—"));
-  }))))), React.createElement("div", {
-    className: "grid gap-6 md:grid-cols-2"
-  }, React.createElement("div", null, React.createElement("h3", {
-    className: "mb-2 text-lg font-bold"
-  }, "Top channels"), React.createElement("ol", {
+    className: "text-xs text-muted-foreground"
+  }, "Total Watch Time"), React.createElement("p", {
+    className: "mt-1 text-2xl font-bold text-primary"
+  }, formatWatchTime(stats.totalSeconds)), React.createElement("p", {
+    className: "mt-1 text-xs text-muted-foreground"
+  }, stats.plays, " total sessions")), React.createElement("div", {
+    className: "rounded-xl bg-card p-4"
+  }, React.createElement("p", {
+    className: "text-xs text-muted-foreground"
+  }, "Videos Watched"), React.createElement("p", {
+    className: "mt-1 text-2xl font-bold"
+  }, stats.videos), React.createElement("p", {
+    className: "mt-1 text-xs text-muted-foreground"
+  }, stats.completed, " finished (${stats.completionPct}%)".replace("${stats.completionPct}", String(stats.completionPct)))), React.createElement("div", {
+    className: "rounded-xl bg-card p-4"
+  }, React.createElement("p", {
+    className: "text-xs text-muted-foreground"
+  }, "Longest Streak"), React.createElement("p", {
+    className: "mt-1 text-2xl font-bold"
+  }, stats.streak, " day", stats.streak === 1 ? "" : "s"), favHourLabel && React.createElement("p", {
+    className: "mt-1 text-xs text-muted-foreground"
+  }, "Peak hour: ", favHourLabel)), React.createElement("div", {
+    className: "rounded-xl bg-card p-4"
+  }, React.createElement("p", {
+    className: "text-xs text-muted-foreground"
+  }, "SponsorBlock Saved"), React.createElement("p", {
+    className: "mt-1 text-2xl font-bold text-emerald-400"
+  }, formatWatchTime(sponsorStats.savedSeconds)), React.createElement("p", {
+    className: "mt-1 text-xs text-muted-foreground"
+  }, sponsorStats.skippedCount, " segments skipped"))), React.createElement("div", {
+    className: "grid gap-4 lg:grid-cols-2"
+  }, React.createElement("div", {
+    className: "rounded-xl bg-card p-4"
+  }, React.createElement("h3", {
+    className: "mb-3 text-sm font-bold"
+  }, "Activity by Hour of Day"), React.createElement("div", {
+    className: "flex h-28 items-end gap-1"
+  }, stats.hourly.map((sec, hr) => React.createElement("div", {
+    key: hr,
+    title: `${hr}:00 — ${formatWatchTime(sec)}`,
+    className: "flex flex-1 flex-col items-center gap-1"
+  }, React.createElement("div", {
+    className: "w-full rounded-t bg-primary/80 transition-all hover:bg-primary",
+    style: {
+      height: `${Math.max(sec > 0 ? 8 : 2, Math.round(sec / maxHourSec * 92))}px`
+    }
+  }), hr % 6 === 0 && React.createElement("span", {
+    className: "text-[10px] text-muted-foreground"
+  }, hr === 0 ? "12a" : hr === 6 ? "6a" : hr === 12 ? "12p" : "6p"))))), React.createElement("div", {
+    className: "rounded-xl bg-card p-4"
+  }, React.createElement("h3", {
+    className: "mb-3 text-sm font-bold"
+  }, "Activity by Day of Week"), React.createElement("div", {
+    className: "flex h-28 items-end gap-2"
+  }, stats.weekdays.map((sec, d) => React.createElement("div", {
+    key: d,
+    title: `${WEEKDAY_LABELS[d]} — ${formatWatchTime(sec)}`,
+    className: "flex flex-1 flex-col items-center gap-1"
+  }, React.createElement("div", {
+    className: "w-full rounded-t bg-primary/80 transition-all hover:bg-primary",
+    style: {
+      height: `${Math.max(sec > 0 ? 8 : 2, Math.round(sec / maxWeekdaySec * 84))}px`
+    }
+  }), React.createElement("span", {
+    className: "text-[10px] text-muted-foreground"
+  }, WEEKDAY_LABELS[d])))))), React.createElement("div", {
+    className: "grid gap-4 lg:grid-cols-2"
+  }, React.createElement("div", {
+    className: "rounded-xl bg-card p-4"
+  }, React.createElement("h3", {
+    className: "mb-3 text-sm font-bold"
+  }, "Top Channels"), React.createElement("div", {
+    className: "space-y-2.5"
+  }, stats.topChannels.map((c, idx) => React.createElement("div", {
+    key: c.channel,
+    className: "space-y-1"
+  }, React.createElement("div", {
+    className: "flex items-center justify-between text-xs"
+  }, React.createElement("span", {
+    className: "truncate font-medium"
+  }, idx + 1, ". ", c.channel), React.createElement("span", {
+    className: "shrink-0 text-muted-foreground"
+  }, formatWatchTime(c.seconds), " · ", c.videos, "v")), React.createElement("div", {
+    className: "h-1.5 overflow-hidden rounded-full bg-secondary"
+  }, React.createElement("div", {
+    className: "h-full rounded-full bg-primary",
+    style: {
+      width: `${Math.max(4, Math.round(c.seconds / maxChannelSec * 100))}%`
+    }
+  })))))), React.createElement("div", {
+    className: "rounded-xl bg-card p-4"
+  }, React.createElement("h3", {
+    className: "mb-3 text-sm font-bold"
+  }, "Most Watched Videos"), React.createElement("div", {
     className: "space-y-2"
-  }, stats.topChannels.map((ch, idx) => {
-    const share = Math.max(4, Math.round(ch.seconds / maxTopChannelVal * 100));
-    return React.createElement("li", {
-      key: ch.channel,
-      className: "rounded-lg bg-secondary p-2.5"
-    }, React.createElement("div", {
-      className: "flex justify-between gap-3 text-sm"
-    }, React.createElement("span", {
-      className: "truncate"
-    }, React.createElement("b", {
-      className: "mr-2"
-    }, idx + 1), ch.channel), React.createElement("span", {
-      className: "shrink-0 text-muted-foreground"
-    }, formatWatchTime(ch.seconds), " \xB7 ", ch.videos, "v")), React.createElement("div", {
-      className: "mt-1.5 h-1 w-full overflow-hidden rounded-full bg-background/60"
-    }, React.createElement("div", {
-      className: "h-full bg-primary",
-      style: {
-        width: `${share}%`
-      }
-    })));
-  }))), React.createElement("div", null, React.createElement("h3", {
-    className: "mb-2 text-lg font-bold"
-  }, "Top videos"), React.createElement("ol", {
-    className: "space-y-2"
-  }, stats.topVideos.map(v => React.createElement("li", {
-    key: v.videoId
-  }, React.createElement("button", {
+  }, stats.topVideos.map(v => React.createElement("button", {
+    key: v.videoId,
     type: "button",
     onClick: () => onPlay(v.videoId),
-    className: "flex w-full items-center gap-3 rounded-lg bg-secondary p-2 text-left hover:bg-accent cursor-pointer"
+    className: "flex w-full items-center gap-3 rounded-lg p-1.5 text-left hover:bg-secondary cursor-pointer"
   }, React.createElement(SafeThumb, {
     videoId: v.videoId,
-    className: "h-10 w-16 shrink-0 rounded"
+    className: "w-20 shrink-0"
   }), React.createElement("div", {
     className: "min-w-0 flex-1"
   }, React.createElement("p", {
-    className: "truncate text-sm font-medium"
+    className: "line-clamp-1 text-xs font-semibold"
   }, v.title), React.createElement("p", {
-    className: "truncate text-xs text-muted-foreground"
+    className: "truncate text-[11px] text-muted-foreground"
   }, v.channel)), React.createElement("span", {
     className: "shrink-0 text-sm text-muted-foreground"
-  }, formatWatchTime(v.totalWatchSeconds)))))))), React.createElement("div", {
-    className: "space-y-3 rounded-xl bg-card p-4"
+  }, formatWatchTime(v.totalWatchSeconds))))))), React.createElement("div", {
+    className: "space-y-3 rounded-xl border border-border/70 bg-card p-4"
+  }, React.createElement("div", {
+    className: "flex flex-wrap items-center justify-between gap-2"
   }, React.createElement("h3", {
     className: "flex items-center gap-2 font-bold"
   }, React.createElement(Icons.Sparkles, {
     className: "size-4 text-primary"
-  }), "AI Personality Recap (Optional)"), React.createElement("label", {
-    className: "block text-sm"
-  }, "Google Gemini API key", React.createElement("input", {
+  }), "AI Personality Recap"), recapVia && React.createElement("span", {
+    className: "rounded-full bg-secondary px-2.5 py-0.5 text-[11px] font-medium text-muted-foreground"
+  }, recapVia)), React.createElement("div", {
+    className: "grid gap-3 sm:grid-cols-[minmax(0,1fr)_220px]"
+  }, React.createElement("label", {
+    className: "block text-xs font-medium text-muted-foreground"
+  }, "Google AI Studio / Vertex AI Express API Key (AQ.… or AIza… — or OpenAI / Groq)", React.createElement("input", {
     type: "password",
     autoComplete: "off",
+    "aria-label": "Google Gemini API key",
     value: geminiKey,
     onChange: e => saveGeminiKey(e.target.value),
-    placeholder: "Stored only on this device",
-    className: "mt-1 w-full rounded-md bg-secondary p-2 text-sm"
-  })), React.createElement("p", {
+    placeholder: "Paste AQ.… / AIza… / sk-… key (stored only on this device)",
+    className: "mt-1 w-full rounded-lg border border-border bg-secondary px-3 py-2 text-sm text-foreground"
+  })), React.createElement("label", {
+    className: "block text-xs font-medium text-muted-foreground"
+  }, "Gemini / Vertex Model", React.createElement("select", {
+    "aria-label": "Gemini model selection",
+    value: geminiModel,
+    onChange: e => setGeminiModel(e.target.value),
+    className: "mt-1 w-full rounded-lg border border-border bg-secondary px-3 py-2 text-sm text-foreground cursor-pointer"
+  }, React.createElement("option", { value: "auto" }, "Auto (Gemini 3.x + Vertex Fallback)"), React.createElement("option", { value: "gemini-3.8-flash" }, "gemini-3.8-flash"), React.createElement("option", { value: "gemini-3.5-flash-lite" }, "gemini-3.5-flash-lite"), React.createElement("option", { value: "gemini-flash-latest" }, "gemini-flash-latest"), React.createElement("option", { value: "gemini-2.5-flash-lite" }, "gemini-2.5-flash-lite"), React.createElement("option", { value: "gemini-2.5-flash" }, "gemini-2.5-flash (Legacy)")))), React.createElement("p", {
     className: "text-xs text-muted-foreground"
-  }, "Only your summarized stats (titles, channels, times) are sent straight from your browser to Google Gemini when you press the button."), React.createElement(Button, {
+  }, "Supports both new AQ.… Google AI Studio Auth keys (auto-routes to Gemini 3.x Flash to avoid 2.5 404 restrictions) and AQ.… Google Cloud Vertex AI Express keys, or generate an instant on-device recap without any API key."), React.createElement("div", {
+    className: "flex flex-wrap items-center gap-2"
+  }, React.createElement(Button, {
     disabled: !geminiKey.trim() || recapLoading,
     onClick: () => void runRecap()
-  }, React.createElement(Icons.Sparkles, null), recapLoading ? "Writing…" : "Make my recap"), recapError && React.createElement("p", {
+  }, React.createElement(Icons.Sparkles, null), recapLoading ? "Writing…" : "Make my recap"), React.createElement(Button, {
+    variant: "secondary",
+    type: "button",
+    onClick: runLocalRecap
+  }, React.createElement(Icons.Activity, { className: "size-4" }), "Instant Local Recap (No Key)")), recapError && React.createElement("p", {
     role: "alert",
-    className: "text-sm text-destructive"
+    className: "rounded-lg border border-destructive/40 bg-destructive/10 px-3 py-2 text-xs text-destructive"
   }, recapError), recapText && React.createElement("p", {
-    className: "whitespace-pre-line rounded-lg bg-secondary p-3 text-sm"
+    className: "whitespace-pre-line rounded-xl bg-secondary p-3.5 text-sm leading-relaxed"
   }, recapText))) : React.createElement("p", {
     className: "text-muted-foreground"
   }, "Watch some videos and your Wrapped charts and stats will appear here. Everything is calculated privately on this device."));
@@ -17121,6 +18033,7 @@ function WatcherApp({
   const [browseTarget, setBrowseTargetState] = React.useState(null);
   const [discoverCategory, setDiscoverCategory] = React.useState("home");
   const [discoverQuery, setDiscoverQuery] = React.useState("");
+  const [discoverSearchType, setDiscoverSearchType] = React.useState("all");
   const [librarySubTab, setLibrarySubTab] = React.useState("history");
   const [videoId, setVideoId] = React.useState(initialId);
   const [activeTab, setActiveTab] = React.useState(initialId ? "watcher" : "discover");
@@ -17504,11 +18417,13 @@ function WatcherApp({
     window.scrollTo({ top: 0, behavior: "instant" });
   }, [commitNavTransition]);
 
-  const navigateSearch = React.useCallback(rawQuery => {
+  const navigateSearch = React.useCallback((rawQuery, targetType = "all") => {
     const trimmed = (rawQuery || "").trim();
     if (!trimmed) return;
     recordSearchQuery(trimmed);
     setUrlInput(trimmed);
+    const nextType = ["all", "video", "channel", "playlist", "shorts", "live"].includes(targetType) ? targetType : "all";
+    setDiscoverSearchType(nextType);
     commitNavTransition({
       tab: "discover",
       category: "search",
@@ -17621,11 +18536,23 @@ function WatcherApp({
     return () => window.removeEventListener("keydown", onKeyDown);
   }, [activeTab, videoId, lightsOff, library.queue, settings.keybindings, settings.browserBackNavigation, playVideo, goHistoryBack, goHistoryForward]);
 
-  const handleUrlSubmit = raw => {
-    const trimmed = raw.trim();
+  const handleUrlSubmit = (raw, explicitScope = discoverSearchType) => {
+    const trimmed = (raw || "").trim();
     if (!trimmed) return;
     if (CHANNEL_ID_RE.test(trimmed)) {
       setBrowseTarget({ kind: "channel", id: trimmed });
+      setUrlError("");
+      return;
+    }
+    const chUrlMatch = trimmed.match(/youtube\.com\/channel\/(UC[\w-]{22})/i);
+    if (chUrlMatch) {
+      setBrowseTarget({ kind: "channel", id: chUrlMatch[1] });
+      setUrlError("");
+      return;
+    }
+    const handleUrlMatch = trimmed.match(/youtube\.com\/@([\w.-]+)/i);
+    if (handleUrlMatch) {
+      navigateSearch(`@${handleUrlMatch[1]}`, "channel");
       setUrlError("");
       return;
     }
@@ -17646,7 +18573,8 @@ function WatcherApp({
       }
       if (settings.showDiscoverTab !== false) {
         setUrlError("");
-        navigateSearch(trimmed);
+        const autoScope = trimmed.startsWith("@") && explicitScope === "all" ? "channel" : explicitScope;
+        navigateSearch(trimmed, autoScope);
         return;
       }
       setUrlError("That doesn't look like a YouTube video/playlist link or ID.");
@@ -17939,6 +18867,8 @@ function WatcherApp({
     value: urlInput,
     onChange: setUrlInput,
     onSubmitQuery: handleUrlSubmit,
+    searchScope: discoverSearchType,
+    onChangeSearchScope: setDiscoverSearchType,
     inputRef: urlInputRef,
     searchHistory: library.searchHistory || [],
     onRemoveSearchHistory: removeSearchHistoryItem,
@@ -18395,6 +19325,8 @@ function WatcherApp({
     onChangeCategory: navigateDiscoverCategory,
     activeQuery: discoverQuery,
     onSearchQuery: navigateSearch,
+    searchType: discoverSearchType,
+    onChangeSearchType: setDiscoverSearchType,
     browseTarget: browseTarget,
     onBrowse: setBrowseTarget,
     active: activeTab === "discover",
@@ -18764,4 +19696,4 @@ lucide-react/dist/esm/lucide-react.js:
    * See the LICENSE file in the root directory of this source tree.
    *)
 */
-</script><script>(function(){function c(){var b=a.contentDocument||(a.contentWindow&&a.contentWindow.document);if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a587aad52ce1b546',t:'MTc5NDM0MTA3Nw=='};var l=window.parent.location,o;try{o=new URL(l.origin).origin}catch(e){try{o=new URL(new URL(l.href).origin).origin}catch(e){o=''}}var u='/cdn-cgi/challenge-platform/scripts/jsd/main.js?ray=a587aad52ce1b546',a=document.createElement('script');a.src=o?new URL(u,o).href:u;document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body></html>
+</script></body></html>
