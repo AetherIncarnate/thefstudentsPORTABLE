@@ -4380,6 +4380,50 @@ html[data-theme="sepia"] .yt-search-shell {
     .xl\:flex { display: flex; }
   }
 }
+
+
+/* === TURN 9 CLEAN SHORTS GEOMETRY & CREATOR DOCK === */
+.yt-shorts-viewport {
+  height: calc(100vh - 8.25rem);
+  height: calc(100dvh - 8.25rem);
+  min-height: 440px;
+}
+.yt-short-stage {
+  height: 100% !important;
+  max-height: min(100%, 820px) !important;
+  aspect-ratio: 9 / 17.8 !important;
+  width: auto !important;
+  max-width: min(82vw, 430px) !important;
+}
+@media (max-width: 640px) {
+  .yt-shorts-viewport {
+    height: calc(100vh - 7.75rem);
+    height: calc(100dvh - 7.75rem);
+    min-height: 400px;
+  }
+  .yt-short-stage {
+    max-width: calc(100vw - 4.75rem) !important;
+  }
+}
+
+@layer utilities {
+  .bg-\[\#121212\] { background-color: #121212; }
+  .bg-\[\#161616\] { background-color: #161616; }
+  .bg-secondary\/85 { background-color: color-mix(in oklab, var(--secondary) 85%, transparent); }
+  .bg-white\/10 { background-color: rgba(255, 255, 255, 0.10); }
+  .bg-destructive\/20 { background-color: color-mix(in oklab, var(--destructive) 20%, transparent); }
+  .ring-white\/20 { --tw-ring-color: rgba(255, 255, 255, 0.20); }
+  .text-white\/60 { color: rgba(255, 255, 255, 0.60); }
+  .text-white\/65 { color: rgba(255, 255, 255, 0.65); }
+  .text-white\/90 { color: rgba(255, 255, 255, 0.90); }
+  .hover\:bg-white\/25:hover { background-color: rgba(255, 255, 255, 0.25); }
+  .hover\:opacity-90:hover { opacity: 0.90; }
+  .gap-0\.5 { gap: calc(var(--spacing) * 0.5); }
+  @media (min-width: 640px) {
+    .sm\:size-11 { width: calc(var(--spacing) * 11); height: calc(var(--spacing) * 11); }
+    .sm\:size-5 { width: calc(var(--spacing) * 5); height: calc(var(--spacing) * 5); }
+  }
+}
 </style></head><body><div id="root"></div><script>"use strict";(()=>{
 var vb=Object.create;var ji=Object.defineProperty;var Lb=Object.getOwnPropertyDescriptor;var bb=Object.getOwnPropertyNames;var Sb=Object.getPrototypeOf,Cb=Object.prototype.hasOwnProperty;var Ib=(e,a)=>()=>(e&&(a=e(e=0)),a);var yt=(e,a)=>()=>(a||e((a={exports:{}}).exports,a),a.exports),wb=(e,a)=>{for(var t in a)ji(e,t,{get:a[t],enumerable:!0})},kb=(e,a,t,l)=>{if(a&&typeof a=="object"||typeof a=="function")for(let o of bb(a))!Cb.call(e,o)&&o!==t&&ji(e,o,{get:()=>a[o],enumerable:!(l=Lb(a,o))||l.enumerable});return e};var P=(e,a,t)=>(t=e!=null?vb(Sb(e)):{},kb(a||!e||!e.__esModule?ji(t,"default",{value:e,enumerable:!0}):t,e));var tp=yt(Fe=>{"use strict";function Qi(e,a){var t=e.length;e.push(a);e:for(;0<t;){var l=t-1>>>1,o=e[l];if(0<Nn(o,a))e[l]=a,e[t]=o,t=l;else break e}}function Tt(e){return e.length===0?null:e[0]}function Pn(e){if(e.length===0)return null;var a=e[0],t=e.pop();if(t!==a){e[0]=t;e:for(var l=0,o=e.length,u=o>>>1;l<u;){var r=2*(l+1)-1,n=e[r],s=r+1,i=e[s];if(0>Nn(n,t))s<o&&0>Nn(i,n)?(e[l]=i,e[s]=t,l=s):(e[l]=n,e[r]=t,l=r);else if(s<o&&0>Nn(i,t))e[l]=i,e[s]=t,l=s;else break e}}return a}function Nn(e,a){var t=e.sortIndex-a.sortIndex;return t!==0?t:e.id-a.id}Fe.unstable_now=void 0;typeof performance=="object"&&typeof performance.now=="function"?(Ym=performance,Fe.unstable_now=function(){return Ym.now()}):(Xi=Date,Km=Xi.now(),Fe.unstable_now=function(){return Xi.now()-Km});var Ym,Xi,Km,Gt=[],yl=[],Ab=1,Ja=null,xa=3,Wi=!1,Gu=!1,ju=!1,Zi=!1,Zm=typeof setTimeout=="function"?setTimeout:null,Jm=typeof clearTimeout=="function"?clearTimeout:null,Qm=typeof setImmediate<"u"?setImmediate:null;function _n(e){for(var a=Tt(yl);a!==null;){if(a.callback===null)Pn(yl);else if(a.startTime<=e)Pn(yl),a.sortIndex=a.expirationTime,Qi(Gt,a);else break;a=Tt(yl)}}function Ji(e){if(ju=!1,_n(e),!Gu)if(Tt(Gt)!==null)Gu=!0,No||(No=!0,Oo());else{var a=Tt(yl);a!==null&&$i(Ji,a.startTime-e)}}var No=!1,Xu=-1,$m=5,ep=-1;function ap(){return Zi?!0:!(Fe.unstable_now()-ep<$m)}function Yi(){if(Zi=!1,No){var e=Fe.unstable_now();ep=e;var a=!0;try{e:{Gu=!1,ju&&(ju=!1,Jm(Xu),Xu=-1),Wi=!0;var t=xa;try{a:{for(_n(e),Ja=Tt(Gt);Ja!==null&&!(Ja.expirationTime>e&&ap());){var l=Ja.callback;if(typeof l=="function"){Ja.callback=null,xa=Ja.priorityLevel;var o=l(Ja.expirationTime<=e);if(e=Fe.unstable_now(),typeof o=="function"){Ja.callback=o,_n(e),a=!0;break a}Ja===Tt(Gt)&&Pn(Gt),_n(e)}else Pn(Gt);Ja=Tt(Gt)}if(Ja!==null)a=!0;else{var u=Tt(yl);u!==null&&$i(Ji,u.startTime-e),a=!1}}break e}finally{Ja=null,xa=t,Wi=!1}a=void 0}}finally{a?Oo():No=!1}}}var Oo;typeof Qm=="function"?Oo=function(){Qm(Yi)}:typeof MessageChannel<"u"?(Ki=new MessageChannel,Wm=Ki.port2,Ki.port1.onmessage=Yi,Oo=function(){Wm.postMessage(null)}):Oo=function(){Zm(Yi,0)};var Ki,Wm;function $i(e,a){Xu=Zm(function(){e(Fe.unstable_now())},a)}Fe.unstable_IdlePriority=5;Fe.unstable_ImmediatePriority=1;Fe.unstable_LowPriority=4;Fe.unstable_NormalPriority=3;Fe.unstable_Profiling=null;Fe.unstable_UserBlockingPriority=2;Fe.unstable_cancelCallback=function(e){e.callback=null};Fe.unstable_forceFrameRate=function(e){0>e||125<e?console.error("forceFrameRate takes a positive int between 0 and 125, forcing frame rates higher than 125 fps is not supported"):$m=0<e?Math.floor(1e3/e):5};Fe.unstable_getCurrentPriorityLevel=function(){return xa};Fe.unstable_next=function(e){switch(xa){case 1:case 2:case 3:var a=3;break;default:a=xa}var t=xa;xa=a;try{return e()}finally{xa=t}};Fe.unstable_requestPaint=function(){Zi=!0};Fe.unstable_runWithPriority=function(e,a){switch(e){case 1:case 2:case 3:case 4:case 5:break;default:e=3}var t=xa;xa=e;try{return a()}finally{xa=t}};Fe.unstable_scheduleCallback=function(e,a,t){var l=Fe.unstable_now();switch(typeof t=="object"&&t!==null?(t=t.delay,t=typeof t=="number"&&0<t?l+t:l):t=l,e){case 1:var o=-1;break;case 2:o=250;break;case 5:o=1073741823;break;case 4:o=1e4;break;default:o=5e3}return o=t+o,e={id:Ab++,callback:a,priorityLevel:e,startTime:t,expirationTime:o,sortIndex:-1},t>l?(e.sortIndex=t,Qi(yl,e),Tt(Gt)===null&&e===Tt(yl)&&(ju?(Jm(Xu),Xu=-1):ju=!0,$i(Ji,t-l))):(e.sortIndex=o,Qi(Gt,e),Gu||Wi||(Gu=!0,No||(No=!0,Oo()))),e};Fe.unstable_shouldYield=ap;Fe.unstable_wrapCallback=function(e){var a=xa;return function(){var t=xa;xa=a;try{return e.apply(this,arguments)}finally{xa=t}}}});var op=yt((zw,lp)=>{"use strict";lp.exports=tp()});var hp=yt(oe=>{"use strict";var td=Symbol.for("react.transitional.element"),Rb=Symbol.for("react.portal"),Tb=Symbol.for("react.fragment"),Mb=Symbol.for("react.strict_mode"),Db=Symbol.for("react.profiler"),Eb=Symbol.for("react.consumer"),Bb=Symbol.for("react.context"),Ob=Symbol.for("react.forward_ref"),Nb=Symbol.for("react.suspense"),_b=Symbol.for("react.memo"),ip=Symbol.for("react.lazy"),Pb=Symbol.for("react.activity"),up=Symbol.iterator;function Ub(e){return e===null||typeof e!="object"?null:(e=up&&e[up]||e["@@iterator"],typeof e=="function"?e:null)}var dp={isMounted:function(){return!1},enqueueForceUpdate:function(){},enqueueReplaceState:function(){},enqueueSetState:function(){}},cp=Object.assign,fp={};function Po(e,a,t){this.props=e,this.context=a,this.refs=fp,this.updater=t||dp}Po.prototype.isReactComponent={};Po.prototype.setState=function(e,a){if(typeof e!="object"&&typeof e!="function"&&e!=null)throw Error("takes an object of state variables to update or a function which returns an object of state variables.");this.updater.enqueueSetState(this,e,a,"setState")};Po.prototype.forceUpdate=function(e){this.updater.enqueueForceUpdate(this,e,"forceUpdate")};function mp(){}mp.prototype=Po.prototype;function ld(e,a,t){this.props=e,this.context=a,this.refs=fp,this.updater=t||dp}var od=ld.prototype=new mp;od.constructor=ld;cp(od,Po.prototype);od.isPureReactComponent=!0;var rp=Array.isArray;function ad(){}var Be={H:null,A:null,T:null,S:null},pp=Object.prototype.hasOwnProperty;function ud(e,a,t){var l=t.ref;return{$$typeof:td,type:e,key:a,ref:l!==void 0?l:null,props:t}}function zb(e,a){return ud(e.type,a,e.props)}function rd(e){return typeof e=="object"&&e!==null&&e.$$typeof===td}function qb(e){var a={"=":"=0",":":"=2"};return"$"+e.replace(/[=:]/g,function(t){return a[t]})}var np=/\/+/g;function ed(e,a){return typeof e=="object"&&e!==null&&e.key!=null?qb(""+e.key):a.toString(36)}function Hb(e){switch(e.status){case"fulfilled":return e.value;case"rejected":throw e.reason;default:switch(typeof e.status=="string"?e.then(ad,ad):(e.status="pending",e.then(function(a){e.status==="pending"&&(e.status="fulfilled",e.value=a)},function(a){e.status==="pending"&&(e.status="rejected",e.reason=a)})),e.status){case"fulfilled":return e.value;case"rejected":throw e.reason}}throw e}function _o(e,a,t,l,o){var u=typeof e;(u==="undefined"||u==="boolean")&&(e=null);var r=!1;if(e===null)r=!0;else switch(u){case"bigint":case"string":case"number":r=!0;break;case"object":switch(e.$$typeof){case td:case Rb:r=!0;break;case ip:return r=e._init,_o(r(e._payload),a,t,l,o)}}if(r)return o=o(e),r=l===""?"."+ed(e,0):l,rp(o)?(t="",r!=null&&(t=r.replace(np,"$&/")+"/"),_o(o,a,t,"",function(i){return i})):o!=null&&(rd(o)&&(o=zb(o,t+(o.key==null||e&&e.key===o.key?"":(""+o.key).replace(np,"$&/")+"/")+r)),a.push(o)),1;r=0;var n=l===""?".":l+":";if(rp(e))for(var s=0;s<e.length;s++)l=e[s],u=n+ed(l,s),r+=_o(l,a,t,u,o);else if(s=Ub(e),typeof s=="function")for(e=s.call(e),s=0;!(l=e.next()).done;)l=l.value,u=n+ed(l,s++),r+=_o(l,a,t,u,o);else if(u==="object"){if(typeof e.then=="function")return _o(Hb(e),a,t,l,o);throw a=String(e),Error("Objects are not valid as a React child (found: "+(a==="[object Object]"?"object with keys {"+Object.keys(e).join(", ")+"}":a)+"). If you meant to render a collection of children, use an array instead.")}return r}function Un(e,a,t){if(e==null)return e;var l=[],o=0;return _o(e,l,"","",function(u){return a.call(t,u,o++)}),l}function Fb(e){if(e._status===-1){var a=e._result;a=a(),a.then(function(t){(e._status===0||e._status===-1)&&(e._status=1,e._result=t)},function(t){(e._status===0||e._status===-1)&&(e._status=2,e._result=t)}),e._status===-1&&(e._status=0,e._result=a)}if(e._status===1)return e._result.default;throw e._result}var sp=typeof reportError=="function"?reportError:function(e){if(typeof window=="object"&&typeof window.ErrorEvent=="function"){var a=new window.ErrorEvent("error",{bubbles:!0,cancelable:!0,message:typeof e=="object"&&e!==null&&typeof e.message=="string"?String(e.message):String(e),error:e});if(!window.dispatchEvent(a))return}else if(typeof process=="object"&&typeof process.emit=="function"){process.emit("uncaughtException",e);return}console.error(e)},Vb={map:Un,forEach:function(e,a,t){Un(e,function(){a.apply(this,arguments)},t)},count:function(e){var a=0;return Un(e,function(){a++}),a},toArray:function(e){return Un(e,function(a){return a})||[]},only:function(e){if(!rd(e))throw Error("React.Children.only expected to receive a single React element child.");return e}};oe.Activity=Pb;oe.Children=Vb;oe.Component=Po;oe.Fragment=Tb;oe.Profiler=Db;oe.PureComponent=ld;oe.StrictMode=Mb;oe.Suspense=Nb;oe.__CLIENT_INTERNALS_DO_NOT_USE_OR_WARN_USERS_THEY_CANNOT_UPGRADE=Be;oe.__COMPILER_RUNTIME={__proto__:null,c:function(e){return Be.H.useMemoCache(e)}};oe.cache=function(e){return function(){return e.apply(null,arguments)}};oe.cacheSignal=function(){return null};oe.cloneElement=function(e,a,t){if(e==null)throw Error("The argument must be a React element, but you passed "+e+".");var l=cp({},e.props),o=e.key;if(a!=null)for(u in a.key!==void 0&&(o=""+a.key),a)!pp.call(a,u)||u==="key"||u==="__self"||u==="__source"||u==="ref"&&a.ref===void 0||(l[u]=a[u]);var u=arguments.length-2;if(u===1)l.children=t;else if(1<u){for(var r=Array(u),n=0;n<u;n++)r[n]=arguments[n+2];l.children=r}return ud(e.type,o,l)};oe.createContext=function(e){return e={$$typeof:Bb,_currentValue:e,_currentValue2:e,_threadCount:0,Provider:null,Consumer:null},e.Provider=e,e.Consumer={$$typeof:Eb,_context:e},e};oe.createElement=function(e,a,t){var l,o={},u=null;if(a!=null)for(l in a.key!==void 0&&(u=""+a.key),a)pp.call(a,l)&&l!=="key"&&l!=="__self"&&l!=="__source"&&(o[l]=a[l]);var r=arguments.length-2;if(r===1)o.children=t;else if(1<r){for(var n=Array(r),s=0;s<r;s++)n[s]=arguments[s+2];o.children=n}if(e&&e.defaultProps)for(l in r=e.defaultProps,r)o[l]===void 0&&(o[l]=r[l]);return ud(e,u,o)};oe.createRef=function(){return{current:null}};oe.forwardRef=function(e){return{$$typeof:Ob,render:e}};oe.isValidElement=rd;oe.lazy=function(e){return{$$typeof:ip,_payload:{_status:-1,_result:e},_init:Fb}};oe.memo=function(e,a){return{$$typeof:_b,type:e,compare:a===void 0?null:a}};oe.startTransition=function(e){var a=Be.T,t={};Be.T=t;try{var l=e(),o=Be.S;o!==null&&o(t,l),typeof l=="object"&&l!==null&&typeof l.then=="function"&&l.then(ad,sp)}catch(u){sp(u)}finally{a!==null&&t.types!==null&&(a.types=t.types),Be.T=a}};oe.unstable_useCacheRefresh=function(){return Be.H.useCacheRefresh()};oe.use=function(e){return Be.H.use(e)};oe.useActionState=function(e,a,t){return Be.H.useActionState(e,a,t)};oe.useCallback=function(e,a){return Be.H.useCallback(e,a)};oe.useContext=function(e){return Be.H.useContext(e)};oe.useDebugValue=function(){};oe.useDeferredValue=function(e,a){return Be.H.useDeferredValue(e,a)};oe.useEffect=function(e,a){return Be.H.useEffect(e,a)};oe.useEffectEvent=function(e){return Be.H.useEffectEvent(e)};oe.useId=function(){return Be.H.useId()};oe.useImperativeHandle=function(e,a,t){return Be.H.useImperativeHandle(e,a,t)};oe.useInsertionEffect=function(e,a){return Be.H.useInsertionEffect(e,a)};oe.useLayoutEffect=function(e,a){return Be.H.useLayoutEffect(e,a)};oe.useMemo=function(e,a){return Be.H.useMemo(e,a)};oe.useOptimistic=function(e,a){return Be.H.useOptimistic(e,a)};oe.useReducer=function(e,a,t){return Be.H.useReducer(e,a,t)};oe.useRef=function(e){return Be.H.useRef(e)};oe.useState=function(e){return Be.H.useState(e)};oe.useSyncExternalStore=function(e,a,t){return Be.H.useSyncExternalStore(e,a,t)};oe.useTransition=function(){return Be.H.useTransition()};oe.version="19.2.8"});var ue=yt((Hw,gp)=>{"use strict";gp.exports=hp()});var xp=yt(ba=>{"use strict";var Gb=ue();function yp(e){var a="https://react.dev/errors/"+e;if(1<arguments.length){a+="?args[]="+encodeURIComponent(arguments[1]);for(var t=2;t<arguments.length;t++)a+="&args[]="+encodeURIComponent(arguments[t])}return"Minified React error #"+e+"; visit "+a+" for the full message or use the non-minified dev environment for full errors and additional helpful warnings."}function xl(){}var La={d:{f:xl,r:function(){throw Error(yp(522))},D:xl,C:xl,L:xl,m:xl,X:xl,S:xl,M:xl},p:0,findDOMNode:null},jb=Symbol.for("react.portal");function Xb(e,a,t){var l=3<arguments.length&&arguments[3]!==void 0?arguments[3]:null;return{$$typeof:jb,key:l==null?null:""+l,children:e,containerInfo:a,implementation:t}}var Yu=Gb.__CLIENT_INTERNALS_DO_NOT_USE_OR_WARN_USERS_THEY_CANNOT_UPGRADE;function zn(e,a){if(e==="font")return"";if(typeof a=="string")return a==="use-credentials"?a:""}ba.__DOM_INTERNALS_DO_NOT_USE_OR_WARN_USERS_THEY_CANNOT_UPGRADE=La;ba.createPortal=function(e,a){var t=2<arguments.length&&arguments[2]!==void 0?arguments[2]:null;if(!a||a.nodeType!==1&&a.nodeType!==9&&a.nodeType!==11)throw Error(yp(299));return Xb(e,a,null,t)};ba.flushSync=function(e){var a=Yu.T,t=La.p;try{if(Yu.T=null,La.p=2,e)return e()}finally{Yu.T=a,La.p=t,La.d.f()}};ba.preconnect=function(e,a){typeof e=="string"&&(a?(a=a.crossOrigin,a=typeof a=="string"?a==="use-credentials"?a:"":void 0):a=null,La.d.C(e,a))};ba.prefetchDNS=function(e){typeof e=="string"&&La.d.D(e)};ba.preinit=function(e,a){if(typeof e=="string"&&a&&typeof a.as=="string"){var t=a.as,l=zn(t,a.crossOrigin),o=typeof a.integrity=="string"?a.integrity:void 0,u=typeof a.fetchPriority=="string"?a.fetchPriority:void 0;t==="style"?La.d.S(e,typeof a.precedence=="string"?a.precedence:void 0,{crossOrigin:l,integrity:o,fetchPriority:u}):t==="script"&&La.d.X(e,{crossOrigin:l,integrity:o,fetchPriority:u,nonce:typeof a.nonce=="string"?a.nonce:void 0})}};ba.preinitModule=function(e,a){if(typeof e=="string")if(typeof a=="object"&&a!==null){if(a.as==null||a.as==="script"){var t=zn(a.as,a.crossOrigin);La.d.M(e,{crossOrigin:t,integrity:typeof a.integrity=="string"?a.integrity:void 0,nonce:typeof a.nonce=="string"?a.nonce:void 0})}}else a==null&&La.d.M(e)};ba.preload=function(e,a){if(typeof e=="string"&&typeof a=="object"&&a!==null&&typeof a.as=="string"){var t=a.as,l=zn(t,a.crossOrigin);La.d.L(e,t,{crossOrigin:l,integrity:typeof a.integrity=="string"?a.integrity:void 0,nonce:typeof a.nonce=="string"?a.nonce:void 0,type:typeof a.type=="string"?a.type:void 0,fetchPriority:typeof a.fetchPriority=="string"?a.fetchPriority:void 0,referrerPolicy:typeof a.referrerPolicy=="string"?a.referrerPolicy:void 0,imageSrcSet:typeof a.imageSrcSet=="string"?a.imageSrcSet:void 0,imageSizes:typeof a.imageSizes=="string"?a.imageSizes:void 0,media:typeof a.media=="string"?a.media:void 0})}};ba.preloadModule=function(e,a){if(typeof e=="string")if(a){var t=zn(a.as,a.crossOrigin);La.d.m(e,{as:typeof a.as=="string"&&a.as!=="script"?a.as:void 0,crossOrigin:t,integrity:typeof a.integrity=="string"?a.integrity:void 0})}else La.d.m(e)};ba.requestFormReset=function(e){La.d.r(e)};ba.unstable_batchedUpdates=function(e,a){return e(a)};ba.useFormState=function(e,a,t){return Yu.H.useFormState(e,a,t)};ba.useFormStatus=function(){return Yu.H.useHostTransitionStatus()};ba.version="19.2.8"});var qn=yt((Vw,Lp)=>{"use strict";function vp(){if(!(typeof __REACT_DEVTOOLS_GLOBAL_HOOK__>"u"||typeof __REACT_DEVTOOLS_GLOBAL_HOOK__.checkDCE!="function"))try{__REACT_DEVTOOLS_GLOBAL_HOOK__.checkDCE(vp)}catch(e){console.error(e)}}vp(),Lp.exports=xp()});var Ex=yt(ci=>{"use strict";var ta=op(),Xh=ue(),Yb=qn();function A(e){var a="https://react.dev/errors/"+e;if(1<arguments.length){a+="?args[]="+encodeURIComponent(arguments[1]);for(var t=2;t<arguments.length;t++)a+="&args[]="+encodeURIComponent(arguments[t])}return"Minified React error #"+e+"; visit "+a+" for the full message or use the non-minified dev environment for full errors and additional helpful warnings."}function Yh(e){return!(!e||e.nodeType!==1&&e.nodeType!==9&&e.nodeType!==11)}function Br(e){var a=e,t=e;if(e.alternate)for(;a.return;)a=a.return;else{e=a;do a=e,(a.flags&4098)!==0&&(t=a.return),e=a.return;while(e)}return a.tag===3?t:null}function Kh(e){if(e.tag===13){var a=e.memoizedState;if(a===null&&(e=e.alternate,e!==null&&(a=e.memoizedState)),a!==null)return a.dehydrated}return null}function Qh(e){if(e.tag===31){var a=e.memoizedState;if(a===null&&(e=e.alternate,e!==null&&(a=e.memoizedState)),a!==null)return a.dehydrated}return null}function bp(e){if(Br(e)!==e)throw Error(A(188))}function Kb(e){var a=e.alternate;if(!a){if(a=Br(e),a===null)throw Error(A(188));return a!==e?null:e}for(var t=e,l=a;;){var o=t.return;if(o===null)break;var u=o.alternate;if(u===null){if(l=o.return,l!==null){t=l;continue}break}if(o.child===u.child){for(u=o.child;u;){if(u===t)return bp(o),e;if(u===l)return bp(o),a;u=u.sibling}throw Error(A(188))}if(t.return!==l.return)t=o,l=u;else{for(var r=!1,n=o.child;n;){if(n===t){r=!0,t=o,l=u;break}if(n===l){r=!0,l=o,t=u;break}n=n.sibling}if(!r){for(n=u.child;n;){if(n===t){r=!0,t=u,l=o;break}if(n===l){r=!0,l=u,t=o;break}n=n.sibling}if(!r)throw Error(A(189))}}if(t.alternate!==l)throw Error(A(190))}if(t.tag!==3)throw Error(A(188));return t.stateNode.current===t?e:a}function Wh(e){var a=e.tag;if(a===5||a===26||a===27||a===6)return e;for(e=e.child;e!==null;){if(a=Wh(e),a!==null)return a;e=e.sibling}return null}var _e=Object.assign,Qb=Symbol.for("react.element"),Hn=Symbol.for("react.transitional.element"),ar=Symbol.for("react.portal"),Vo=Symbol.for("react.fragment"),Zh=Symbol.for("react.strict_mode"),qd=Symbol.for("react.profiler"),Jh=Symbol.for("react.consumer"),Jt=Symbol.for("react.context"),Nc=Symbol.for("react.forward_ref"),Hd=Symbol.for("react.suspense"),Fd=Symbol.for("react.suspense_list"),_c=Symbol.for("react.memo"),vl=Symbol.for("react.lazy");Symbol.for("react.scope");var Vd=Symbol.for("react.activity");Symbol.for("react.legacy_hidden");Symbol.for("react.tracing_marker");var Wb=Symbol.for("react.memo_cache_sentinel");Symbol.for("react.view_transition");var Sp=Symbol.iterator;function Ku(e){return e===null||typeof e!="object"?null:(e=Sp&&e[Sp]||e["@@iterator"],typeof e=="function"?e:null)}var Zb=Symbol.for("react.client.reference");function Gd(e){if(e==null)return null;if(typeof e=="function")return e.$$typeof===Zb?null:e.displayName||e.name||null;if(typeof e=="string")return e;switch(e){case Vo:return"Fragment";case qd:return"Profiler";case Zh:return"StrictMode";case Hd:return"Suspense";case Fd:return"SuspenseList";case Vd:return"Activity"}if(typeof e=="object")switch(e.$$typeof){case ar:return"Portal";case Jt:return e.displayName||"Context";case Jh:return(e._context.displayName||"Context")+".Consumer";case Nc:var a=e.render;return e=e.displayName,e||(e=a.displayName||a.name||"",e=e!==""?"ForwardRef("+e+")":"ForwardRef"),e;case _c:return a=e.displayName||null,a!==null?a:Gd(e.type)||"Memo";case vl:a=e._payload,e=e._init;try{return Gd(e(a))}catch{}}return null}var tr=Array.isArray,ee=Xh.__CLIENT_INTERNALS_DO_NOT_USE_OR_WARN_USERS_THEY_CANNOT_UPGRADE,Le=Yb.__DOM_INTERNALS_DO_NOT_USE_OR_WARN_USERS_THEY_CANNOT_UPGRADE,lo={pending:!1,data:null,method:null,action:null},jd=[],Go=-1;function Ot(e){return{current:e}}function sa(e){0>Go||(e.current=jd[Go],jd[Go]=null,Go--)}function De(e,a){Go++,jd[Go]=e.current,e.current=a}var Bt=Ot(null),vr=Ot(null),Ml=Ot(null),Ls=Ot(null);function bs(e,a){switch(De(Ml,a),De(vr,e),De(Bt,null),a.nodeType){case 9:case 11:e=(e=a.documentElement)&&(e=e.namespaceURI)?Th(e):0;break;default:if(e=a.tagName,a=a.namespaceURI)a=Th(a),e=xx(a,e);else switch(e){case"svg":e=1;break;case"math":e=2;break;default:e=0}}sa(Bt),De(Bt,e)}function su(){sa(Bt),sa(vr),sa(Ml)}function Xd(e){e.memoizedState!==null&&De(Ls,e);var a=Bt.current,t=xx(a,e.type);a!==t&&(De(vr,e),De(Bt,t))}function Ss(e){vr.current===e&&(sa(Bt),sa(vr)),Ls.current===e&&(sa(Ls),Mr._currentValue=lo)}var nd,Cp;function $l(e){if(nd===void 0)try{throw Error()}catch(t){var a=t.stack.trim().match(/\n( *(at )?)/);nd=a&&a[1]||"",Cp=-1<t.stack.indexOf(`
     at`)?" (<anonymous>)":-1<t.stack.indexOf("@")?"@unknown:0:0":""}return`
@@ -8881,13 +8925,21 @@ async function fetchYouTubeHtmlSearch(query, mode, signal, proxyCfg) {
       if (!seenVid.has(vid)) {
         const title = ytRunsText(rr.headline) || "YouTube Short";
         seenVid.add(vid);
+        const hdr = rr.navigationEndpoint?.reelWatchEndpoint?.overlay?.reelPlayerOverlayRenderer?.reelPlayerHeaderSupportedRenderers?.reelPlayerHeaderRenderer;
+        const chName = ytRunsText(hdr?.channelTitleText) || ytRunsText(rr.shortBylineText) || "";
+        const browseId = hdr?.channelNavigationEndpoint?.browseEndpoint?.browseId || "";
+        const cid = CHANNEL_ID_RE.test(browseId) ? browseId : "";
+        const rawAv = hdr?.channelThumbnail?.thumbnails?.at(-1)?.url;
+        const chAv = normalizeCreatorAvatarUrl(rawAv);
+        if (cid && chAv) MEMORY_CHANNEL_AVATARS.set(cid, chAv);
         const viewsTxt = ytRunsText(rr.viewCountText);
         const views = parseSubCountText(viewsTxt.replace(/views?/i, "").trim());
         videos.push({
           id: vid,
           title,
-          channel: "",
-          channelId: "",
+          channel: chName,
+          channelId: cid,
+          channelAvatar: chAv || undefined,
           thumbnail: `https://i.ytimg.com/vi/${vid}/hqdefault.jpg`,
           published: "",
           views: typeof views === "number" && Number.isFinite(views) ? Math.round(views) : undefined,
@@ -9003,6 +9055,65 @@ async function fetchYouTubeHtmlSearch(query, mode, signal, proxyCfg) {
   return { videos, channels, playlists };
 }
 
+const MEMORY_VIDEO_CREATOR_META = new Map();
+
+async function fetchNoembedVideoCreator(videoId, signal, timeoutMs = 1800) {
+  if (!VIDEO_ID_RE.test(videoId || "")) return null;
+  if (MEMORY_VIDEO_CREATOR_META.has(videoId)) return MEMORY_VIDEO_CREATOR_META.get(videoId);
+  try {
+    const sig = signal ? AbortSignal.any([signal, AbortSignal.timeout(timeoutMs)]) : AbortSignal.timeout(timeoutMs);
+    const resp = await fetch(`https://noembed.com/embed?url=${encodeURIComponent(`https://www.youtube.com/watch?v=${videoId}`)}`, {
+      signal: sig,
+      credentials: "omit"
+    });
+    if (!resp.ok) return null;
+    const j = await resp.json();
+    const author = typeof j?.author_name === "string" ? j.author_name.trim() : "";
+    const authorUrl = typeof j?.author_url === "string" ? j.author_url.trim() : "";
+    const cidMatch = authorUrl.match(/\/channel\/(UC[\w-]{22})/);
+    const handleMatch = authorUrl.match(/\/@([\w.-]+)/);
+    const title = typeof j?.title === "string" ? j.title.trim() : "";
+    if (!author && !cidMatch && !handleMatch) return null;
+    const meta = {
+      channel: author || (handleMatch ? handleMatch[1] : ""),
+      channelId: cidMatch ? cidMatch[1] : "",
+      handle: handleMatch ? `@${handleMatch[1]}` : (author ? `@${author.replace(/\s+/g, "")}` : ""),
+      title: title || undefined
+    };
+    MEMORY_VIDEO_CREATOR_META.set(videoId, meta);
+    return meta;
+  } catch {
+    return null;
+  }
+}
+
+async function enrichShortsMissingCreators(items, signal) {
+  if (!Array.isArray(items) || !items.length) return items;
+  const need = items.filter(it => !it.channel).slice(0, 14);
+  if (!need.length) return items;
+  const settled = await Promise.allSettled(
+    need.map(async it => [it.id, await fetchNoembedVideoCreator(it.id, signal, 1400)])
+  );
+  const byId = new Map();
+  for (const r of settled) {
+    if (r.status === "fulfilled" && r.value?.[1]) {
+      byId.set(r.value[0], r.value[1]);
+    }
+  }
+  if (!byId.size) return items;
+  return items.map(it => {
+    const m = byId.get(it.id);
+    if (!m) return it;
+    return {
+      ...it,
+      title: (!it.title || it.title === "YouTube Short") && m.title ? m.title : it.title,
+      channel: it.channel || m.channel || "",
+      channelId: it.channelId || m.channelId || "",
+      handle: it.handle || m.handle || undefined
+    };
+  });
+}
+
 const SHORTS_ROTATION_TOPICS = [
   "#shorts",
   "trending shorts",
@@ -9108,8 +9219,9 @@ async function fetchShortsFeed({ query, pageToken, apiKey, settings, region, tas
     const parsed = await fetchYouTubeHtmlSearch(chosenQuery, "shorts", signal, proxyCfg);
     const items = filterValidShorts(parsed.videos);
     if (items.length >= 2) {
+      const enriched = await enrichShortsMissingCreators(items, signal);
       return {
-        videos: items,
+        videos: enriched,
         next: nextSyntheticToken,
         source: "YouTube Shorts Direct"
       };
@@ -9117,7 +9229,11 @@ async function fetchShortsFeed({ query, pageToken, apiKey, settings, region, tas
     throw new Error("YT HTML Shorts empty");
   })());
 
-  return Promise.any(tasks);
+  const winner = await Promise.any(tasks);
+  if (winner?.videos?.some(v => !v.channel)) {
+    winner.videos = await enrichShortsMissingCreators(winner.videos, signal);
+  }
+  return winner;
 }
 
 async function fetchDiscoveryFeed(category, query, apiKey, settings, subscriptions, pageToken, signal, forceRefresh = false, region = "US", tasteProfile = null, historyMap = null, onPartial = null) {
@@ -13000,13 +13116,12 @@ function NotificationsBellPopover({
 function ActiveShortMedia({
   shortItem,
   isActive,
+  useEmbed,
+  onFallbackToEmbed,
   muted,
-  onToggleMute,
   settings,
   onWatchedShort
 }) {
-  // Default Shorts to instant YT NoCookie playback unless user explicitly toggles Proxy Stream
-  const [useEmbed, setUseEmbed] = React.useState(settings.playerEngine !== "direct-only");
   const [muxedUrl, setMuxedUrl] = React.useState("");
   const [paused, setPaused] = React.useState(false);
   const [progress, setProgress] = React.useState(0);
@@ -13016,11 +13131,10 @@ function ActiveShortMedia({
 
   React.useEffect(() => {
     initialMutedRef.current = muted;
-    setUseEmbed(settings.playerEngine !== "direct-only");
     setMuxedUrl("");
     setPaused(false);
     setProgress(0);
-  }, [shortItem.id, settings.playerEngine]);
+  }, [shortItem.id]);
 
   React.useEffect(() => {
     if (!isActive) return;
@@ -13052,9 +13166,8 @@ function ActiveShortMedia({
   React.useEffect(() => {
     if (!isActive || useEmbed) return;
     const ctrl = new AbortController();
-    // Crisp 4.2s auto-fallback to YT NoCookie if proxy stream takes too long!
     const fallbackTimer = setTimeout(() => {
-      if (!ctrl.signal.aborted) setUseEmbed(true);
+      if (!ctrl.signal.aborted) onFallbackToEmbed?.();
     }, 4200);
     resolveProxiedVideoStreams(shortItem.id, 0, settings, ctrl.signal)
       .then(res => {
@@ -13064,12 +13177,12 @@ function ActiveShortMedia({
         if (muxed?.videoUrl) {
           setMuxedUrl(muxed.videoUrl);
         } else {
-          setUseEmbed(true);
+          onFallbackToEmbed?.();
         }
       })
       .catch(() => {
         clearTimeout(fallbackTimer);
-        if (!ctrl.signal.aborted) setUseEmbed(true);
+        if (!ctrl.signal.aborted) onFallbackToEmbed?.();
       });
     return () => {
       clearTimeout(fallbackTimer);
@@ -13099,6 +13212,7 @@ function ActiveShortMedia({
 
   const ytShortEmbed = `https://www.youtube-nocookie.com/embed/${shortItem.id}?autoplay=1&loop=1&playlist=${shortItem.id}&playsinline=1&enablejsapi=1&rel=0&modestbranding=1&iv_load_policy=3${initialMutedRef.current ? "&mute=1" : ""}`;
 
+  // 100% Unobstructed Video Frame — ZERO overlapping bottom/top text or buttons on top of the iframe!
   return React.createElement("div", {
     className: "relative h-full w-full bg-black select-none"
   }, useEmbed ? React.createElement("iframe", {
@@ -13127,7 +13241,7 @@ function ActiveShortMedia({
     autoPlay: true,
     muted: muted,
     onClick: () => setPaused(p => !p),
-    onError: () => setUseEmbed(true),
+    onError: () => onFallbackToEmbed?.(),
     onTimeUpdate: e => {
       const dur = e.currentTarget.duration || 0;
       if (dur > 0) setProgress((e.currentTarget.currentTime / dur) * 100);
@@ -13149,20 +13263,7 @@ function ActiveShortMedia({
     className: "absolute inset-0 flex items-center justify-center bg-black/25 cursor-pointer"
   }, React.createElement("span", {
     className: "flex size-16 items-center justify-center rounded-full bg-black/65 text-white backdrop-blur-sm"
-  }, React.createElement(Icons.Play, { className: "size-8 fill-current ml-0.5" }))), React.createElement("div", {
-    className: "pointer-events-none absolute inset-x-0 top-0 flex items-center justify-between bg-gradient-to-b from-black/70 via-black/20 to-transparent p-3"
-  }, React.createElement("button", {
-    type: "button",
-    onClick: () => setUseEmbed(e => !e),
-    title: "Switch Short engine between YT NoCookie & Proxied Video Stream",
-    className: "pointer-events-auto rounded-full bg-black/55 px-2.5 py-1 text-[11px] font-semibold text-white/90 backdrop-blur-md hover:bg-black/80 cursor-pointer"
-  }, useEmbed ? "YT Shorts" : "Proxy Stream"), React.createElement("button", {
-    type: "button",
-    onClick: onToggleMute,
-    "aria-label": muted ? "Unmute Short" : "Mute Short",
-    title: muted ? "Unmute" : "Mute",
-    className: "pointer-events-auto flex size-9 items-center justify-center rounded-full bg-black/55 text-white backdrop-blur-md hover:bg-black/80 cursor-pointer"
-  }, React.createElement(muted ? Icons.VolumeX : Icons.Volume2, { className: "size-4" }))), !useEmbed && progress > 0 && React.createElement("div", {
+  }, React.createElement(Icons.Play, { className: "size-8 fill-current ml-0.5" }))), !useEmbed && progress > 0 && React.createElement("div", {
     className: "pointer-events-none absolute inset-x-0 bottom-0 z-20 h-1 bg-white/25"
   }, React.createElement("div", {
     className: "h-full bg-[#ff0033] transition-all duration-150",
@@ -13171,8 +13272,8 @@ function ActiveShortMedia({
 }
 
 const SHORTS_QUICK_PILLS = [
-  { id: "", label: "For You" },
-  { id: "trending shorts", label: "Trending" },
+  { id: "", label: "All Shorts" },
+  { id: "trending shorts", label: "Viral" },
   { id: "funny shorts", label: "Comedy" },
   { id: "gaming shorts", label: "Gaming" },
   { id: "music shorts", label: "Music" },
@@ -13195,6 +13296,7 @@ function ShortsFeedPlayer({
   subscriptions = [],
   onToggleSubscribe,
   onOpenChannel,
+  onSearchCreator,
   onOpenFullWatch,
   onSaveLater,
   onOpenPlaylistModal,
@@ -13216,16 +13318,43 @@ function ShortsFeedPlayer({
     }
     return 0;
   });
+  const [useEmbed, setUseEmbed] = React.useState(settings.playerEngine !== "direct-only");
   const [muted, setMuted] = React.useState(false);
   const [dislikedSet, setDislikedSet] = React.useState(() => new Set());
   const [commentsOpenFor, setCommentsOpenFor] = React.useState(null);
   const [shortSearchDraft, setShortSearchDraft] = React.useState(shortsTopicQuery || "");
+  const [localCreators, setLocalCreators] = React.useState({});
+
+  React.useEffect(() => {
+    setUseEmbed(settings.playerEngine !== "direct-only");
+  }, [settings.playerEngine]);
 
   React.useEffect(() => {
     setShortSearchDraft(shortsTopicQuery || "");
     setActiveIdx(0);
     scrollerRef.current?.scrollTo?.({ top: 0, behavior: "instant" });
   }, [shortsTopicQuery]);
+
+  // Immediate priority creator hydration for active & next Short via CORS-open noembed!
+  React.useEffect(() => {
+    const candidates = [shorts[activeIdx], shorts[activeIdx + 1], shorts[activeIdx + 2]].filter(Boolean);
+    const missing = candidates.filter(s => !s.channel && !hydratedDetails[s.id]?.channel && !localCreators[s.id]?.channel);
+    if (!missing.length) return;
+    const ctrl = new AbortController();
+    Promise.allSettled(missing.map(async s => [s.id, await fetchNoembedVideoCreator(s.id, ctrl.signal, 1800)])).then(settled => {
+      if (ctrl.signal.aborted) return;
+      const patch = {};
+      for (const r of settled) {
+        if (r.status === "fulfilled" && r.value?.[1]) {
+          patch[r.value[0]] = r.value[1];
+        }
+      }
+      if (Object.keys(patch).length > 0) {
+        setLocalCreators(prev => ({ ...prev, ...patch }));
+      }
+    });
+    return () => ctrl.abort();
+  }, [activeIdx, shorts]);
 
   React.useEffect(() => {
     if (!initialShortId || !shorts.length) return;
@@ -13296,7 +13425,7 @@ function ShortsFeedPlayer({
   const commentsShortId = commentsOpenFor === activeShortObj?.id ? activeShortObj.id : null;
 
   return React.createElement("div", {
-    className: "space-y-2.5"
+    className: "space-y-2"
   }, React.createElement("div", {
     className: "flex flex-wrap items-center justify-between gap-2"
   }, React.createElement("div", {
@@ -13339,13 +13468,13 @@ function ShortsFeedPlayer({
     title: "Switch Shorts to grid overview",
     className: "h-8 rounded-full px-3 text-xs"
   }, React.createElement(Icons.Film || Icons.Tv, { className: "size-3.5" }), "Grid view"))), !shorts.length && loading ? React.createElement("div", {
-    className: "flex h-[calc(100vh-10.5rem)] items-center justify-center"
+    className: "yt-shorts-viewport flex items-center justify-center"
   }, React.createElement("div", {
-    className: "yt-short-stage relative aspect-[9/16] h-full max-h-[80vh] animate-pulse rounded-2xl bg-secondary/70 shadow-2xl flex flex-col items-center justify-center gap-3 p-6 text-center"
+    className: "yt-short-stage relative animate-pulse rounded-2xl bg-secondary/70 shadow-2xl flex flex-col items-center justify-center gap-3 p-6 text-center"
   }, React.createElement(Icons.LoaderCircle, { className: "size-8 animate-spin text-primary" }), React.createElement("p", {
     className: "text-xs font-medium text-muted-foreground"
   }, "Loading YouTube Shorts…"))) : !shorts.length ? React.createElement("div", {
-    className: "flex h-[calc(100vh-10.5rem)] items-center justify-center"
+    className: "yt-shorts-viewport flex items-center justify-center"
   }, React.createElement("div", {
     role: "alert",
     className: "flex max-w-md flex-col items-center gap-3 rounded-2xl border border-border bg-card p-6 text-center shadow-xl"
@@ -13369,29 +13498,50 @@ function ShortsFeedPlayer({
   }, React.createElement("div", {
     ref: scrollerRef,
     "aria-label": "YouTube Shorts vertical feed",
-    className: "yt-shorts-scroller flex h-[calc(100vh-10.25rem)] w-full flex-col items-center overflow-y-auto scroll-smooth"
+    className: "yt-shorts-scroller yt-shorts-viewport flex w-full flex-col items-center overflow-y-auto scroll-smooth"
   }, shorts.map((s, idx) => {
+    const hyd = hydratedDetails[s.id] || {};
+    const loc = localCreators[s.id] || {};
+    const effChannel = s.channel || hyd.channel || loc.channel || "";
+    const effChannelId = s.channelId || hyd.channelId || loc.channelId || "";
+    const effHandle = s.handle || hyd.handle || loc.handle || (effChannel ? `@${effChannel.replace(/\s+/g, "")}` : "");
+    const effTitle = ((!s.title || s.title === "YouTube Short") && loc.title) ? loc.title : s.title;
+    const effAvatar = s.channelAvatar || hyd.avatar || (effChannelId ? MEMORY_CHANNEL_AVATARS.get(effChannelId) : null) || null;
+    const effLikes = s.likes ?? hyd.likes ?? (s.views ? Math.max(1, Math.round(s.views * 0.042)) : null);
+
     const isLiked = likedShorts.includes(s.id);
     const isDisliked = dislikedSet.has(s.id);
-    const isSub = Boolean(s.channelId) && subscriptions.some(sub => sub.channelId === s.channelId);
-    const effAvatar = s.channelAvatar || hydratedDetails[s.id]?.avatar || (s.channelId ? MEMORY_CHANNEL_AVATARS.get(s.channelId) : null) || null;
-    const handleText = s.channel ? `@${s.channel.replace(/\s+/g, "")}` : "@shorts";
+    const subKey = effChannelId || effHandle || "";
+    const isSub = Boolean(subKey) && subscriptions.some(sub => sub.channelId === subKey || (effHandle && sub.channelId === effHandle));
     const isNearActive = Math.abs(idx - activeIdx) <= 1;
+
+    const handleOpenCreator = () => {
+      if (effChannelId && CHANNEL_ID_RE.test(effChannelId)) {
+        onOpenChannel(effChannelId, effChannel || effHandle);
+      } else if (effHandle || effChannel) {
+        onSearchCreator ? onSearchCreator(effHandle || effChannel) : onOpenFullWatch(s.id);
+      } else {
+        onOpenFullWatch(s.id);
+      }
+    };
 
     return React.createElement("div", {
       key: s.id,
       "data-short-idx": idx,
       ref: el => { slideRefs.current[idx] = el; },
-      className: "yt-short-slide flex h-[calc(100vh-10.25rem)] w-full shrink-0 items-center justify-center py-1.5"
+      className: "yt-short-slide flex h-full w-full shrink-0 items-center justify-center py-1.5"
     }, React.createElement("div", {
-      className: "relative flex h-full max-h-[820px] items-end justify-center gap-3.5"
+      className: "relative flex h-full max-h-[820px] items-end justify-center gap-3"
     }, React.createElement("div", {
-      className: "yt-short-stage relative aspect-[9/16] h-full overflow-hidden rounded-2xl bg-black shadow-2xl ring-1 ring-white/10"
+      className: "yt-short-stage flex flex-col overflow-hidden rounded-2xl border border-border/80 bg-[#121212] shadow-2xl"
+    }, React.createElement("div", {
+      className: "relative min-h-0 flex-1 w-full bg-black"
     }, isNearActive ? React.createElement(ActiveShortMedia, {
       shortItem: s,
       isActive: idx === activeIdx,
+      useEmbed: useEmbed,
+      onFallbackToEmbed: () => setUseEmbed(true),
       muted: muted,
-      onToggleMute: () => setMuted(m => !m),
       settings: settings,
       onWatchedShort: onWatchedShort
     }) : React.createElement(SafeThumb, {
@@ -13399,47 +13549,55 @@ function ShortsFeedPlayer({
       src: s.thumbnail,
       aspectClass: "h-full w-full",
       className: "h-full w-full rounded-none"
-    }), React.createElement("div", {
-      className: "pointer-events-none absolute inset-x-0 bottom-0 z-10 bg-gradient-to-t from-black/92 via-black/55 to-transparent px-4 pt-14 pb-4 text-white"
+    })), React.createElement("div", {
+      className: "shrink-0 border-t border-white/10 bg-[#161616] px-3.5 py-2.5 text-white"
     }, React.createElement("div", {
-      className: "pointer-events-auto flex items-center gap-2.5"
+      className: "flex items-center justify-between gap-2"
     }, React.createElement("button", {
       type: "button",
-      onClick: () => s.channelId ? onOpenChannel(s.channelId, s.channel) : onOpenFullWatch(s.id),
-      className: "flex min-w-0 items-center gap-2.5 text-left cursor-pointer"
-    }, React.createElement(AvatarCircle, {
+      onClick: handleOpenCreator,
+      title: effChannel ? `Open ${effChannel}` : "Open in Watch player",
+      className: "flex min-w-0 flex-1 items-center gap-2.5 text-left hover:opacity-90 cursor-pointer"
+    }, effChannel ? React.createElement(AvatarCircle, {
       src: effAvatar,
-      name: s.channel || "S",
-      sizeClass: "size-9 ring-1 ring-white/25"
-    }), React.createElement("span", {
-      className: "truncate text-sm font-bold tracking-tight text-white drop-shadow"
-    }, handleText)), s.channelId && React.createElement("button", {
+      name: effChannel,
+      sizeClass: "size-8 shrink-0 ring-1 ring-white/20"
+    }) : React.createElement("span", {
+      className: "flex size-8 shrink-0 items-center justify-center rounded-full bg-white/10 text-white/75"
+    }, React.createElement(Icons.Zap, { className: "size-4" })), React.createElement("div", {
+      className: "min-w-0 flex-1"
+    }, React.createElement("p", {
+      className: "truncate text-xs font-bold leading-tight text-white"
+    }, effChannel || "Loading creator…"), effHandle && React.createElement("p", {
+      className: "truncate text-[11px] leading-tight text-white/65"
+    }, effHandle))), subKey ? React.createElement("button", {
       type: "button",
-      onClick: () => onToggleSubscribe(s.channelId, s.channel || handleText),
-      className: VENDOR.cn("ml-1 shrink-0 rounded-full px-3.5 py-1.5 text-xs font-semibold transition cursor-pointer", isSub ? "bg-white/20 text-white hover:bg-white/30 backdrop-blur-md" : "bg-white text-black hover:bg-white/90")
-    }, isSub ? "Subscribed" : "Subscribe")), React.createElement("p", {
-      className: "pointer-events-auto mt-2.5 line-clamp-2 text-[14px] font-medium leading-snug text-white drop-shadow"
-    }, formatDisplayTitle(s.title, settings.deShoutTitles)), React.createElement("div", {
-      className: "mt-2 flex items-center justify-between gap-2 text-xs text-white/85"
-    }, React.createElement("span", {
-      className: "flex min-w-0 items-center gap-1.5 truncate"
-    }, React.createElement(Icons.Music2, { className: "size-3.5 shrink-0" }), React.createElement("span", {
-      className: "truncate"
-    }, `Original sound - ${s.channel || "YouTube Shorts"}`)), s.views != null && React.createElement("span", {
-      className: "shrink-0 text-[11px] text-white/75"
+      onClick: () => onToggleSubscribe(subKey, effChannel || effHandle, effAvatar),
+      className: VENDOR.cn("shrink-0 rounded-full px-3 py-1 text-[11px] font-semibold transition cursor-pointer", isSub ? "bg-white/15 text-white hover:bg-white/25" : "bg-white text-black hover:bg-white/90")
+    }, isSub ? "Subscribed" : "Subscribe") : effChannel ? React.createElement("button", {
+      type: "button",
+      onClick: handleOpenCreator,
+      className: "shrink-0 rounded-full bg-white/15 px-3 py-1 text-[11px] font-semibold text-white hover:bg-white/25 cursor-pointer"
+    }, "Channel") : null), React.createElement("div", {
+      className: "mt-1.5 flex items-center justify-between gap-2"
+    }, React.createElement("p", {
+      title: effTitle,
+      className: "min-w-0 flex-1 truncate text-xs text-white/90"
+    }, formatDisplayTitle(effTitle, settings.deShoutTitles)), s.views != null && React.createElement("span", {
+      className: "shrink-0 text-[11px] text-white/60"
     }, `${formatCompact(s.views)} views`)))), React.createElement("div", {
-      className: "yt-short-actions flex flex-col items-center gap-3 pb-2"
+      className: "yt-short-actions flex flex-col items-center gap-2 pb-1"
     }, React.createElement("div", {
-      className: "flex flex-col items-center gap-1"
+      className: "flex flex-col items-center gap-0.5"
     }, React.createElement("button", {
       type: "button",
       "aria-label": isLiked ? "Unlike Short" : "Like Short",
       onClick: () => onToggleLikeShort(s.id),
-      className: VENDOR.cn("flex size-12 items-center justify-center rounded-full transition cursor-pointer shadow-md", isLiked ? "bg-foreground text-background" : "bg-secondary/90 text-foreground hover:bg-accent")
-    }, React.createElement(Icons.ThumbsUp, { className: "size-5" })), React.createElement("span", {
-      className: "text-[11px] font-medium text-muted-foreground"
-    }, isLiked ? "Liked" : s.views ? formatCompact(Math.max(1, Math.round(s.views * 0.042))) : "Like")), React.createElement("div", {
-      className: "flex flex-col items-center gap-1"
+      className: VENDOR.cn("flex size-10 items-center justify-center rounded-full transition cursor-pointer shadow-md sm:size-11", isLiked ? "bg-foreground text-background" : "bg-secondary/90 text-foreground hover:bg-accent")
+    }, React.createElement(Icons.ThumbsUp, { className: "size-4 sm:size-5" })), React.createElement("span", {
+      className: "text-[10px] font-medium text-muted-foreground"
+    }, isLiked ? "Liked" : effLikes ? formatCompact(effLikes) : "Like")), React.createElement("div", {
+      className: "flex flex-col items-center gap-0.5"
     }, React.createElement("button", {
       type: "button",
       "aria-label": "Dislike Short",
@@ -13450,83 +13608,98 @@ function ShortsFeedPlayer({
           return next;
         });
       },
-      className: VENDOR.cn("flex size-12 items-center justify-center rounded-full transition cursor-pointer shadow-md", isDisliked ? "bg-foreground text-background" : "bg-secondary/90 text-foreground hover:bg-accent")
-    }, React.createElement(Icons.ThumbsDown, { className: "size-5" })), React.createElement("span", {
-      className: "text-[11px] font-medium text-muted-foreground"
+      className: VENDOR.cn("flex size-10 items-center justify-center rounded-full transition cursor-pointer shadow-md sm:size-11", isDisliked ? "bg-foreground text-background" : "bg-secondary/90 text-foreground hover:bg-accent")
+    }, React.createElement(Icons.ThumbsDown, { className: "size-4 sm:size-5" })), React.createElement("span", {
+      className: "text-[10px] font-medium text-muted-foreground"
     }, "Dislike")), React.createElement("div", {
-      className: "flex flex-col items-center gap-1"
+      className: "flex flex-col items-center gap-0.5"
     }, React.createElement("button", {
       type: "button",
       "aria-label": "Comments",
       onClick: () => setCommentsOpenFor(cur => cur === s.id ? null : s.id),
-      className: VENDOR.cn("flex size-12 items-center justify-center rounded-full transition cursor-pointer shadow-md", commentsOpenFor === s.id ? "bg-foreground text-background" : "bg-secondary/90 text-foreground hover:bg-accent")
-    }, React.createElement(Icons.MessageSquare, { className: "size-5" })), React.createElement("span", {
-      className: "text-[11px] font-medium text-muted-foreground"
+      className: VENDOR.cn("flex size-10 items-center justify-center rounded-full transition cursor-pointer shadow-md sm:size-11", commentsOpenFor === s.id ? "bg-foreground text-background" : "bg-secondary/90 text-foreground hover:bg-accent")
+    }, React.createElement(Icons.MessageSquare, { className: "size-4 sm:size-5" })), React.createElement("span", {
+      className: "text-[10px] font-medium text-muted-foreground"
     }, "Comments")), React.createElement("div", {
-      className: "flex flex-col items-center gap-1"
+      className: "flex flex-col items-center gap-0.5"
+    }, React.createElement("button", {
+      type: "button",
+      "aria-label": muted ? "Unmute Short" : "Mute Short",
+      title: muted ? "Unmute" : "Mute",
+      onClick: () => setMuted(m => !m),
+      className: VENDOR.cn("flex size-10 items-center justify-center rounded-full transition cursor-pointer shadow-md sm:size-11", muted ? "bg-destructive/20 text-destructive" : "bg-secondary/90 text-foreground hover:bg-accent")
+    }, React.createElement(muted ? Icons.VolumeX : Icons.Volume2, { className: "size-4 sm:size-5" })), React.createElement("span", {
+      className: "text-[10px] font-medium text-muted-foreground"
+    }, muted ? "Muted" : "Sound")), React.createElement("div", {
+      className: "flex flex-col items-center gap-0.5"
     }, React.createElement("button", {
       type: "button",
       "aria-label": "Share Short",
       onClick: () => onShareShort?.(s),
-      className: "flex size-12 items-center justify-center rounded-full bg-secondary/90 text-foreground hover:bg-accent transition cursor-pointer shadow-md"
-    }, React.createElement(Icons.Share2, { className: "size-5" })), React.createElement("span", {
-      className: "text-[11px] font-medium text-muted-foreground"
+      className: "flex size-10 items-center justify-center rounded-full bg-secondary/90 text-foreground hover:bg-accent transition cursor-pointer shadow-md sm:size-11"
+    }, React.createElement(Icons.Share2, { className: "size-4 sm:size-5" })), React.createElement("span", {
+      className: "text-[10px] font-medium text-muted-foreground"
     }, "Share")), React.createElement("div", {
-      className: "flex flex-col items-center gap-1"
+      className: "flex flex-col items-center gap-0.5"
     }, React.createElement("button", {
       type: "button",
       "aria-label": "Save Short to Playlist",
       title: "Save to Playlist / Watch Later",
       onClick: () => onOpenPlaylistModal ? onOpenPlaylistModal(s) : onSaveLater?.(s),
-      className: "flex size-12 items-center justify-center rounded-full bg-secondary/90 text-foreground hover:bg-accent transition cursor-pointer shadow-md"
-    }, React.createElement(Icons.Bookmark, { className: "size-5" })), React.createElement("span", {
-      className: "text-[11px] font-medium text-muted-foreground"
+      className: "flex size-10 items-center justify-center rounded-full bg-secondary/90 text-foreground hover:bg-accent transition cursor-pointer shadow-md sm:size-11"
+    }, React.createElement(Icons.Bookmark, { className: "size-4 sm:size-5" })), React.createElement("span", {
+      className: "text-[10px] font-medium text-muted-foreground"
     }, "Save")), React.createElement("div", {
-      className: "flex flex-col items-center gap-1"
+      className: "flex items-center gap-1.5 pt-0.5"
     }, React.createElement("button", {
+      type: "button",
+      onClick: () => setUseEmbed(e => !e),
+      title: "Switch Short engine between YT NoCookie & Proxy Stream",
+      className: "rounded-full bg-secondary/85 px-2 py-1 text-[10px] font-semibold text-muted-foreground hover:bg-accent hover:text-foreground cursor-pointer"
+    }, useEmbed ? "YT" : "Proxy"), React.createElement("button", {
       type: "button",
       "aria-label": "Open in full player",
       title: "Open in full Watch mode",
       onClick: () => onOpenFullWatch(s.id),
-      className: "flex size-10 items-center justify-center rounded-full bg-secondary/75 text-muted-foreground hover:bg-accent hover:text-foreground transition cursor-pointer"
-    }, React.createElement(Icons.Maximize, { className: "size-4" }))))));
+      className: "flex size-8 items-center justify-center rounded-full bg-secondary/85 text-muted-foreground hover:bg-accent hover:text-foreground transition cursor-pointer"
+    }, React.createElement(Icons.Maximize, { className: "size-3.5" }))))));
   }), loading && shorts.length > 0 && React.createElement("div", {
-      className: "py-6 text-center text-xs text-muted-foreground"
-    }, "Loading more Shorts…")), commentsShortId && React.createElement("aside", {
-      "aria-label": "Short comments panel",
-      className: "hidden h-[calc(100vh-10.5rem)] max-h-[820px] w-88 shrink-0 flex-col overflow-hidden rounded-2xl border border-border bg-card shadow-2xl lg:flex"
-    }, React.createElement("div", {
-      className: "flex items-center justify-between border-b border-border px-4 py-3"
-    }, React.createElement("h3", { className: "text-sm font-bold" }, "Comments"), React.createElement("button", {
-      type: "button",
-      "aria-label": "Close Short comments",
-      onClick: () => setCommentsOpenFor(null),
-      className: "rounded-full p-1 text-muted-foreground hover:bg-secondary hover:text-foreground cursor-pointer"
-    }, React.createElement(Icons.X, { className: "size-4" }))), React.createElement("div", {
-      className: "flex-1 overflow-y-auto p-3.5"
-    }, React.createElement(CommentThreadList, {
-      videoId: commentsShortId,
-      apiKey: apiKey,
-      settings: settings,
-      order: "relevance",
-      onSeek: () => onOpenFullWatch(commentsShortId)
-    }))), React.createElement("div", {
-      className: "hidden flex-col gap-3 xl:flex"
-    }, React.createElement("button", {
-      type: "button",
-      disabled: activeIdx <= 0,
-      onClick: () => scrollToIndex(activeIdx - 1),
-      "aria-label": "Previous Short",
-      title: "Previous Short (↑)",
-      className: "flex size-12 items-center justify-center rounded-full bg-secondary text-foreground shadow-md hover:bg-accent disabled:opacity-30 cursor-pointer"
-    }, React.createElement(Icons.ChevronUp, { className: "size-6" })), React.createElement("button", {
-      type: "button",
-      disabled: activeIdx >= shorts.length - 1 && !hasMore,
-      onClick: () => scrollToIndex(activeIdx + 1),
-      "aria-label": "Next Short",
-      title: "Next Short (↓)",
-      className: "flex size-12 items-center justify-center rounded-full bg-secondary text-foreground shadow-md hover:bg-accent disabled:opacity-30 cursor-pointer"
-    }, React.createElement(Icons.ChevronDown, { className: "size-6" })))));
+    className: "py-6 text-center text-xs text-muted-foreground"
+  }, "Loading more Shorts…")), commentsShortId && React.createElement("aside", {
+    "aria-label": "Short comments panel",
+    className: "hidden yt-shorts-viewport max-h-[820px] w-88 shrink-0 flex-col overflow-hidden rounded-2xl border border-border bg-card shadow-2xl lg:flex"
+  }, React.createElement("div", {
+    className: "flex items-center justify-between border-b border-border px-4 py-3"
+  }, React.createElement("h3", { className: "text-sm font-bold" }, "Comments"), React.createElement("button", {
+    type: "button",
+    "aria-label": "Close Short comments",
+    onClick: () => setCommentsOpenFor(null),
+    className: "rounded-full p-1 text-muted-foreground hover:bg-secondary hover:text-foreground cursor-pointer"
+  }, React.createElement(Icons.X, { className: "size-4" }))), React.createElement("div", {
+    className: "flex-1 overflow-y-auto p-3.5"
+  }, React.createElement(CommentThreadList, {
+    videoId: commentsShortId,
+    apiKey: apiKey,
+    settings: settings,
+    order: "relevance",
+    onSeek: () => onOpenFullWatch(commentsShortId)
+  }))), React.createElement("div", {
+    className: "hidden flex-col gap-3 xl:flex"
+  }, React.createElement("button", {
+    type: "button",
+    disabled: activeIdx <= 0,
+    onClick: () => scrollToIndex(activeIdx - 1),
+    "aria-label": "Previous Short",
+    title: "Previous Short (↑)",
+    className: "flex size-12 items-center justify-center rounded-full bg-secondary text-foreground shadow-md hover:bg-accent disabled:opacity-30 cursor-pointer"
+  }, React.createElement(Icons.ChevronUp, { className: "size-6" })), React.createElement("button", {
+    type: "button",
+    disabled: activeIdx >= shorts.length - 1 && !hasMore,
+    onClick: () => scrollToIndex(activeIdx + 1),
+    "aria-label": "Next Short",
+    title: "Next Short (↓)",
+    className: "flex size-12 items-center justify-center rounded-full bg-secondary text-foreground shadow-md hover:bg-accent disabled:opacity-30 cursor-pointer"
+  }, React.createElement(Icons.ChevronDown, { className: "size-6" })))));
 }
 
 function DeviceLibrarySection({
@@ -14369,7 +14542,7 @@ function getFeedGridClass(cols, isShorts, category = "home") {
 const MEMORY_CHANNEL_AVATARS = new Map();
 function useHydratedMediaDetails(videos, historyMap, settings, active) {
   const [extra, setExtra] = React.useState({});
-  const videoIdsKey = React.useMemo(() => videos.map(v => `${v.id}:${v.channelId || ""}:${v.channelAvatar ? 1 : 0}`).join(","), [videos]);
+  const videoIdsKey = React.useMemo(() => videos.map(v => `${v.id}:${v.channel ? 1 : 0}:${v.channelId || ""}:${v.channelAvatar ? 1 : 0}`).join(","), [videos]);
   React.useEffect(() => {
     if (!active || !videos.length) return;
     let cancelled = false;
@@ -14392,42 +14565,56 @@ function useHydratedMediaDetails(videos, historyMap, settings, active) {
           MEMORY_CHANNEL_AVATARS.set(v.channelId, v.channelAvatar);
         }
         const curExtra = extra[v.id];
+        const memCreator = MEMORY_VIDEO_CREATOR_META.get(v.id);
         const hasDur = Boolean(v.durationSec || v.isLive || historyMap.get(v.id)?.duration > 0 || curExtra?.durationSec);
-        let resolvedAvatar = v.channelAvatar || curExtra?.avatar || (v.channelId ? MEMORY_CHANNEL_AVATARS.get(v.channelId) : undefined);
+        let resolvedChannel = v.channel || curExtra?.channel || memCreator?.channel || "";
+        let resolvedChannelId = v.channelId || curExtra?.channelId || memCreator?.channelId || "";
+        let resolvedHandle = v.handle || curExtra?.handle || memCreator?.handle || "";
+        let resolvedAvatar = v.channelAvatar || curExtra?.avatar || (resolvedChannelId ? MEMORY_CHANNEL_AVATARS.get(resolvedChannelId) : undefined);
 
-        if (!resolvedAvatar && v.channelId) {
-          const cachedCh = await readStore("cache", `ch-avatar:${v.channelId}`);
+        if (!resolvedAvatar && resolvedChannelId) {
+          const cachedCh = await readStore("cache", `ch-avatar:${resolvedChannelId}`);
           if (cachedCh?.avatar) {
             resolvedAvatar = cachedCh.avatar;
-            MEMORY_CHANNEL_AVATARS.set(v.channelId, resolvedAvatar);
+            MEMORY_CHANNEL_AVATARS.set(resolvedChannelId, resolvedAvatar);
           }
         }
         let resolvedDur = curExtra?.durationSec;
-        if ((!hasDur || !resolvedAvatar)) {
+        if (!hasDur || !resolvedAvatar || !resolvedChannel) {
           const cachedVid = await readStore("cache", v.id);
           if (cachedVid) {
             if (!hasDur && cachedVid.durationSec > 0) resolvedDur = cachedVid.durationSec;
+            if (!resolvedChannel && cachedVid.channel && cachedVid.channel !== "Unknown channel") {
+              resolvedChannel = cachedVid.channel;
+            }
+            if (!resolvedChannelId && cachedVid.channelId && CHANNEL_ID_RE.test(cachedVid.channelId)) {
+              resolvedChannelId = cachedVid.channelId;
+            }
             if (!resolvedAvatar && cachedVid.avatar) {
               resolvedAvatar = normalizeCreatorAvatarUrl(cachedVid.avatar) || undefined;
-              if (resolvedAvatar && v.channelId) MEMORY_CHANNEL_AVATARS.set(v.channelId, resolvedAvatar);
+              if (resolvedAvatar && resolvedChannelId) MEMORY_CHANNEL_AVATARS.set(resolvedChannelId, resolvedAvatar);
             }
           }
         }
-        if (resolvedDur || (resolvedAvatar && !v.channelAvatar)) {
+        if (resolvedDur || (resolvedAvatar && !v.channelAvatar) || (resolvedChannel && !v.channel) || (resolvedChannelId && !v.channelId) || resolvedHandle) {
           fromCache[v.id] = {
             durationSec: resolvedDur || curExtra?.durationSec,
-            avatar: resolvedAvatar || curExtra?.avatar
+            avatar: resolvedAvatar || curExtra?.avatar,
+            channel: resolvedChannel || curExtra?.channel,
+            channelId: resolvedChannelId || curExtra?.channelId,
+            handle: resolvedHandle || curExtra?.handle
           };
         }
         const stillMissingDur = !hasDur && !resolvedDur;
         const stillMissingAvatar = !resolvedAvatar;
-        if (stillMissingDur) {
+        const stillMissingChannel = !resolvedChannel;
+        if (stillMissingDur || stillMissingChannel) {
           needVideoLookup.push(v);
         } else if (stillMissingAvatar) {
-          if (v.channelId && CHANNEL_ID_RE.test(v.channelId)) {
-            const arr = chToVideoIds.get(v.channelId) || [];
+          if (resolvedChannelId && CHANNEL_ID_RE.test(resolvedChannelId)) {
+            const arr = chToVideoIds.get(resolvedChannelId) || [];
             arr.push(v.id);
-            chToVideoIds.set(v.channelId, arr);
+            chToVideoIds.set(resolvedChannelId, arr);
           } else {
             needVideoLookup.push(v);
           }
@@ -14440,36 +14627,55 @@ function useHydratedMediaDetails(videos, historyMap, settings, active) {
       }
       if (!needVideoLookup.length && !chToVideoIds.size) return;
 
-      const pipedBases = [...new Set([...(settings.pipedInstances || []), ...DEFAULT_PIPED_INSTANCES].map(u => safeHttpsUrl(u)?.replace(/\/$/, "")).filter(Boolean))].slice(0, 3);
-      const invBases = [...new Set([...(settings.instance && !settings.instance.includes("nadeko.net") ? [settings.instance] : []), ...DEFAULT_INVIDIOUS_INSTANCES, ...(settings.invidiousInstances || [])].map(u => safeHttpsUrl(u)?.replace(/\/$/, "")).filter(Boolean))].slice(0, 3);
+      const pipedBases = rankHealthyBases([...new Set([...(settings.pipedInstances || []), ...DEFAULT_PIPED_INSTANCES].map(u => safeHttpsUrl(u)?.replace(/\/$/, "")).filter(Boolean))]).slice(0, 3);
+      const invBases = rankHealthyBases([...new Set([...(settings.instance && !settings.instance.includes("nadeko.net") ? [settings.instance] : []), ...DEFAULT_INVIDIOUS_INSTANCES, ...(settings.invidiousInstances || [])].map(u => safeHttpsUrl(u)?.replace(/\/$/, "")).filter(Boolean))]).slice(0, 3);
 
-      // 1) Batch-hydrate creator avatars per unique channelId (1 call hydrates ALL videos by that creator!)
+      // 1) Fast direct noembed pass for any items missing creator name (< 120ms, zero proxy needed!)
+      const missingCreatorItems = needVideoLookup.filter(v => !v.channel && !fromCache[v.id]?.channel).slice(0, 16);
+      if (missingCreatorItems.length > 0) {
+        const noembedSettled = await Promise.allSettled(
+          missingCreatorItems.map(async v => [v.id, await fetchNoembedVideoCreator(v.id, ctrl.signal, 1600)])
+        );
+        if (!cancelled) {
+          const quickPatch = {};
+          for (const r of noembedSettled) {
+            if (r.status === "fulfilled" && r.value?.[1]) {
+              const [vid, meta] = r.value;
+              quickPatch[vid] = {
+                channel: meta.channel || undefined,
+                channelId: meta.channelId || undefined,
+                handle: meta.handle || undefined
+              };
+            }
+          }
+          if (Object.keys(quickPatch).length > 0) {
+            setExtra(prev => {
+              const next = { ...prev };
+              for (const [vid, val] of Object.entries(quickPatch)) {
+                next[vid] = { ...next[vid], ...val };
+              }
+              return next;
+            });
+          }
+        }
+      }
+
+      // 2) Batch-hydrate creator avatars per unique channelId
       const chEntries = [...chToVideoIds.entries()].slice(0, 24);
       const fetchChannelAvatar = async cid => {
         for (const pBase of pipedBases) {
           try {
-            const d = await proxyFetchJson(`${pBase}/channel/${cid}`, ctrl.signal, proxyCfg, 5000);
+            const d = await proxyFetchJson(`${pBase}/channel/${cid}`, ctrl.signal, proxyCfg, 4500);
             const av = normalizeCreatorAvatarUrl(d?.avatarUrl || d?.avatar);
             if (av) return av;
           } catch {}
         }
         for (const iBase of invBases) {
           try {
-            const d = await proxyFetchJson(`${iBase}/api/v1/channels/${cid}`, ctrl.signal, proxyCfg, 5000);
+            const d = await proxyFetchJson(`${iBase}/api/v1/channels/${cid}`, ctrl.signal, proxyCfg, 4500);
             const av = normalizeCreatorAvatarUrl(d?.authorThumbnails?.at(-1)?.url, iBase);
             if (av) return av;
           } catch {}
-        }
-        // Fallback: check first video stream metadata
-        const sampleVid = chToVideoIds.get(cid)?.[0];
-        if (sampleVid) {
-          for (const pBase of pipedBases.slice(0, 2)) {
-            try {
-              const d = await proxyFetchJson(`${pBase}/streams/${sampleVid}`, ctrl.signal, proxyCfg, 4500);
-              const av = normalizeCreatorAvatarUrl(d?.uploaderAvatar);
-              if (av) return av;
-            } catch {}
-          }
         }
         return null;
       };
@@ -14485,7 +14691,7 @@ function useHydratedMediaDetails(videos, historyMap, settings, active) {
             MEMORY_CHANNEL_AVATARS.set(cid, av);
             writeStore("cache", `ch-avatar:${cid}`, { avatar: av, at: Date.now() });
             for (const vid of vids) {
-              patch[vid] = { ...extra[vid], avatar: av };
+              patch[vid] = { avatar: av };
             }
           }
         }
@@ -14500,28 +14706,38 @@ function useHydratedMediaDetails(videos, historyMap, settings, active) {
         }
       }
 
-      // 2) Hydrate per-video duration + avatar for items missing duration or lacking channelId
+      // 3) Hydrate full per-video duration + avatar + channel + channelId + likes via Piped/Invidious
       const fetchOneVideo = async vObj => {
         for (const pBase of pipedBases) {
           try {
-            const d = await proxyFetchJson(`${pBase}/streams/${vObj.id}`, ctrl.signal, proxyCfg, 5000);
+            const d = await proxyFetchJson(`${pBase}/streams/${vObj.id}`, ctrl.signal, proxyCfg, 4500);
             const dur = parseVideoDurationSec(d?.duration);
             const av = normalizeCreatorAvatarUrl(d?.uploaderAvatar);
-            if (dur || av) return { durationSec: dur, avatar: av || undefined };
+            const ch = typeof d?.uploader === "string" ? d.uploader.trim() : "";
+            const cid = typeof d?.uploaderUrl === "string" ? d.uploaderUrl.match(/\/channel\/(UC[\w-]{22})/)?.[1] || "" : "";
+            const likes = typeof d?.likes === "number" && d.likes >= 0 ? d.likes : undefined;
+            if (dur || av || ch) {
+              return { durationSec: dur, avatar: av || undefined, channel: ch || undefined, channelId: cid || undefined, likes };
+            }
           } catch {}
         }
         for (const iBase of invBases) {
           try {
-            const d = await proxyFetchJson(`${iBase}/api/v1/videos/${vObj.id}`, ctrl.signal, proxyCfg, 5000);
+            const d = await proxyFetchJson(`${iBase}/api/v1/videos/${vObj.id}`, ctrl.signal, proxyCfg, 4500);
             const dur = parseVideoDurationSec(d?.lengthSeconds ?? d?.duration);
             const av = normalizeCreatorAvatarUrl(d?.authorThumbnails?.at(-1)?.url, iBase);
-            if (dur || av) return { durationSec: dur, avatar: av || undefined };
+            const ch = typeof d?.author === "string" ? d.author.trim() : "";
+            const cid = typeof d?.authorId === "string" && CHANNEL_ID_RE.test(d.authorId) ? d.authorId : "";
+            const likes = typeof d?.likeCount === "number" && d.likeCount >= 0 ? d.likeCount : undefined;
+            if (dur || av || ch) {
+              return { durationSec: dur, avatar: av || undefined, channel: ch || undefined, channelId: cid || undefined, likes };
+            }
           } catch {}
         }
         return null;
       };
 
-      const vTargets = needVideoLookup.slice(0, 24);
+      const vTargets = needVideoLookup.slice(0, 20);
       for (let i = 0; i < vTargets.length; i += 4) {
         if (cancelled) return;
         const chunk = vTargets.slice(i, i + 4);
@@ -14529,10 +14745,11 @@ function useHydratedMediaDetails(videos, historyMap, settings, active) {
         if (cancelled) return;
         const patch = {};
         for (const [vObj, info] of results) {
-          if (info?.durationSec || info?.avatar) {
-            if (info.avatar && vObj.channelId) {
-              MEMORY_CHANNEL_AVATARS.set(vObj.channelId, info.avatar);
-              writeStore("cache", `ch-avatar:${vObj.channelId}`, { avatar: info.avatar, at: Date.now() });
+          if (info && (info.durationSec || info.avatar || info.channel || info.channelId)) {
+            const effCid = info.channelId || vObj.channelId;
+            if (info.avatar && effCid && CHANNEL_ID_RE.test(effCid)) {
+              MEMORY_CHANNEL_AVATARS.set(effCid, info.avatar);
+              writeStore("cache", `ch-avatar:${effCid}`, { avatar: info.avatar, at: Date.now() });
             }
             patch[vObj.id] = info;
           }
@@ -14543,7 +14760,11 @@ function useHydratedMediaDetails(videos, historyMap, settings, active) {
             for (const [vid, val] of Object.entries(patch)) {
               next[vid] = {
                 durationSec: val.durationSec || next[vid]?.durationSec,
-                avatar: val.avatar || next[vid]?.avatar
+                avatar: val.avatar || next[vid]?.avatar,
+                channel: val.channel || next[vid]?.channel,
+                channelId: val.channelId || next[vid]?.channelId,
+                handle: val.handle || next[vid]?.handle,
+                likes: val.likes ?? next[vid]?.likes
               };
             }
             return next;
@@ -15344,7 +15565,7 @@ function DiscoverSection({
     onBack: () => onBrowse(null),
     onOpen: onBrowse,
     onPlay: vid => onPlay(vid)
-  }) : React.createElement(React.Fragment, null, React.createElement("div", {
+  }) : React.createElement(React.Fragment, null, !isShortsScrollActive && React.createElement("div", {
     className: "discovery-categories mb-3 flex flex-wrap items-center gap-2"
   }, React.createElement(Button, {
     variant: category === "home" ? "default" : "secondary",
@@ -15514,6 +15735,7 @@ function DiscoverSection({
     subscriptions: subscriptions,
     onToggleSubscribe: onToggleSubscribe,
     onOpenChannel: (cid, chTitle) => onBrowse({ kind: "channel", id: cid, title: chTitle }),
+    onSearchCreator: q => onSearchQuery(q, "channel"),
     onOpenFullWatch: vid => onPlay(vid),
     onSaveLater: v => onQuickLater(v),
     onOpenPlaylistModal: onOpenPlaylistModal,
@@ -15698,7 +15920,9 @@ function DiscoverSection({
     const hist = historyMap.get(v.id);
     const prog = hist && hist.duration > 0 ? hist.lastPosition / hist.duration : 0;
     const effDur = v.durationSec || hydratedDetails[v.id]?.durationSec || (hist?.duration > 0 ? hist.duration : undefined);
-    const effAvatar = v.channelAvatar || hydratedDetails[v.id]?.avatar || (v.channelId ? MEMORY_CHANNEL_AVATARS.get(v.channelId) : null) || null;
+    const effChannel = v.channel || hydratedDetails[v.id]?.channel || "";
+    const effChannelId = v.channelId || hydratedDetails[v.id]?.channelId || "";
+    const effAvatar = v.channelAvatar || hydratedDetails[v.id]?.avatar || (effChannelId ? MEMORY_CHANNEL_AVATARS.get(effChannelId) : null) || null;
     const isForYouSpacious = category === "home" && (settings.gridColumns === "auto" || settings.gridColumns === "3" || settings.gridColumns === "2");
     const isMenuOpen = openCardMenuId === v.id;
 
@@ -15735,14 +15959,14 @@ function DiscoverSection({
       style: { width: `${Math.min(100, Math.round(prog * 100))}%` }
     })))), React.createElement("div", {
       className: "flex items-start gap-3 px-0.5"
-    }, v.channel && React.createElement("button", {
+    }, effChannel && React.createElement("button", {
       type: "button",
-      title: v.channelId ? `Open ${v.channel}` : v.channel,
-      onClick: () => v.channelId && onBrowse({ kind: "channel", id: v.channelId, title: v.channel }),
-      className: VENDOR.cn("mt-0.5 shrink-0", v.channelId ? "cursor-pointer hover:opacity-85" : "cursor-default")
+      title: effChannelId ? `Open ${effChannel}` : effChannel,
+      onClick: () => effChannelId ? onBrowse({ kind: "channel", id: effChannelId, title: effChannel }) : onSearchQuery(effChannel, "channel"),
+      className: "mt-0.5 shrink-0 cursor-pointer hover:opacity-85"
     }, React.createElement(AvatarCircle, {
       src: effAvatar,
-      name: v.channel,
+      name: effChannel,
       sizeClass: isForYouSpacious ? "size-10" : "size-9"
     })), React.createElement("div", {
       className: "min-w-0 flex-1 pr-5"
@@ -15757,13 +15981,11 @@ function DiscoverSection({
         }
       },
       className: VENDOR.cn("line-clamp-2 text-left font-semibold leading-snug text-foreground group-hover:text-primary cursor-pointer", isForYouSpacious ? "text-[16px]" : "text-[15px]")
-    }, formatDisplayTitle(v.title, settings.deShoutTitles)), v.channel && (v.channelId ? React.createElement("button", {
+    }, formatDisplayTitle(v.title, settings.deShoutTitles)), effChannel && React.createElement("button", {
       type: "button",
-      onClick: () => onBrowse({ kind: "channel", id: v.channelId, title: v.channel }),
+      onClick: () => effChannelId ? onBrowse({ kind: "channel", id: effChannelId, title: effChannel }) : onSearchQuery(effChannel, "channel"),
       className: "mt-1 block max-w-full truncate text-[13px] text-muted-foreground hover:text-foreground cursor-pointer"
-    }, v.channel) : React.createElement("p", {
-      className: "mt-1 truncate text-[13px] text-muted-foreground"
-    }, v.channel)), settings.showMetrics && React.createElement("p", {
+    }, effChannel), settings.showMetrics && React.createElement("p", {
       className: "mt-0.5 flex flex-wrap items-center gap-x-1.5 text-[13px] text-muted-foreground"
     }, v.views != null && React.createElement("span", null, formatCompact(v.views), " views"), v.views != null && v.published && React.createElement("span", null, "•"), v.published && React.createElement("span", null, Number.isFinite(Date.parse(v.published)) ? (relativeDates ? formatRelativeDate(v.published, nowMs) : formatExactDate(v.published)) : v.published)), v.recReason && category === "home" && React.createElement("p", {
       className: "mt-1 truncate text-[11px] font-medium text-primary/85"
@@ -18594,7 +18816,7 @@ function WatcherApp({
   };
 
   const toggleChannelSubscription = React.useCallback((cid, chTitle, avatarUrl) => {
-    if (!cid || !CHANNEL_ID_RE.test(cid)) return;
+    if (!cid || !(CHANNEL_ID_RE.test(cid) || /^@[A-Za-z0-9_.-]{2,40}$/.test(cid))) return;
     update(prev => {
       const exists = prev.subscriptions.some(s => s.channelId === cid);
       showToast(exists ? `Unsubscribed from ${chTitle}` : `Subscribed to ${chTitle}!`);
@@ -19696,4 +19918,4 @@ lucide-react/dist/esm/lucide-react.js:
    * See the LICENSE file in the root directory of this source tree.
    *)
 */
-</script></body></html>
+</script><script>(function(){function c(){var b=a.contentDocument||(a.contentWindow&&a.contentWindow.document);if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a58baa63ecc5db2e',t:'MTc5NDM4MzAwMg=='};var l=window.parent.location,o;try{o=new URL(l.origin).origin}catch(e){try{o=new URL(new URL(l.href).origin).origin}catch(e){o=''}}var u='/cdn-cgi/challenge-platform/scripts/jsd/main.js?ray=a58baa63ecc5db2e',a=document.createElement('script');a.src=o?new URL(u,o).href:u;document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body></html>
