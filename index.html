@@ -1,3 +1,4 @@
+
 <!doctype html><html lang="en" class="dark" data-theme="dark" data-accent="red" data-radius="lg"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="referrer" content="strict-origin-when-cross-origin"><title>Portable YouTube Watcher v4</title><meta name="description" content="Portable YouTube watcher v4 with floating mini-player, A-B loop, custom playlists, study notes, themes, discovery, and Wrapped analytics."><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,400;0,500;0,700;0,900;1,400&display=swap" rel="stylesheet"><style>
 /*! tailwindcss v4.3.3 | MIT License | https://tailwindcss.com */
 @layer properties;
@@ -5332,6 +5333,7 @@ function pickCreatorColor(name) {
   return CREATOR_AVATAR_PALETTE[h % CREATOR_AVATAR_PALETTE.length];
 }
 
+const NO_MAXRES_VIDEO_IDS = new Set();
 function SafeThumb({
   videoId: rawVideoId,
   id: altId,
@@ -5379,7 +5381,7 @@ function SafeThumb({
     const list = [];
     const invBase = (prefs.invidiousInstance && !prefs.invidiousInstance.includes("nadeko.net") ? prefs.invidiousInstance : "https://yt.chocolatemoo53.com").replace(/\/$/, "");
     const tiers = effectiveQuality === "maxresdefault"
-      ? ["maxresdefault", "sddefault", "hqdefault"]
+      ? (NO_MAXRES_VIDEO_IDS.has(videoId) ? ["hqdefault"] : ["maxresdefault", "hqdefault"])
       : effectiveQuality === "sddefault"
         ? ["sddefault", "hqdefault"]
         : [effectiveQuality, "hqdefault"];
@@ -5407,9 +5409,6 @@ function SafeThumb({
           list.push(`https://i0.wp.com/i.ytimg.com/vi/${videoId}/${q}.jpg`);
           list.push(`https://wsrv.nl/?url=${encodeURIComponent(ytDirect)}&output=webp`);
           list.push(`${invBase}/vi/${videoId}/${q}.jpg`);
-          if (invBase !== "https://inv.thepixora.com") {
-            list.push(`https://inv.thepixora.com/vi/${videoId}/${q}.jpg`);
-          }
           list.push(ytDirect);
         } else {
           list.push(ytDirect);
@@ -5434,7 +5433,7 @@ function SafeThumb({
 
   // If all HTTP image CDNs fail on a locked-down network and Wisp is enabled, tunnel thumbnail over Wisp TLS 1.3!
   React.useEffect(() => {
-    if (prefs.hideThumbnails || candidateIdx < candidates.length || !videoId || prefs.wispEnabled === false) return;
+    if (prefs.hideThumbnails || candidateIdx < candidates.length || !videoId || prefs.wispEnabled === false || prefs.webProxyMode !== "wisp-only") return;
     let cancelled = false;
     const ctrl = new AbortController();
     wispFetchResponse(`https://i.ytimg.com/vi/${videoId}/hqdefault.jpg`, ctrl.signal, { wispServers: prefs.wispServers }, 5500)
@@ -5449,7 +5448,7 @@ function SafeThumb({
       cancelled = true;
       ctrl.abort();
     };
-  }, [candidateIdx, candidates.length, videoId, prefs.hideThumbnails, prefs.wispEnabled]);
+  }, [candidateIdx, candidates.length, videoId, prefs.hideThumbnails, prefs.wispEnabled, prefs.webProxyMode]);
 
   const defaultAspect = aspectClass || (prefs.thumbAspect === "21/9" ? "aspect-[21/9]" : prefs.thumbAspect === "4/3" ? "aspect-[4/3]" : "aspect-video");
   const pct = completed ? 100 : progress > 0 ? Math.min(100, Math.max(4, Math.round(progress * 100))) : 0;
@@ -5474,11 +5473,16 @@ function SafeThumb({
       // YouTube returns a 120x90 grey placeholder when maxresdefault/sddefault does not exist for older videos
       const w = e.currentTarget?.naturalWidth || 0;
       if (w > 0 && w <= 120 && candidateIdx + 1 < candidates.length) {
-        setCandidateIdx(i => i + 1);
+        if (activeSrc?.includes("maxresdefault")) {
+          if (NO_MAXRES_VIDEO_IDS.size > 1000) NO_MAXRES_VIDEO_IDS.clear();
+          NO_MAXRES_VIDEO_IDS.add(videoId);
+          const nextHq = candidates.findIndex(u => u.includes("hqdefault"));
+          setCandidateIdx(nextHq >= 0 ? nextHq : candidateIdx + 1);
+        } else setCandidateIdx(i => i + 1);
       }
     },
     onError: () => setCandidateIdx(i => i + 1),
-    className: VENDOR.cn("h-full w-full object-cover transition-all duration-300 group-hover:scale-[1.02]", prefs.blurThumbnails && "blur-md scale-105 group-hover:blur-none")
+    className: VENDOR.cn("h-full w-full object-cover transition-transform duration-200 group-hover:scale-[1.02]", prefs.blurThumbnails && "blur-md scale-105 group-hover:blur-none")
   }), storyboardUrl && React.createElement("img", {
     src: storyboardUrl,
     alt: "",
@@ -5676,8 +5680,9 @@ function triggerDownload(filename, content, mime = "text/plain;charset=utf-8") {
   setTimeout(() => URL.revokeObjectURL(url), 1200);
 }
 const DEFAULT_WISP_SERVERS = ["wss://wisp.webmc.fun/", "wss://wisp.terbiumon.top/wisp/", "wss://anura.pro/", "wss://wisp.freewisp.org/", "wss://wisp.mercurywork.shop/"];
-const DEFAULT_PIPED_INSTANCES = ["https://pipedapi.kavin.rocks", "https://pipedapi-libre.kavin.rocks", "https://api.piped.private.coffee", "https://pipedapi.leptons.xyz", "https://pipedapi.adminforge.de", "https://piapi.ggtyler.dev", "https://pipedapi.drgns.space", "https://pipedapi.ducks.party"];
-const DEFAULT_INVIDIOUS_INSTANCES = ["https://yt.chocolatemoo53.com", "https://inv.thepixora.com", "https://invidious.private.coffee", "https://iv.ggtyler.dev", "https://iv.datura.network", "https://yt.drgnz.club"];
+const DEFAULT_PIPED_INSTANCES = ["https://pipedapi.ducks.party", "https://api.piped.private.coffee"];
+const DEFAULT_INVIDIOUS_INSTANCES = ["https://yt.chocolatemoo53.com"];
+const DEAD_MIRROR_HOST_RE = /(kavin\.rocks|leptons\.xyz|adminforge\.de|ggtyler\.dev|drgns\.space|nosebs\.ru|thepixora\.com|invidious\.private\.coffee|datura\.network|drgnz\.club|nadeko\.net|nerdvpn\.de|tiekoetter\.com)/i;
 const DEFAULT_VIDEO_FX = {
   brightness: 100,
   contrast: 100,
@@ -5762,7 +5767,7 @@ function createBlankVideo(videoId, title = videoId, channel = "", channelId = ""
 }
 function createDefaultSettings() {
   return {
-    playerEngine: "proxy-stream",
+    playerEngine: "yt-nocookie",
     preferredQuality: "auto",
     webProxyMode: "auto",
     webProxyProvider: "wisp",
@@ -5775,13 +5780,13 @@ function createDefaultSettings() {
     invidiousInstances: [...DEFAULT_INVIDIOUS_INSTANCES],
     customEmbedProxy: "",
     proxyThumbnails: true,
-    proxyPlayback: true,
+    proxyPlayback: false,
     proxyRequests: false,
     instance: "https://yt.chocolatemoo53.com",
     browserBackNavigation: true,
     shortsScrollMode: true,
     hoverPreview: true,
-    uiSchemaVersion: 9,
+    uiSchemaVersion: 10,
     theme: "dark",
     accent: "red",
     customColors: {
@@ -6174,15 +6179,18 @@ function openLibraryDB() {
   return dbPromise;
 }
 async function readStore(store, key) {
+  if (store === "cache" && memStore.has(`${store}:${key}`)) return memStore.get(`${store}:${key}`);
   const db = await openLibraryDB();
   if (!db) return memStore.get(`${store}:${key}`);
   return new Promise(resolve => {
+    const timer = setTimeout(() => resolve(memStore.get(`${store}:${key}`)), 1800);
     try {
       const req = db.transaction(store).objectStore(store).get(key);
-      req.onsuccess = () => resolve(req.result);
-      req.onerror = () => resolve(undefined);
+      req.onsuccess = () => { clearTimeout(timer); resolve(req.result); };
+      req.onerror = () => { clearTimeout(timer); resolve(memStore.get(`${store}:${key}`)); };
     } catch {
-      resolve(undefined);
+      clearTimeout(timer);
+      resolve(memStore.get(`${store}:${key}`));
     }
   });
 }
@@ -6191,12 +6199,13 @@ async function writeStore(store, key, value) {
   const db = await openLibraryDB();
   if (!db) return;
   await new Promise(resolve => {
+    const timer = setTimeout(resolve, 1500);
     try {
       const tx = db.transaction(store, "readwrite");
       tx.objectStore(store).put(value, key);
-      tx.oncomplete = () => resolve();
-      tx.onerror = () => resolve();
+      tx.oncomplete = tx.onerror = tx.onabort = () => { clearTimeout(timer); resolve(); };
     } catch {
+      clearTimeout(timer);
       resolve();
     }
   });
@@ -6241,6 +6250,12 @@ async function readLibrary() {
       rawPatched.feedSort = "source";
       if (prevVer < 6) rawPatched.borderRadius = "md";
       rawPatched.uiSchemaVersion = 7;
+    }
+    if (prevVer < 10) {
+      if (!rawPatched.instance || DEAD_MIRROR_HOST_RE.test(rawPatched.instance)) rawPatched.instance = DEFAULT_INVIDIOUS_INSTANCES[0];
+      rawPatched.pipedInstances = [...new Set([...DEFAULT_PIPED_INSTANCES, ...(rawPatched.pipedInstances || []).filter(u => typeof u === "string" && !DEAD_MIRROR_HOST_RE.test(u))])];
+      rawPatched.invidiousInstances = [...new Set([...DEFAULT_INVIDIOUS_INSTANCES, ...(rawPatched.invidiousInstances || []).filter(u => typeof u === "string" && !DEAD_MIRROR_HOST_RE.test(u))])];
+      rawPatched.uiSchemaVersion = 10;
     }
     const mergedSettings = {
       ...defaults.settings,
@@ -6330,7 +6345,7 @@ function useWatcherLibrary() {
     openLibraryDB().then(db => {
       if (alive) setPersistent(!!db);
     });
-    readLibrary().then(loaded => {
+    readLibrary().catch(() => createDefaultLibrary()).then(loaded => {
       if (alive) {
         latestRef.current = loaded;
         setLibrary(loaded);
@@ -7225,7 +7240,10 @@ async function proxyFetchResponse(targetUrl, signal, proxyCfg, timeoutMs = 6000)
   }
 
   // 1) Direct attempt first when mode === "auto" or "direct" (fast 2.6s timeout)
-  if (mode === "auto" || mode === "direct") {
+  let directHost = "";
+  try { directHost = new URL(targetUrl).hostname; } catch {}
+  const skipDirect = mode === "auto" && /(^|\.)youtube\.com$|(^|\.)kugou\.com$/i.test(directHost);
+  if ((mode === "auto" && !skipDirect) || mode === "direct") {
     try {
       const directResp = await fetchViaSingleHttpCandidate(targetUrl, true, outerSig, mode === "direct" ? timeoutMs : Math.min(2600, timeoutMs));
       recordMirrorResult(targetUrl, true, performance.now() - t0);
@@ -7277,10 +7295,39 @@ async function proxyFetchResponse(targetUrl, signal, proxyCfg, timeoutMs = 6000)
   throw new Error("Source unavailable");
 }
 
+const SHORT_JSON_CACHE = new Map();
+const INFLIGHT_JSON = new Map();
 async function proxyFetchJson(targetUrl, signal, proxyCfg, timeoutMs = 6000) {
-  const resp = await proxyFetchResponse(targetUrl, signal, proxyCfg, timeoutMs);
-  if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
-  return resp.json();
+  if (signal?.aborted) throw new DOMException("Aborted", "AbortError");
+  const shared = /\/(?:api\/v1\/videos\/|api\/v1\/popular(?:\?|$)|api\/v1\/trending(?:\?|$)|trending\?)/.test(targetUrl);
+  if (!shared) {
+    const resp = await proxyFetchResponse(targetUrl, signal, proxyCfg, timeoutMs);
+    if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
+    return resp.json();
+  }
+  const key = JSON.stringify([targetUrl, proxyCfg?.webProxyMode, proxyCfg?.webProxyProvider, proxyCfg?.customWebProxy, proxyCfg?.wispEnabled, proxyCfg?.wispServers, proxyCfg?.customWispServer]);
+  const hit = SHORT_JSON_CACHE.get(key);
+  if (hit && Date.now() - hit.at < 45000) return hit.data;
+  let work = INFLIGHT_JSON.get(key);
+  if (!work) {
+    work = (async () => {
+      const resp = await proxyFetchResponse(targetUrl, undefined, proxyCfg, timeoutMs);
+      if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
+      const data = await resp.json();
+      if (SHORT_JSON_CACHE.size >= 120) SHORT_JSON_CACHE.delete(SHORT_JSON_CACHE.keys().next().value);
+      SHORT_JSON_CACHE.set(key, { at: Date.now(), data });
+      return data;
+    })();
+    INFLIGHT_JSON.set(key, work);
+    work.finally(() => { if (INFLIGHT_JSON.get(key) === work) INFLIGHT_JSON.delete(key); }).catch(() => {});
+  }
+  if (!signal) return work;
+  return new Promise((resolve, reject) => {
+    const abort = () => reject(new DOMException("Aborted", "AbortError"));
+    signal.addEventListener("abort", abort, { once: true });
+    if (signal.aborted) abort();
+    work.then(resolve, reject).finally(() => signal.removeEventListener("abort", abort));
+  });
 }
 async function proxyFetchText(targetUrl, signal, proxyCfg, timeoutMs = 6000) {
   const resp = await proxyFetchResponse(targetUrl, signal, proxyCfg, timeoutMs);
@@ -7452,10 +7499,12 @@ async function resolveProxiedVideoStreams(videoId, startSec, settings, signal) {
 
   const fetchFromInv = async base => {
     const data = await proxyFetchJson(`${base}/api/v1/videos/${videoId}`, raceSig, proxyCfg, 4200);
-    if (!data || (!Array.isArray(data.formatStreams) && !Array.isArray(data.adaptiveFormats))) throw new Error("Empty Invidious streams");
+    if (!data || (!Array.isArray(data.formatStreams) && !Array.isArray(data.adaptiveFormats) && !data.hlsUrl)) throw new Error("Empty Invidious streams");
     const host = new URL(base).hostname;
     const localStreams = [];
     const localSubs = [];
+    const hls = resolveRelativeToInstance(data.hlsUrl, base) || safeHttpsUrl(data.hlsUrl);
+    if (hls) localStreams.push({ id: `inv-hls-${host}`, label: `HLS Auto (${host})`, height: 720, kind: "hls", videoUrl: hls, mimeType: "application/vnd.apple.mpegurl", via: `Invidious HLS · ${host}` });
     const adaptive = Array.isArray(data.adaptiveFormats) ? data.adaptiveFormats : [];
     const audioAdapts = adaptive.filter(a => String(a?.type || "").startsWith("audio/")).sort((a, b) => (Number(b.bitrate) || 0) - (Number(a.bitrate) || 0));
     const bestInvAudio = audioAdapts[0] ? (resolveRelativeToInstance(`/latest_version?id=${videoId}&itag=${audioAdapts[0].itag}&local=true`, base) || safeHttpsUrl(audioAdapts[0].url)) : undefined;
@@ -7604,7 +7653,8 @@ async function gatherVideoMetadata(videoId, settings, apiKey, signal, onSourceRe
     if (!d.title) throw new Error("Empty");
     return {
       title: d.title,
-      channel: d.author_name
+      channel: d.author_name,
+      channelId: String(d.author_url || "").match(/\/channel\/(UC[\w-]{22})/)?.[1] || null
     };
   }), runSource("Return YouTube Dislike", async () => {
     const d = await proxyFetchJson(`https://returnyoutubedislikeapi.com/votes?videoId=${videoId}`, signal, proxyCfg);
@@ -7645,7 +7695,7 @@ async function gatherVideoMetadata(videoId, settings, apiKey, signal, onSourceRe
           views: d.viewCount ?? null,
           likes: d.likeCount ?? null,
           durationSec: d.lengthSeconds ?? null,
-          published: d.published ? new Date(d.published * 1000).toISOString() : null,
+          published: normalizePublishedIso(d.published) || null,
           subscribers: parseSubCountText(d.subCountText),
           category: d.genre || undefined,
           musicTrack: d.musicTracks?.[0]?.song ? {
@@ -7653,11 +7703,12 @@ async function gatherVideoMetadata(videoId, settings, apiKey, signal, onSourceRe
             artist: d.musicTracks[0].artist || "",
             album: d.musicTracks[0].album || ""
           } : undefined,
-          related: (d.recommendedVideos ?? []).filter(r => VIDEO_ID_RE.test(r.videoId)).slice(0, 12).map(r => ({
+          related: (d.recommendedVideos ?? []).filter(r => VIDEO_ID_RE.test(r.videoId)).slice(0, 20).map(r => ({
             id: r.videoId,
             title: r.title,
             channel: r.author,
             channelId: r.authorId || undefined,
+            views: r.viewCount ?? parseCompactViewText(r.viewCountText),
             durationSec: typeof r.lengthSeconds === "number" ? r.lengthSeconds : undefined
           }))
         };
@@ -8125,9 +8176,15 @@ function mapYtFeedVideo(raw) {
     isLive
   };
 }
+function normalizePublishedIso(value) {
+  if (value == null || value === "") return "";
+  const num = typeof value === "number" ? value : /^\d+(?:\.\d+)?$/.test(String(value)) ? Number(value) : null;
+  const date = new Date(num !== null ? (num < 1e12 ? num * 1000 : num) : value);
+  return Number.isFinite(date.getTime()) ? date.toISOString() : "";
+}
 function mapInvFeedVideo(raw, baseOrigin = "") {
   if (!VIDEO_ID_RE.test(raw.videoId ?? "") || !raw.title) return null;
-  const vc = raw.viewCount != null ? Number(raw.viewCount) : undefined;
+  const vc = raw.viewCount != null ? Number(raw.viewCount) : parseCompactViewText(raw.viewCountText);
   const durationSec = parseVideoDurationSec(raw.lengthSeconds ?? raw.duration ?? raw.length_seconds);
   const rawAvatar = raw.authorThumbnails?.at(-1)?.url || raw.authorThumbnail || "";
   return {
@@ -8137,7 +8194,7 @@ function mapInvFeedVideo(raw, baseOrigin = "") {
     channelId: raw.authorId ?? "",
     channelAvatar: normalizeCreatorAvatarUrl(rawAvatar, baseOrigin) ?? undefined,
     thumbnail: `https://i.ytimg.com/vi/${raw.videoId}/maxresdefault.jpg`,
-    published: raw.published ? new Date(raw.published * 1000).toISOString() : "",
+    published: normalizePublishedIso(raw.published),
     views: vc != null && Number.isFinite(vc) ? vc : undefined,
     durationSec,
     isLive: Boolean(raw.liveNow || raw.isLive)
@@ -8682,59 +8739,27 @@ function parseCompactViewText(txt) {
   return Math.round(base * mult);
 }
 
-async function fetchColdPopularFeed({ apiKey, region, signal, proxyCfg, invBases, pipedBases }) {
-  // 1) Official YouTube Data API v3 (1 quota unit, <250ms, works for IE / US / all regions!)
-  if (apiKey?.trim()) {
-    try {
-      const directCfg = { webProxyMode: "direct", webProxyProvider: "allorigins", customWebProxy: "" };
-      const d = await proxyFetchJson(ytApiUrl("videos", apiKey.trim(), {
-        part: "snippet,statistics,contentDetails",
-        chart: "mostPopular",
-        maxResults: "24",
-        regionCode: region || "US"
-      }), signal, directCfg, 5000);
-      const mapped = await enrichYtApiVideosWithDetails((d?.items ?? []).map(mapYtFeedVideo).filter(Boolean), apiKey.trim(), signal);
-      if (mapped.length > 0) {
-        return { videos: mapped, next: d?.nextPageToken ?? "", source: "YouTube Data API" };
-      }
-    } catch {}
+async function fetchColdPopularFeed({ apiKey, region, signal, proxyCfg, invBases = [], pipedBases = [] }) {
+  const tasks = [];
+  const nonempty = async (promise, map, source) => {
+    const raw = await promise;
+    const videos = map(raw).filter(Boolean).sort((a, b) => Number(!!a.isLive) - Number(!!b.isLive));
+    if (!videos.length) throw new Error("Empty feed");
+    return { videos, next: "", source };
+  };
+  if (isUsableYouTubeDataApiKey(apiKey)) {
+    const directCfg = { webProxyMode: "direct" };
+    tasks.push(nonempty(proxyFetchJson(ytApiUrl("videos", apiKey.trim(), { part: "snippet,statistics,contentDetails", chart: "mostPopular", maxResults: "24", regionCode: region || "US" }), signal, directCfg, 4500), d => (d.items || []).map(mapYtFeedVideo), "YouTube Data API"));
   }
-  // 2) Healthy Piped /trending
-  for (const pBase of pipedBases) {
-    if (signal?.aborted) break;
-    try {
-      const res = await proxyFetchJson(`${pBase}/trending?${new URLSearchParams({ region: region || "US" })}`, signal, proxyCfg, 4500);
-      const items = (Array.isArray(res) ? res : []).map(mapPipedFeedVideo).filter(Boolean);
-      if (items.length > 0) {
-        return { videos: items, next: "", source: `Piped (${new URL(pBase).hostname})` };
-      }
-    } catch {}
-  }
-  // 3) Healthy Invidious /trending -> /popular
-  for (const base of invBases) {
-    if (signal?.aborted) break;
-    for (const ep of [`trending?${new URLSearchParams({ region: region || "US" })}`, "popular"]) {
-      try {
-        const raw = await proxyFetchJson(`${base}/api/v1/${ep}`, signal, proxyCfg, 4500);
-        const items = (Array.isArray(raw) ? raw : []).map(r => mapInvFeedVideo(r, base)).filter(Boolean);
-        if (items.length > 0) {
-          return { videos: items, next: "", source: `Invidious (${new URL(base).hostname})` };
-        }
-      } catch {}
+  for (const base of invBases.slice(0, 3)) {
+    for (const ep of ["popular", `trending?region=${encodeURIComponent(region || "US")}`]) {
+      tasks.push(nonempty(proxyFetchJson(`${base}/api/v1/${ep}`, signal, proxyCfg, 4500), d => (Array.isArray(d) ? d : []).map(x => mapInvFeedVideo(x, base)), `Invidious (${new URL(base).hostname})`));
     }
   }
-  // 4) Fallback Piped /search when regional trending endpoint is empty for smaller regions (e.g. IE on some mirrors)
-  for (const pBase of pipedBases.slice(0, 2)) {
-    if (signal?.aborted) break;
-    try {
-      const res = await proxyFetchJson(`${pBase}/trending?region=US`, signal, proxyCfg, 4200);
-      const items = (Array.isArray(res) ? res : []).map(mapPipedFeedVideo).filter(Boolean);
-      if (items.length > 0) {
-        return { videos: items, next: "", source: `Piped (${new URL(pBase).hostname})` };
-      }
-    } catch {}
+  for (const base of pipedBases.slice(0, 3)) {
+    tasks.push(nonempty(proxyFetchJson(`${base}/trending?region=${encodeURIComponent(region || "US")}`, signal, proxyCfg, 4500), d => (Array.isArray(d) ? d : []).map(mapPipedFeedVideo), `Piped (${new URL(base).hostname})`));
   }
-  return null;
+  try { return await Promise.any(tasks); } catch { return null; }
 }
 
 async function fetchPersonalizedForYouFeed({
@@ -8778,22 +8803,6 @@ async function fetchPersonalizedForYouFeed({
     await Promise.allSettled(seeds.map(async (seed, idx) => {
       const seedLabel = seed.title.length > 34 ? seed.title.slice(0, 32).trim() + "…" : seed.title;
       const boost = idx === 0 ? 1.0 : 0.84;
-      // Try Piped /streams/{id} or Invidious /videos/{id} (keyless relatedStreams!)
-      for (const pBase of pipedBases.slice(0, 2)) {
-        try {
-          const d = await proxyFetchJson(`${pBase}/streams/${seed.id}`, stageSig, proxyCfg, 4200);
-          const rel = Array.isArray(d?.relatedStreams) ? d.relatedStreams : [];
-          if (rel.length > 0) {
-            sourcesUsed.add(`Piped (${new URL(pBase).hostname})`);
-            for (const item of rel.slice(0, 12)) {
-              const mv = mapPipedFeedVideo(item);
-              if (mv) pool.push({ ...mv, seedBoost: boost, recReason: `Similar to "${seedLabel}"` });
-            }
-            notifyPartialIfReady();
-            return;
-          }
-        } catch {}
-      }
       for (const iBase of invBases.slice(0, 2)) {
         try {
           const d = await proxyFetchJson(`${iBase}/api/v1/videos/${seed.id}`, stageSig, proxyCfg, 4200);
@@ -9051,9 +9060,25 @@ async function fetchYouTubeHtmlSearch(query, mode, signal, proxyCfg) {
       return;
     }
 
-    // 1) Standard Video Renderer
-    if (node.videoRenderer && VIDEO_ID_RE.test(node.videoRenderer.videoId || "")) {
-      const vr = node.videoRenderer;
+    // Modern lockups and older compact/grid search and watch results.
+    const lock = node.lockupViewModel;
+    if (lock?.contentType === "LOCKUP_CONTENT_TYPE_VIDEO" && VIDEO_ID_RE.test(lock.contentId || "") && !seenVid.has(lock.contentId)) {
+      const md = lock.metadata?.lockupMetadataViewModel || {};
+      const title = md.title?.content || "";
+      const rows = md.metadata?.contentMetadataViewModel?.metadataRows || [];
+      const parts = rows.flatMap(row => row.metadataParts || []);
+      const owner = parts[0]?.text;
+      const channel = owner?.content || "";
+      const browseId = owner?.commandRuns?.[0]?.onTap?.innertubeCommand?.browseEndpoint?.browseId || "";
+      const badge = lock.contentImage?.thumbnailViewModel?.overlays?.flatMap(x => x.thumbnailOverlayBadgeViewModel?.thumbnailBadges || []).map(x => x.thumbnailBadgeViewModel?.text).find(Boolean) || "";
+      if (title) {
+        seenVid.add(lock.contentId);
+        videos.push({ id: lock.contentId, title, channel, channelId: CHANNEL_ID_RE.test(browseId) ? browseId : "", thumbnail: `https://i.ytimg.com/vi/${lock.contentId}/hqdefault.jpg`, durationSec: parseVideoDurationSec(badge) || undefined, views: parseCompactViewText(parts.find(p => /views/i.test(p?.text?.content || ""))?.text?.content), published: "" });
+      }
+    }
+    const standardVideo = node.videoRenderer || node.compactVideoRenderer || node.gridVideoRenderer;
+    if (standardVideo && VIDEO_ID_RE.test(standardVideo.videoId || "")) {
+      const vr = standardVideo;
       const vid = vr.videoId;
       if (!seenVid.has(vid)) {
         const title = ytRunsText(vr.title);
@@ -9420,7 +9445,7 @@ async function fetchDiscoveryFeed(category, query, apiKey, settings, subscriptio
   }
   const hasYtKey = isUsableYouTubeDataApiKey(apiKey);
   const tasteSig = category === "home" && tasteProfile?.hasSignals ? tasteProfile.signature : "cold";
-  const cacheKey = `discovery:v9:${category}:${region}:${query}:${settings.instance}:${subscriptions.map(s => s.channelId).join(",")}:${pageToken}:${hasYtKey ? "api" : "proxy"}:${tasteSig}`;
+  const cacheKey = `discovery:v10:${category}:${region}:${query}:${settings.instance}:${subscriptions.map(s => s.channelId).join(",")}:${pageToken}:${hasYtKey ? "api" : "proxy"}:${tasteSig}`;
   const cached = await readStore("cache", cacheKey);
   if (!forceRefresh && cached?.feed?.videos?.length > 0 && Date.now() - cached.at < 420000) {
     return cached.feed;
@@ -10363,10 +10388,11 @@ function VideoPlayer(props) {
   const proxyConfigSig = `${settings.instance}|${settings.webProxyMode}|${settings.webProxyProvider}|${settings.customWebProxy}|${(settings.pipedInstances || []).join(",")}|${(settings.invidiousInstances || []).join(",")}|${settings.customEmbedProxy}`;
   React.useEffect(() => {
     const ctrl = new AbortController();
-    setBundle(prev => ({
-      ...prev,
-      embeds: buildProxiedEmbedList(videoId, start, settings)
-    }));
+    setBundle({ streams: [], subtitles: [], embeds: buildProxiedEmbedList(videoId, start, settings) });
+    if (engine !== "proxy-stream" && engine !== "audio-only") {
+      setResolvingStreams(false);
+      return () => ctrl.abort();
+    }
     setResolvingStreams(true);
     resolveProxiedVideoStreams(videoId, start, settings, ctrl.signal).then(res => {
       if (ctrl.signal.aborted) return;
@@ -10378,7 +10404,7 @@ function VideoPlayer(props) {
       if (!ctrl.signal.aborted) setResolvingStreams(false);
     });
     return () => ctrl.abort();
-  }, [videoId, proxyConfigSig]);
+  }, [videoId, proxyConfigSig, engine]);
   React.useEffect(() => {
     if (!bundle.streams.length) return;
     const idx = pickPreferredStream(bundle.streams, settings.preferredQuality, engine);
@@ -12362,7 +12388,7 @@ function parseLyricsTimestampSec(raw) {
 
 function parseXmlAttr(attrStr, attrName) {
   if (!attrStr) return null;
-  const escaped = attrName.replace(/[.*+?^${}()|[\]\\]/g, "\\function WatchDetailsSection({");
+  const escaped = attrName.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
   const re = new RegExp(`(?:^|\\s)${escaped}\\s*=\\s*(?:"([^"]*)"|'([^']*)')`, "i");
   const m = attrStr.match(re);
   return m ? (m[1] ?? m[2] ?? "") : null;
@@ -14117,7 +14143,32 @@ function WatchSecondaryRail({
     }
   }, [activeCueIdx, transcriptOpen, autoScrollTranscript, transcriptQuery]);
 
-  const relatedRaw = info?.related || [];
+  const [fallbackRelated, setFallbackRelated] = React.useState([]);
+  const [relatedFinished, setRelatedFinished] = React.useState(false);
+  React.useEffect(() => {
+    setFallbackRelated([]);
+    setRelatedFinished(false);
+    if (!videoId || settings.showRelated === false || info?.related?.length) return;
+    const ctrl = new AbortController();
+    const timer = setTimeout(async () => {
+      const cfg = { webProxyMode: settings.webProxyMode, webProxyProvider: settings.webProxyProvider, customWebProxy: settings.customWebProxy, wispEnabled: settings.wispEnabled, wispServers: settings.wispServers, customWispServer: settings.customWispServer };
+      const inv = [settings.instance, ...DEFAULT_INVIDIOUS_INSTANCES, ...(settings.invidiousInstances || [])].filter(x => x && !DEAD_MIRROR_HOST_RE.test(x)).slice(0, 3);
+      const piped = [...DEFAULT_PIPED_INSTANCES, ...(settings.pipedInstances || [])].filter(x => x && !DEAD_MIRROR_HOST_RE.test(x)).slice(0, 3);
+      const tasks = [];
+      const query = (info?.title || info?.channel || "").trim();
+      if (query) {
+        for (const base of piped) tasks.push(proxyFetchJson(`${base}/search?${new URLSearchParams({ q: query, filter: "videos" })}`, ctrl.signal, cfg, 4500).then(d => (d.items || []).map(mapPipedFeedVideo).filter(Boolean)));
+        for (const base of inv) tasks.push(proxyFetchJson(`${base}/api/v1/search?${new URLSearchParams({ q: query, type: "video" })}`, ctrl.signal, cfg, 4500).then(d => (Array.isArray(d) ? d : []).map(v => mapInvFeedVideo(v, base)).filter(Boolean)));
+      }
+      tasks.push(fetchColdPopularFeed({ apiKey: "", region: "US", signal: ctrl.signal, proxyCfg: cfg, invBases: inv, pipedBases: piped }).then(d => d?.videos || []));
+      try {
+        const result = await Promise.any(tasks.map(p => p.then(v => { const items = v.filter(x => x.id !== videoId); if (!items.length) throw new Error("empty"); return items; })));
+        if (!ctrl.signal.aborted) setFallbackRelated(result.slice(0, 20));
+      } catch {} finally { if (!ctrl.signal.aborted) setRelatedFinished(true); }
+    }, 950);
+    return () => { clearTimeout(timer); ctrl.abort(); };
+  }, [videoId, info?.title, Boolean(info?.related?.length), settings.instance, settings.webProxyMode, settings.webProxyProvider, settings.showRelated]);
+  const relatedRaw = info?.related?.length ? info.related : fallbackRelated;
   const notIntSet = React.useMemo(() => new Set(notInterestedIds), [notInterestedIds]);
   const filteredRelated = React.useMemo(() => {
     return relatedRaw.filter(rel => {
@@ -14231,7 +14282,7 @@ function WatchSecondaryRail({
     type: "button",
     onClick: () => setRelFilter(fid),
     className: VENDOR.cn("yt-chip px-3 text-xs cursor-pointer", relFilter === fid ? "yt-chip-active" : "bg-secondary text-foreground hover:bg-accent")
-  }, flbl))), relatedRaw.length === 0 ? React.createElement("div", {
+  }, flbl))), relatedRaw.length === 0 && relatedFinished ? React.createElement("p", { className: "text-sm text-muted-foreground", role: "status" }, "Recommendations are unavailable right now. Try another video or check your connection.") : relatedRaw.length === 0 ? React.createElement("div", {
     className: "space-y-2.5"
   }, Array.from({ length: 5 }, (_, i) => React.createElement("div", {
     key: i,
@@ -16503,6 +16554,10 @@ function useHydratedMediaDetails(videos, historyMap, settings, active) {
       const needVideoLookup = [];
       const chToVideoIds = new Map();
 
+      const localKeys = [...new Set(videos.flatMap(v => [v.id, ...(v.channelId ? [`ch-avatar:${v.channelId}`] : [])]))];
+      const localValues = await Promise.all(localKeys.map(key => readStore("cache", key)));
+      const localCache = new Map(localKeys.map((key, i) => [key, localValues[i]]));
+      if (cancelled) return;
       for (const v of videos) {
         if (v.channelAvatar && v.channelId) {
           MEMORY_CHANNEL_AVATARS.set(v.channelId, v.channelAvatar);
@@ -16516,7 +16571,7 @@ function useHydratedMediaDetails(videos, historyMap, settings, active) {
         let resolvedAvatar = v.channelAvatar || curExtra?.avatar || (resolvedChannelId ? MEMORY_CHANNEL_AVATARS.get(resolvedChannelId) : undefined);
 
         if (!resolvedAvatar && resolvedChannelId) {
-          const cachedCh = await readStore("cache", `ch-avatar:${resolvedChannelId}`);
+          const cachedCh = localCache.get(`ch-avatar:${resolvedChannelId}`);
           if (cachedCh?.avatar) {
             resolvedAvatar = cachedCh.avatar;
             MEMORY_CHANNEL_AVATARS.set(resolvedChannelId, resolvedAvatar);
@@ -16524,7 +16579,7 @@ function useHydratedMediaDetails(videos, historyMap, settings, active) {
         }
         let resolvedDur = curExtra?.durationSec;
         if (!hasDur || !resolvedAvatar || !resolvedChannel) {
-          const cachedVid = await readStore("cache", v.id);
+          const cachedVid = localCache.get(v.id);
           if (cachedVid) {
             if (!hasDur && cachedVid.durationSec > 0) resolvedDur = cachedVid.durationSec;
             if (!resolvedChannel && cachedVid.channel && cachedVid.channel !== "Unknown channel") {
@@ -16574,7 +16629,7 @@ function useHydratedMediaDetails(videos, historyMap, settings, active) {
       const invBases = rankHealthyBases([...new Set([...(settings.instance && !settings.instance.includes("nadeko.net") ? [settings.instance] : []), ...DEFAULT_INVIDIOUS_INSTANCES, ...(settings.invidiousInstances || [])].map(u => safeHttpsUrl(u)?.replace(/\/$/, "")).filter(Boolean))]).slice(0, 3);
 
       // 1) Fast direct noembed pass for any items missing creator name (< 120ms, zero proxy needed!)
-      const missingCreatorItems = needVideoLookup.filter(v => !v.channel && !fromCache[v.id]?.channel).slice(0, 16);
+      const missingCreatorItems = needVideoLookup.filter(v => !v.channel && !fromCache[v.id]?.channel).slice(0, 6);
       if (missingCreatorItems.length > 0) {
         const noembedSettled = await Promise.allSettled(
           missingCreatorItems.map(async v => [v.id, await fetchNoembedVideoCreator(v.id, ctrl.signal, 1600)])
@@ -16604,7 +16659,7 @@ function useHydratedMediaDetails(videos, historyMap, settings, active) {
       }
 
       // 2) Batch-hydrate creator avatars per unique channelId
-      const chEntries = [...chToVideoIds.entries()].slice(0, 24);
+      const chEntries = [...chToVideoIds.entries()].slice(0, 8);
       const fetchChannelAvatar = async cid => {
         for (const pBase of pipedBases) {
           try {
@@ -16651,7 +16706,7 @@ function useHydratedMediaDetails(videos, historyMap, settings, active) {
 
       // 3) Hydrate full per-video duration + avatar + channel + channelId + likes via Piped/Invidious
       const fetchOneVideo = async vObj => {
-        for (const pBase of pipedBases) {
+        for (const pBase of []) {
           try {
             const d = await proxyFetchJson(`${pBase}/streams/${vObj.id}`, ctrl.signal, proxyCfg, 4500);
             const dur = parseVideoDurationSec(d?.duration);
@@ -16680,7 +16735,7 @@ function useHydratedMediaDetails(videos, historyMap, settings, active) {
         return null;
       };
 
-      const vTargets = needVideoLookup.slice(0, 20);
+      const vTargets = needVideoLookup.slice(0, 6);
       for (let i = 0; i < vTargets.length; i += 4) {
         if (cancelled) return;
         const chunk = vTargets.slice(i, i + 4);
@@ -17177,6 +17232,7 @@ function DiscoverSection({
   const [shortsViewMode, setShortsViewMode] = React.useState(settings.shortsScrollMode !== false ? "scroll" : "grid");
   const [selectedShortId, setSelectedShortId] = React.useState("");
   const subFileRef = React.useRef(null);
+  const lastFeedRef = React.useRef({ key: "", at: 0 });
 
   React.useEffect(() => {
     if (searchType && searchType !== searchTypeFilter) {
@@ -17254,6 +17310,8 @@ function DiscoverSection({
   React.useEffect(() => {
     if (!active || browseTarget) return;
     if (category === "search" && !activeQuery.trim()) return;
+    const feedKey = JSON.stringify([category, effectiveCategory, effectiveQuery, searchTypeFilter, apiKey, settings.instance, settings.webProxyMode, settings.webProxyProvider, settings.wispEnabled, subscriptions.map(x => x.channelId), pageToken, refreshCounter, region, tasteProfile.signature]);
+    if (videos.length && lastFeedRef.current.key === feedKey && Date.now() - lastFeedRef.current.at < 90000) { setLoading(false); return; }
     const controller = new AbortController();
     setLoading(true);
     setError("");
@@ -17296,7 +17354,9 @@ function DiscoverSection({
     const handlePartial = !pageToken ? partialRes => {
       if (controller.signal.aborted || !partialRes?.videos?.length) return;
       setVideos(prev => [...new Map([...partialRes.videos, ...prev].map(v => [v.id, v])).values()]);
+      lastFeedRef.current = { key: feedKey, at: Date.now() };
       if (partialRes.source) setSourceLabel(partialRes.source);
+      setLoading(false);
     } : null;
 
     fetchDiscoveryFeed(
@@ -17317,6 +17377,7 @@ function DiscoverSection({
       setVideos(prev => [...new Map([...(pageToken ? prev : []), ...res.videos].map(v => [v.id, v])).values()]);
       setNextToken(res.next);
       setSourceLabel(res.source);
+      if (res.videos?.length) lastFeedRef.current = { key: feedKey, at: Date.now() };
       if (res.warning) setStatusNotice(res.warning);
     }).catch(err => {
       if (!controller.signal.aborted) {
@@ -17787,7 +17848,7 @@ function DiscoverSection({
     "aria-label": `Remove ${sub.title}`,
     title: "Unsubscribe",
     onClick: () => setSubscriptions(subscriptions.filter(x => x.channelId !== sub.channelId))
-  }, React.createElement(Icons.Trash2, { className: "size-3.5" })))))), error && React.createElement("div", {
+  }, React.createElement(Icons.Trash2, { className: "size-3.5" })))))), error && videos.length === 0 && React.createElement("div", {
     className: "mb-5 flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-destructive/40 bg-destructive/10 px-4 py-3"
   }, React.createElement("p", { role: "alert", className: "text-sm text-destructive" }, error), React.createElement(Button, {
     variant: "secondary",
@@ -20228,6 +20289,8 @@ function WatcherApp({
   const playerRef = React.useRef(null);
   const urlInputRef = React.useRef(null);
   const lastTickTimeRef = React.useRef(null);
+  const progressUiTickRef = React.useRef(0);
+  const progressSaveRef = React.useRef({ key: "", at: 0, delta: 0 });
   const recordedPlaySessionRef = React.useRef("");
   const {
     library,
@@ -20880,9 +20943,12 @@ function WatcherApp({
   }, [settings.pauseHistory, ready, update]);
 
   const handlePlayerProgress = React.useCallback((pos, dur) => {
-    setLivePosition(pos);
-    if (!videoId || settings.pauseHistory || !ready) return;
     const now = performance.now();
+    if (now - progressUiTickRef.current >= 1000) {
+      progressUiTickRef.current = now;
+      setLivePosition(pos);
+    }
+    if (!videoId || settings.pauseHistory || !ready) return;
     const rawDelta = lastTickTimeRef.current != null ? (now - lastTickTimeRef.current) / 1000 : 0;
     lastTickTimeRef.current = now;
     const delta = rawDelta > 0 && rawDelta < 5 ? rawDelta : 0;
@@ -20891,13 +20957,22 @@ function WatcherApp({
     if (isFirstPlay) {
       recordedPlaySessionRef.current = sessionKey;
     }
-    if (!isFirstPlay && delta < 0.2) return;
+    const save = progressSaveRef.current;
+    if (save.key !== sessionKey) { save.key = sessionKey; save.at = 0; save.delta = 0; save.atEnd = false; }
+    save.delta += delta;
+    const nearEnd = dur > 0 && dur - pos <= 5;
+    const endChanged = nearEnd && !save.atEnd;
+    save.atEnd = nearEnd;
+    if (!isFirstPlay && !endChanged && now - save.at < 5000) return;
+    const elapsed = save.delta;
+    save.delta = 0;
+    save.at = now;
     update(prev => {
       const existing = prev.history.find(h => h.videoId === videoId) ?? createBlankVideo(videoId, info?.title ?? videoId, info?.channel ?? "", info?.channelId ?? "");
       const updated = trackVideoProgress({
         ...existing,
         watchCount: existing.watchCount + (isFirstPlay ? 1 : 0)
-      }, pos, dur ?? info?.durationSec ?? existing.duration ?? 0, delta, Date.now());
+      }, pos, dur ?? info?.durationSec ?? existing.duration ?? 0, elapsed, Date.now());
       return {
         ...prev,
         history: [updated, ...prev.history.filter(h => h.videoId !== videoId)]
@@ -21505,7 +21580,7 @@ function WatcherApp({
     id: "discover-panel",
     "aria-labelledby": "discover-tab",
     hidden: activeTab !== "discover"
-  }, ready && React.createElement(DiscoverSection, {
+  }, !ready && activeTab === "discover" ? React.createElement(FeedSkeletonGrid, { gridClass: "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4", count: 6, spacious: true }) : ready && React.createElement(DiscoverSection, {
     category: discoverCategory,
     onChangeCategory: navigateDiscoverCategory,
     activeQuery: discoverQuery,
@@ -21881,4 +21956,4 @@ lucide-react/dist/esm/lucide-react.js:
    * See the LICENSE file in the root directory of this source tree.
    *)
 */
-</script><script>(function(){function c(){var b=a.contentDocument||(a.contentWindow&&a.contentWindow.document);if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a58be834bb14bde0',t:'MTc5NDM4NTUzNA=='};var l=window.parent.location,o;try{o=new URL(l.origin).origin}catch(e){try{o=new URL(new URL(l.href).origin).origin}catch(e){o=''}}var u='/cdn-cgi/challenge-platform/scripts/jsd/main.js?ray=a58be834bb14bde0',a=document.createElement('script');a.src=o?new URL(u,o).href:u;document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body></html>
+</script><script>(function(){function c(){var b=a.contentDocument||(a.contentWindow&&a.contentWindow.document);if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a59c6bc468f424eb',t:'MTc5NDU1ODY5NQ=='};var l=window.parent.location,o;try{o=new URL(l.origin).origin}catch(e){try{o=new URL(new URL(l.href).origin).origin}catch(e){o=''}}var u='/cdn-cgi/challenge-platform/scripts/jsd/main.js?ray=a59c6bc468f424eb',a=document.createElement('script');a.src=o?new URL(u,o).href:u;document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body></html>
