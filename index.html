@@ -5234,6 +5234,18 @@ function YouTubeBrandLogo({ className = "h-5 w-auto shrink-0" }) {
   })));
 }
 
+// YouTube Shorts mark (Simple Icons, CC0); Material navigation glyphs (Apache-2.0).
+function YtNavIcon({ name, active = false }) {
+  const paths = {
+    home: active ? "M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z" : "M12 5.69l5 4.5V18h-2v-6H9v6H7v-7.81l5-4.5M12 3L2 12h3v8h6v-6h2v6h6v-8h3L12 3z",
+    subscriptions: active ? "M20 8H4V6h16v2zm-2-6H6v2h12V2zm4 10v8c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2v-8c0-1.1.9-2 2-2h16c1.1 0 2 .9 2 2zm-6 4l-6-3.27v6.53L16 16z" : "M4 6h16v2H4zm2-4h12v2H6zm14 8H4c-1.1 0-2 .9-2 2v8c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2v-8c0-1.1-.9-2-2-2zm0 10H4v-8h16v8zm-10-7.27v6.53L16 16z",
+    you: "M4 6H2v14c0 1.1.9 2 2 2h14v-2H4V6zm16-4H8c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm0 14H8V4h12v12zM12 5.5v9l6-4.5z",
+    history: "M13 3c-4.97 0-9 4.03-9 9H1l3.89 3.89.07.14L9 12H6c0-3.87 3.13-7 7-7s7 3.13 7 7-3.13 7-7 7c-1.93 0-3.68-.79-4.94-2.06l-1.42 1.42C8.27 19.99 10.51 21 13 21c4.97 0 9-4.03 9-9s-4.03-9-9-9zm-1 5v5l4.25 2.52.77-1.28-3.52-2.09V8z",
+    watch: "M10 16.5l6-4.5-6-4.5zM12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z",
+    shorts: "m18.931 9.99-1.441-.601 1.717-.913a4.48 4.48 0 0 0 1.874-6.078 4.506 4.506 0 0 0-6.09-1.874L4.792 5.929a4.504 4.504 0 0 0-2.402 4.193 4.521 4.521 0 0 0 2.666 3.904c.036.012 1.442.6 1.442.6l-1.706.901a4.51 4.51 0 0 0-2.369 3.967A4.528 4.528 0 0 0 6.93 24c.725 0 1.437-.174 2.08-.508l10.21-5.406a4.494 4.494 0 0 0 2.39-4.192 4.525 4.525 0 0 0-2.678-3.904ZM9.597 15.19V8.824l6.007 3.184z"
+  };
+  return React.createElement("svg", { width: 24, height: 24, viewBox: "0 0 24 24", fill: "currentColor", "aria-hidden": "true", style: { flexShrink: 0 } }, React.createElement("path", { d: paths[name] || paths.watch }));
+}
 function Icon({
   name,
   size = 16,
@@ -5261,9 +5273,34 @@ const VisualPrefsContext = React.createContext({
   thumbAspect: "16/9",
   deShoutTitles: false
 });
+// Decode entities as text, never as markup. Restrict parsing to individual entity tokens.
+const TITLE_ENTITY_CACHE = new Map();
+function decodeTitleText(raw) {
+  if (typeof raw !== "string" || !raw.includes("&")) return raw;
+  if (TITLE_ENTITY_CACHE.has(raw)) return TITLE_ENTITY_CACHE.get(raw);
+  const named = { amp: "&", quot: '"', apos: "'", lt: "<", gt: ">", nbsp: "\u00a0" };
+  let textarea = null;
+  const result = raw.replace(/&(#x[0-9a-f]+|#[0-9]+|[a-z][a-z0-9]+);/gi, (entity, token) => {
+    if (token[0] === "#") {
+      const hex = token[1]?.toLowerCase() === "x";
+      const n = parseInt(token.slice(hex ? 2 : 1), hex ? 16 : 10);
+      if (!Number.isFinite(n) || n <= 0 || n > 0x10ffff || (n >= 0xd800 && n <= 0xdfff)) return entity;
+      try { return String.fromCodePoint(n); } catch { return entity; }
+    }
+    if (Object.prototype.hasOwnProperty.call(named, token)) return named[token];
+    if (typeof document === "undefined") return entity;
+    textarea ||= document.createElement("textarea");
+    textarea.innerHTML = entity;
+    return textarea.value || entity;
+  });
+  if (TITLE_ENTITY_CACHE.size >= 500) TITLE_ENTITY_CACHE.delete(TITLE_ENTITY_CACHE.keys().next().value);
+  TITLE_ENTITY_CACHE.set(raw, result);
+  return result;
+}
 function formatDisplayTitle(raw, deShout) {
-  if (!raw || !deShout) return raw;
-  return raw.replace(/([!?])\1{2,}/g, "$1").replace(/\b(?:[A-Z]{2,}'[A-Z]+|[A-Z]{4,})\b/g, word => word.charAt(0) + word.slice(1).toLowerCase());
+  const title = decodeTitleText(raw);
+  if (!title || !deShout || typeof title !== "string") return title;
+  return title.replace(/([!?])\1{2,}/g, "$1").replace(/\b(?:[A-Z]{2,}'[A-Z]+|[A-Z]{4,})\b/g, word => word.charAt(0) + word.slice(1).toLowerCase());
 }
 function normalizeCreatorAvatarUrl(raw, baseOrigin = "") {
   if (typeof raw !== "string" || !raw.trim()) return null;
@@ -7774,7 +7811,7 @@ async function gatherVideoMetadata(videoId, settings, apiKey, signal, onSourceRe
     };
   }), runSource("DeArrow", async () => {
     const d = await proxyFetchJson(`https://sponsor.ajay.app/api/branding?videoID=${videoId}`, signal, proxyCfg);
-    const cleanTitle = d.titles?.[0]?.title ? String(d.titles[0].title).replace(/>/g, "") : undefined;
+    const cleanTitle = d.titles?.[0]?.title ? String(d.titles[0].title) : undefined;
     return {
       communityTitle: cleanTitle,
       communityThumbnail: d.thumbnails?.[0]?.timestamp != null ? `https://dearrow-thumb.ajay.app/api/v1/getThumbnail?videoID=${videoId}&time=${d.thumbnails[0].timestamp}` : undefined
@@ -11054,7 +11091,7 @@ function VideoPlayer(props) {
   }), React.createElement("div", {
     className: "min-w-0"
   }, React.createElement("p", {
-    className: "truncate text-xs font-semibold text-foreground group-hover:text-primary transition"
+    className: "truncate text-xs font-semibold text-foreground transition"
   }, title || videoId), React.createElement("p", {
     className: "truncate text-[10px] text-muted-foreground"
   }, channel || engineBadgeLabel, " \xB7 ", formatDuration(liveTime)))), React.createElement("div", {
@@ -12068,7 +12105,7 @@ function ActiveQueueStrip({
       className: "min-w-0 flex-1"
     }, React.createElement("p", {
       className: "line-clamp-2 font-semibold leading-snug text-foreground"
-    }, item.title), React.createElement("p", {
+    }, decodeTitleText(item.title)), React.createElement("p", {
       className: "mt-0.5 truncate text-[11px] text-muted-foreground"
     }, item.channel))), removeHandler && React.createElement(Button, {
       variant: "ghost",
@@ -12220,72 +12257,200 @@ function StudyNotesPanel({
     className: "size-3"
   }))))));
 }
-function ThumbnailGrabberPanel({
-  videoId,
-  dearrowThumb,
-  onCopy
-}) {
-  const Button = SoftButton;
-  const variants = [{
-    label: "Web-Proxied Max HD (wsrv.nl)",
-    url: `https://wsrv.nl/?url=${encodeURIComponent(`https://i.ytimg.com/vi/${videoId}/maxresdefault.jpg`)}`
-  }, {
-    label: "Max Resolution (1280×720)",
-    url: `https://i.ytimg.com/vi/${videoId}/maxresdefault.jpg`
-  }, {
-    label: "Standard HD (640×480)",
-    url: `https://i.ytimg.com/vi/${videoId}/sddefault.jpg`
-  }, {
-    label: "High Quality (480×360)",
-    url: `https://i.ytimg.com/vi/${videoId}/hqdefault.jpg`
-  }, {
-    label: "Medium Quality (320×180)",
-    url: `https://i.ytimg.com/vi/${videoId}/mqdefault.jpg`
-  }, ...(dearrowThumb ? [{
-    label: "DeArrow Community Frame",
-    url: dearrowThumb
-  }] : [])];
-  return React.createElement("div", {
-    className: "mt-4 rounded-lg border border-border bg-card p-4"
-  }, React.createElement("h3", {
-    className: "mb-3 flex items-center gap-2 font-semibold"
-  }, React.createElement(Icons.Image, {
-    className: "size-4 text-primary"
-  }), "Video Thumbnails"), React.createElement("div", {
-    className: "grid gap-3 sm:grid-cols-2 lg:grid-cols-3"
-  }, variants.map(v => React.createElement("div", {
-    key: v.label,
-    className: "rounded-md bg-secondary/60 p-2.5 text-xs"
-  }, React.createElement(SafeThumb, {
-    videoId: videoId,
-    src: v.url,
-    alt: v.label,
-    className: "mb-2"
-  }), React.createElement("p", {
-    className: "mb-2 font-medium"
-  }, v.label), React.createElement("div", {
-    className: "flex gap-1.5"
-  }, React.createElement(Button, {
-    size: "sm",
-    variant: "secondary",
-    className: "h-7 flex-1 text-xs",
-    onClick: () => onCopy(v.url)
-  }, React.createElement(Icons.Copy, {
-    className: "size-3"
-  }), "Copy URL"), React.createElement(Button, {
-    asChild: true,
-    size: "sm",
-    variant: "ghost",
-    className: "h-7 text-xs"
-  }, React.createElement("a", {
-    href: v.url,
-    target: "_blank",
-    rel: "noreferrer",
-    download: true
-  }, React.createElement(Icons.ExternalLink, {
-    className: "size-3"
-  }), "Open")))))));
+// Past image versions depend on public archives or snapshots saved on this device.
+const SESSION_THUMB_SNAPSHOTS = new Map();
+function parseArchivedThumbnailRows(rows, videoId) {
+  if (!Array.isArray(rows) || !VIDEO_ID_RE.test(videoId)) return [];
+  const seen = new Set();
+  const out = [];
+  for (const row of rows.slice(1)) {
+    if (!Array.isArray(row)) continue;
+    const [stamp, original, digest, status, mime] = row;
+    if (!/^\d{14}$/.test(stamp || "") || status !== "200" || !/^image\//i.test(mime || "")) continue;
+    let u;
+    try { u = new URL(original); } catch { continue; }
+    if (!/^https?:$/.test(u.protocol) || !/^(?:i[0-4]?\.ytimg\.com|img\.youtube\.com)$/i.test(u.hostname) || !new RegExp(`^/vi(?:_webp)?/${videoId}/(?:maxresdefault|sddefault|hqdefault|mqdefault)\\.(?:jpg|webp)$`).test(u.pathname)) continue;
+    const key = digest && digest !== "-" ? digest : `${stamp}:${original}`;
+    if (seen.has(key)) continue;
+    seen.add(key);
+    const date = `${stamp.slice(0,4)}-${stamp.slice(4,6)}-${stamp.slice(6,8)}`;
+    out.push({ key, stamp, label: `Archived ${date}`, description: `Wayback capture · ${u.pathname.split('/').pop()}`, url: `https://web.archive.org/web/${stamp}im_/${u.href}`, type: "archived" });
+  }
+  return out;
 }
+async function persistThumbnailSnapshots(videoId, records) {
+  SESSION_THUMB_SNAPSHOTS.set(videoId, records);
+  const db = await openLibraryDB();
+  if (!db) return false;
+  return await new Promise(resolve => {
+    let settled = false;
+    const done = ok => { if (!settled) { settled = true; clearTimeout(timer); resolve(ok); } };
+    const timer = setTimeout(() => done(false), 4000);
+    try {
+      const tx = db.transaction("meta", "readwrite");
+      tx.objectStore("meta").put(records, `thumbnail-snapshots:${videoId}`);
+      tx.oncomplete = () => done(true);
+      tx.onerror = tx.onabort = () => done(false);
+    } catch { done(false); }
+  });
+}
+function readThumbnailBlobAsDataUrl(blob) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => resolve(reader.result);
+    reader.onerror = () => reject(new Error("Unable to read the image."));
+    reader.readAsDataURL(blob);
+  });
+}
+async function fetchCurrentThumbnailSnapshot(videoId, signal) {
+  for (const quality of ["maxresdefault", "hqdefault"]) {
+    try {
+      const res = await fetch(`https://i.ytimg.com/vi/${videoId}/${quality}.jpg?watcher_snapshot=${Date.now()}`, { signal: signal ? AbortSignal.any([signal, AbortSignal.timeout(8000)]) : AbortSignal.timeout(8000), cache: "no-store", referrerPolicy: "no-referrer" });
+      if (!res.ok) continue;
+      const blob = await res.blob();
+      if (!/^image\/(?:jpeg|png|webp)$/i.test(blob.type) || blob.size > 2 * 1024 * 1024 || blob.size < 300) continue;
+      if (quality === "maxresdefault") {
+        const objUrl = URL.createObjectURL(blob);
+        const width = await new Promise(resolve => {
+          const img = new Image();
+          img.onload = () => resolve(img.naturalWidth);
+          img.onerror = () => resolve(0);
+          img.src = objUrl;
+        });
+        URL.revokeObjectURL(objUrl);
+        if (width <= 120) continue;
+      }
+      return blob;
+    } catch (e) { if (signal?.aborted) throw e; }
+  }
+  throw new Error("Could not capture the current image. Check your connection or import an image instead.");
+}
+function ThumbnailGrabberPanel({ videoId, dearrowThumb, settings, onCopy }) {
+  const Button = SoftButton;
+  const [community, setCommunity] = React.useState([]);
+  const [archive, setArchive] = React.useState([]);
+  const [archiveState, setArchiveState] = React.useState("idle");
+  const [saved, setSaved] = React.useState([]);
+  const [localReady, setLocalReady] = React.useState(false);
+  const [selected, setSelected] = React.useState(null);
+  const [busy, setBusy] = React.useState(false);
+  const [notice, setNotice] = React.useState("");
+  const ctrlRef = React.useRef(null);
+  const uploadRef = React.useRef(null);
+  const generation = React.useRef(0);
+  const cfg = { webProxyMode: settings.webProxyMode, webProxyProvider: settings.webProxyProvider, customWebProxy: settings.customWebProxy, wispEnabled: settings.wispEnabled, wispServers: settings.wispServers, customWispServer: settings.customWispServer };
+  React.useEffect(() => {
+    const epoch = ++generation.current;
+    const ctrl = new AbortController();
+    ctrlRef.current = ctrl;
+    setCommunity([]); setArchive([]); setArchiveState("idle"); setSelected(null); setNotice(""); setBusy(false);
+    const sessionCopy = SESSION_THUMB_SNAPSHOTS.get(videoId);
+    setSaved(sessionCopy || []); setLocalReady(Boolean(sessionCopy));
+    if (!sessionCopy) readStore("meta", `thumbnail-snapshots:${videoId}`).then(records => {
+      if (!ctrl.signal.aborted && generation.current === epoch) {
+        const valid = Array.isArray(records) ? records.filter(r => typeof r?.data === "string" && /^data:image\/(?:jpeg|png|webp|gif);base64,/i.test(r.data)).slice(0, 8) : [];
+        setSaved(valid); SESSION_THUMB_SNAPSHOTS.set(videoId, valid); setLocalReady(true);
+      }
+    }).catch(() => { if (!ctrl.signal.aborted && generation.current === epoch) setLocalReady(true); });
+    proxyFetchJson(`https://sponsor.ajay.app/api/branding?videoID=${videoId}`, ctrl.signal, cfg, 5000).then(data => {
+      if (ctrl.signal.aborted) return;
+      const seen = new Set();
+      const items = (Array.isArray(data?.thumbnails) ? data.thumbnails : []).flatMap(t => {
+        if (t.original || typeof t.timestamp !== "number" || !Number.isFinite(t.timestamp) || t.timestamp < 0 || t.timestamp > 864000 || seen.has(t.timestamp)) return [];
+        seen.add(t.timestamp);
+        return [{ key: `community:${t.timestamp}`, label: `Community frame · ${formatDuration(t.timestamp)}`, description: `DeArrow submission · ${Number(t.votes) || 0} votes`, url: `https://dearrow-thumb.ajay.app/api/v1/getThumbnail?videoID=${videoId}&time=${encodeURIComponent(t.timestamp)}`, type: "community" }];
+      }).slice(0, 16);
+      setCommunity(items);
+    }).catch(() => {});
+    return () => ctrl.abort();
+  }, [videoId, settings.webProxyMode, settings.webProxyProvider, settings.customWebProxy, settings.wispEnabled]);
+  const current = [
+    { key: "max", label: "Current thumbnail · max resolution", description: "Current image, if available", url: `https://i.ytimg.com/vi/${videoId}/maxresdefault.jpg`, type: "current" },
+    { key: "hq", label: "Current thumbnail · high quality", description: "Another size of the current image", url: `https://i.ytimg.com/vi/${videoId}/hqdefault.jpg`, type: "current" },
+    ...[1, 2, 3].map(n => ({ key: `frame:${n}`, label: `YouTube generated frame ${n}`, description: "A video frame, not a confirmed A/B test", url: `https://i.ytimg.com/vi/${videoId}/${n}.jpg`, type: "frame" }))
+  ];
+  if (dearrowThumb && community.length === 0) current.push({ key: "dearrow", label: "Community frame", description: "DeArrow submission", url: dearrowThumb, type: "community" });
+  const items = [...current, ...community, ...archive, ...saved.map(record => ({ key: record.id, label: record.label, description: `Saved on this device · ${new Date(record.at).toLocaleString()}`, url: record.data, type: "saved" }))];
+  const chosen = items.find(i => i.key === selected) || items[0];
+  const findArchived = async () => {
+    const epoch = generation.current;
+    setArchiveState("loading"); setNotice("");
+    const urls = ["maxresdefault.jpg", "hqdefault.jpg", "mqdefault.jpg"].map(q => `https://i.ytimg.com/vi/${videoId}/${q}`);
+    const jobs = urls.map(url => {
+      const params = new URLSearchParams({ url, output: "json", fl: "timestamp,original,digest,statuscode,mimetype", collapse: "digest", limit: "60" });
+      params.append("filter", "statuscode:200"); params.append("filter", "mimetype:image/.*");
+      return proxyFetchJson(`https://web.archive.org/cdx/search/cdx?${params}`, ctrlRef.current?.signal, cfg, 9000);
+    });
+    const results = await Promise.allSettled(jobs);
+    if (generation.current !== epoch || ctrlRef.current?.signal.aborted) return;
+    const successes = results.filter(r => r.status === "fulfilled");
+    if (!successes.length) { setArchiveState("error"); return; }
+    const seen = new Set();
+    const found = successes.flatMap(r => parseArchivedThumbnailRows(r.value, videoId)).sort((a,b) => b.stamp.localeCompare(a.stamp)).filter(x => !seen.has(x.key) && seen.add(x.key)).slice(0, 40);
+    setArchive(found); setArchiveState("done");
+    if (successes.length < jobs.length) setNotice("Some archive searches failed; these results may be incomplete.");
+  };
+  const addSnapshot = async (blob, label) => {
+    if (!/^image\/(jpeg|png|webp|gif)$/i.test(blob.type) || blob.size > 2 * 1024 * 1024 || blob.size < 100) throw new Error("Choose a JPEG, PNG, WebP or GIF image under 2 MB.");
+    if (saved.length >= 8) throw new Error("Maximum 8 saved images for this video. Delete one first.");
+    const epoch = generation.current;
+    const data = await readThumbnailBlobAsDataUrl(blob);
+    if (generation.current !== epoch) return;
+    if (saved.some(x => x.data === data)) { setNotice("This exact image is already saved."); return; }
+    const record = { id: `saved:${Date.now()}:${Math.random().toString(36).slice(2,8)}`, label, data, at: Date.now() };
+    const next = [record, ...saved];
+    const persistent = await persistThumbnailSnapshots(videoId, next);
+    if (generation.current !== epoch) return;
+    setSaved(next); setSelected(record.id);
+    setNotice(persistent ? "Image saved on this device." : "Image saved for this session only; browser storage is unavailable.");
+  };
+  const saveCurrent = async () => {
+    const epoch = generation.current;
+    setBusy(true); setNotice("");
+    try { const blob = await fetchCurrentThumbnailSnapshot(videoId, ctrlRef.current?.signal); await addSnapshot(blob, "Saved current thumbnail"); }
+    catch (e) { if (generation.current === epoch) setNotice(e?.message || "Could not save this thumbnail."); }
+    finally { if (generation.current === epoch) setBusy(false); }
+  };
+  const importFile = async e => {
+    const file = e.target.files?.[0]; e.target.value = "";
+    if (!file) return;
+    const epoch = generation.current;
+    setBusy(true); setNotice("");
+    try { await addSnapshot(file, `Imported: ${file.name.slice(0, 70)}`); } catch (err) { if (generation.current === epoch) setNotice(err?.message || "Could not import image."); }
+    finally { if (generation.current === epoch) setBusy(false); }
+  };
+  const removeSaved = async key => {
+    const epoch = generation.current;
+    const next = saved.filter(x => x.id !== key);
+    const persistent = await persistThumbnailSnapshots(videoId, next);
+    if (generation.current !== epoch) return;
+    setSaved(next); setSelected(null);
+    setNotice(persistent ? "Saved image removed." : "Removed for this session; persistent storage was unavailable.");
+  };
+  return React.createElement("section", { className: "mt-4 rounded-2xl border border-border bg-card p-4", "aria-label": "Thumbnail viewer" },
+    React.createElement("h3", { className: "mb-2 flex items-center gap-2 font-semibold" }, React.createElement(Icons.Image, { className: "size-4" }), "Thumbnail viewer"),
+    React.createElement("p", { className: "mb-3 text-xs text-muted-foreground" }, "Current sizes, generated frames, community submissions and any available Wayback captures. YouTube does not publicly provide a complete thumbnail history or its A/B-test candidates."),
+    React.createElement("div", { className: "flex flex-wrap gap-2" },
+      React.createElement(Button, { size: "sm", variant: "secondary", disabled: archiveState === "loading", onClick: findArchived }, archiveState === "loading" ? "Searching archive…" : "Find archived thumbnails"),
+      React.createElement(Button, { size: "sm", variant: "secondary", disabled: busy || !localReady, onClick: saveCurrent }, busy ? "Saving…" : "Save current snapshot"),
+      React.createElement(Button, { size: "sm", variant: "secondary", disabled: busy || !localReady, onClick: () => uploadRef.current?.click() }, "Import image"),
+      React.createElement("input", { type: "file", ref: uploadRef, accept: "image/jpeg,image/png,image/webp,image/gif", onChange: importFile, style: { display: "none" } })),
+    archiveState === "done" && React.createElement("p", { className: "mt-2 text-xs text-muted-foreground", role: "status" }, archive.length ? `${archive.length} archived image captures found (not necessarily A/B tests).` : "No archived thumbnail images found."),
+    archiveState === "error" && React.createElement("p", { className: "mt-2 text-xs text-muted-foreground", role: "status" }, "Archive lookup unavailable. Try again later or open the Wayback Machine directly."),
+    notice && React.createElement("p", { className: "mt-2 text-xs text-muted-foreground", role: "status" }, notice),
+    chosen && React.createElement("div", { className: "mt-4" },
+      React.createElement("img", { key: chosen.key, src: chosen.url, alt: chosen.label, referrerPolicy: "no-referrer", style: { maxWidth: "100%", maxHeight: "450px", objectFit: "contain", borderRadius: "9px", background: "#181818" }, onError: e => { e.currentTarget.style.opacity = "0.35"; } }),
+      React.createElement("p", { className: "mt-2 text-sm font-semibold" }, chosen.label), React.createElement("p", { className: "text-xs text-muted-foreground" }, chosen.description),
+      React.createElement("div", { className: "mt-2 flex flex-wrap gap-2" },
+        chosen.type !== "saved" && React.createElement(Button, { size: "sm", variant: "secondary", onClick: () => onCopy(chosen.url) }, "Copy image URL"),
+        React.createElement("a", { href: chosen.url, target: "_blank", rel: "noopener noreferrer", download: chosen.type === "saved" ? `${videoId}-thumbnail.png` : undefined, className: "rounded-full bg-secondary px-3 py-2 text-xs font-medium" }, chosen.type === "saved" ? "Download saved image" : "Open image"),
+        chosen.type === "saved" && React.createElement(Button, { size: "sm", variant: "secondary", onClick: () => removeSaved(chosen.key) }, "Delete saved image"))),
+    React.createElement("div", { className: "mt-4 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4" }, items.map(item => React.createElement("button", { key: item.key, type: "button", "aria-label": item.label, "aria-pressed": chosen?.key === item.key, onClick: () => setSelected(item.key), className: "rounded-xl bg-secondary p-2 text-left text-xs cursor-pointer", style: chosen?.key === item.key ? { outline: "2px solid currentColor" } : undefined },
+      React.createElement("img", { src: item.url, alt: "", loading: "lazy", referrerPolicy: "no-referrer", style: { width: "100%", aspectRatio: "16 / 9", objectFit: "cover", borderRadius: "6px", background: "#181818" }, onError: e => { e.currentTarget.style.opacity = "0.25"; } }), React.createElement("span", { className: "mt-1 block" }, item.label)))),
+    React.createElement("a", { href: `https://web.archive.org/web/*/https://www.youtube.com/watch?v=${videoId}`, target: "_blank", rel: "noopener noreferrer", className: "mt-3 inline-block text-xs text-primary hover:underline" }, "Explore archived video pages on the Wayback Machine")
+  );
+}
+
 function ShareVideoModal({
   open,
   onClose,
@@ -14171,8 +14336,9 @@ function WatchDetailsSection({
     size: "sm",
     onClick: () => setThumbsOpen(v => !v),
     "aria-expanded": thumbsOpen,
+    "aria-label": "View video thumbnails",
     className: "h-9 rounded-full px-3"
-  }, React.createElement(Icons.Image, { className: "size-4" })))), statusMsg && React.createElement("p", {
+  }, React.createElement(Icons.Image, { className: "size-4" }), "Thumbnails"))), statusMsg && React.createElement("p", {
     role: "status",
     className: "mt-2 text-sm text-primary"
   }, statusMsg), notesOpen && React.createElement(StudyNotesPanel, {
@@ -14190,6 +14356,7 @@ function WatchDetailsSection({
   }), thumbsOpen && React.createElement(ThumbnailGrabberPanel, {
     videoId: id,
     dearrowThumb: info.communityThumbnail,
+    settings: settings,
     onCopy: u => void copyToClipboard(u, "Thumbnail URL copied.")
   }), settings.showDescription !== false && React.createElement("div", {
     onClick: () => { if (!descExpanded) setDescExpanded(true); },
@@ -14498,7 +14665,7 @@ function WatchSecondaryRail({
       onClick: () => onPlay(rel.id),
       className: "block w-full text-left cursor-pointer"
     }, React.createElement("p", {
-      className: "line-clamp-2 text-[13.5px] font-semibold leading-snug text-foreground group-hover:text-primary transition-colors"
+      className: "line-clamp-2 text-[13.5px] font-semibold leading-snug text-foreground transition-colors"
     }, formatDisplayTitle(rel.title, settings.deShoutTitles))), React.createElement("p", {
       className: "mt-1 truncate text-xs text-muted-foreground"
     }, rel.channelId && onChannel ? React.createElement("button", {
@@ -14991,7 +15158,7 @@ function NotificationsBellPopover({
       className: "min-w-0 flex-1"
     }, React.createElement("p", {
       className: "line-clamp-2 text-xs font-semibold leading-snug text-foreground"
-    }, it.title), React.createElement("p", {
+    }, decodeTitleText(it.title)), React.createElement("p", {
       className: "mt-1 text-[11px] text-muted-foreground"
     }, it.channel, it.published && Number.isFinite(Date.parse(it.published)) ? ` · ${formatRelativeDate(it.published, Date.now())}` : "")), React.createElement(SafeThumb, {
       videoId: it.id,
@@ -15853,7 +16020,7 @@ function DeviceLibrarySection({
     }, React.createElement("button", {
       type: "button",
       onClick: () => play(item.videoId),
-      className: "line-clamp-2 text-left text-[14px] font-medium leading-snug text-foreground group-hover:text-primary transition-colors cursor-pointer"
+      className: "line-clamp-2 text-left text-[14px] font-medium leading-snug text-foreground transition-colors cursor-pointer"
     }, formatDisplayTitle(item.title, library.settings.deShoutTitles)), effChannel && React.createElement("button", {
       type: "button",
       onClick: () => effChannelId && onBrowseChannel && onBrowseChannel(effChannelId, effChannel),
@@ -15894,7 +16061,7 @@ function DeviceLibrarySection({
   }, React.createElement(Icons.Play, { className: "size-3.5 fill-current" }), "Play all")))), React.createElement("button", {
     type: "button",
     onClick: onOpen,
-    className: "mt-2 line-clamp-1 text-left text-[14px] font-medium text-foreground group-hover:text-primary cursor-pointer"
+    className: "mt-2 line-clamp-1 text-left text-[14px] font-medium text-foreground cursor-pointer"
   }, title), React.createElement("p", {
     className: "text-xs text-muted-foreground"
   }, subtitle || "Private · View full playlist"));
@@ -16003,7 +16170,7 @@ function DeviceLibrarySection({
       }, React.createElement("button", {
         type: "button",
         onClick: () => play(item.videoId),
-        className: "line-clamp-2 text-left text-sm sm:text-[15px] font-medium leading-snug text-foreground group-hover:text-primary cursor-pointer"
+        className: "line-clamp-2 text-left text-sm sm:text-[15px] font-medium leading-snug text-foreground cursor-pointer"
       }, formatDisplayTitle(item.title, library.settings.deShoutTitles)), item.channel && React.createElement("button", {
         type: "button",
         onClick: () => item.channelId && onBrowseChannel && onBrowseChannel(item.channelId, item.channel),
@@ -16291,7 +16458,7 @@ function DeviceLibrarySection({
     }, React.createElement("button", {
       type: "button",
       onClick: () => play(item.videoId, !item.completed && item.lastPosition > 5 ? item.lastPosition : 0),
-      className: "line-clamp-2 text-left text-[15px] sm:text-[18px] font-normal leading-snug text-foreground group-hover:text-primary transition-colors cursor-pointer"
+      className: "line-clamp-2 text-left text-[15px] sm:text-[18px] font-normal leading-snug text-foreground transition-colors cursor-pointer"
     }, formatDisplayTitle(item.title, library.settings.deShoutTitles)), React.createElement("div", {
       className: "flex shrink-0 items-center gap-0.5"
     }, React.createElement("button", {
@@ -16561,7 +16728,7 @@ function DeviceLibrarySection({
     durationText: `${formatDuration(clip.startSec)} – ${formatDuration(clip.endSec)}`,
     badgeText: `✂ ${Math.max(1, clip.endSec - clip.startSec)}s`
   }), React.createElement("h3", {
-    className: "mt-2.5 line-clamp-2 text-[15px] font-medium leading-snug text-foreground group-hover:text-primary transition-colors"
+    className: "mt-2.5 line-clamp-2 text-[15px] font-medium leading-snug text-foreground transition-colors"
   }, clip.title)), React.createElement("p", {
     className: "mt-1 truncate text-xs text-muted-foreground"
   }, clip.videoTitle, clip.channel ? ` · ${clip.channel}` : "")), React.createElement("div", {
@@ -17073,7 +17240,7 @@ function BrowseDetailView({
     return list;
   }, [videos, channelQuery, channelSort]);
 
-  const displayTitle = meta.title || target.title || target.id;
+  const displayTitle = decodeTitleText(meta.title || target.title || target.id);
   const handleText = meta.handle || normalizeChannelHandle(target.handle) || (CHANNEL_ID_RE.test(resolvedChannelId || "") ? resolvedChannelId : "");
 
   return React.createElement("div", {
@@ -17243,7 +17410,7 @@ function BrowseDetailView({
     type: "button",
     onClick: () => onOpen({ kind: entry.kind, id: entry.id, title: entry.title }),
     className: "line-clamp-2 text-left text-sm font-bold hover:text-primary cursor-pointer"
-  }, entry.title), React.createElement("p", {
+  }, decodeTitleText(entry.title)), React.createElement("p", {
     className: "mt-0.5 truncate text-xs text-muted-foreground"
   }, entry.kind === "playlist" ? `${entry.channel || displayTitle}${entry.count != null ? ` · ${entry.count} videos` : ""}` : entry.subscribers != null ? `${formatCompact(entry.subscribers)} subscribers` : entry.description || entry.id))))), tab !== "about" && tab !== "community" && displayedChannelVideos.length > 0 && React.createElement("div", {
     className: tab === "shorts" ? getFeedGridClass(settings.gridColumns, true, "shorts") : "yt-feed-grid-4 grid grid-cols-1 gap-x-4 gap-y-8 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4"
@@ -17269,7 +17436,7 @@ function BrowseDetailView({
       durationText: effDur ? formatDuration(effDur) : undefined,
       badgeText: hist?.completed ? "Watched" : undefined
     }), React.createElement("h3", {
-      className: "mt-2.5 line-clamp-2 text-sm font-semibold leading-snug group-hover:text-primary transition-colors"
+      className: "mt-2.5 line-clamp-2 text-sm font-semibold leading-snug transition-colors"
     }, formatDisplayTitle(v.title, settings.deShoutTitles))), React.createElement("p", {
       className: "mt-1 text-xs text-muted-foreground"
     }, v.views != null ? `${formatCompact(v.views)} views` : "", v.published && Number.isFinite(Date.parse(v.published)) ? `${v.views != null ? " · " : ""}${formatRelativeDate(v.published, Date.now())}` : "")), React.createElement("div", {
@@ -17666,7 +17833,7 @@ function DiscoverSection({
         className: "min-w-0 flex-1"
       }, React.createElement("div", {
         className: "flex items-center gap-1.5"
-      }, React.createElement("p", { className: "truncate text-base font-bold text-foreground" }, ent.title), ent.verified && React.createElement("span", {
+      }, React.createElement("p", { className: "truncate text-base font-bold text-foreground" }, decodeTitleText(ent.title)), ent.verified && React.createElement("span", {
         title: "Verified channel",
         className: "inline-flex size-4 shrink-0 items-center justify-center rounded-full bg-muted-foreground/30 text-[10px] text-foreground"
       }, "✓")), React.createElement("p", {
@@ -17716,7 +17883,7 @@ function DiscoverSection({
       className: "min-w-0 flex-1"
     }, React.createElement("p", {
       className: "line-clamp-2 text-sm font-bold leading-snug text-foreground"
-    }, ent.title), React.createElement("p", {
+    }, decodeTitleText(ent.title)), React.createElement("p", {
       className: "mt-1 truncate text-xs text-muted-foreground"
     }, ent.channel ? `Playlist · ${ent.channel}` : "YouTube Playlist"), React.createElement("p", {
       className: "mt-1 text-[11px] font-medium text-primary"
@@ -18149,7 +18316,8 @@ function DiscoverSection({
       aspectClass: (category === "shorts" || (category === "search" && searchTypeFilter === "shorts")) ? "aspect-[9/16]" : undefined
     }), effDur != null && effDur > 0 && React.createElement("span", {
       "aria-label": `Duration ${formatDuration(effDur)}`,
-      className: "yt-duration-badge"
+      className: "yt-duration-badge",
+      style: { position: "absolute", bottom: "6px", right: "6px" }
     }, formatDuration(effDur)), v.isLive && React.createElement("span", {
       className: "absolute bottom-1.5 left-1.5 rounded bg-[#ff0033] px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-wider text-white"
     }, "LIVE"), prog > 0 && React.createElement("div", {
@@ -18180,7 +18348,7 @@ function DiscoverSection({
           onPlay(v.id);
         }
       },
-      className: VENDOR.cn("line-clamp-2 text-left font-semibold leading-snug text-foreground group-hover:text-primary cursor-pointer", isForYouSpacious ? "text-[16px]" : "text-[15px]")
+      className: VENDOR.cn("line-clamp-2 text-left font-semibold leading-snug text-foreground cursor-pointer", isForYouSpacious ? "text-[16px]" : "text-[15px]")
     }, formatDisplayTitle(v.title, settings.deShoutTitles)), effChannel && React.createElement("button", {
       type: "button",
       onClick: () => effChannelId ? onBrowse({ kind: "channel", id: effChannelId, title: effChannel }) : onSearchQuery(effChannel, "channel"),
@@ -18869,7 +19037,7 @@ function WrappedSection({
     className: "min-w-0 flex-1"
   }, React.createElement("p", {
     className: "line-clamp-1 text-xs font-semibold"
-  }, v.title), React.createElement("p", {
+  }, decodeTitleText(v.title)), React.createElement("p", {
     className: "truncate text-[11px] text-muted-foreground"
   }, v.channel)), React.createElement("span", {
     className: "shrink-0 text-sm text-muted-foreground"
@@ -20337,7 +20505,7 @@ function AddToPlaylistModal({
     className: "min-w-0 flex-1"
   }, React.createElement("p", {
     className: "line-clamp-2 text-sm font-semibold"
-  }, targetVideo.title), React.createElement("p", {
+  }, decodeTitleText(targetVideo.title)), React.createElement("p", {
     className: "truncate text-xs text-muted-foreground"
   }, targetVideo.channel))), onToggleWatchLater && React.createElement("button", {
     type: "button",
@@ -20572,7 +20740,7 @@ function WatcherApp({
       document.title = preset.title;
       applyFavicon(preset.iconSvg);
     } else {
-      document.title = info && videoId && info.title !== videoId ? `${settings.dearrow && info.communityTitle ? info.communityTitle : info.title} — YouTube Watcher` : "Portable YouTube Watcher v4";
+      document.title = info && videoId && info.title !== videoId ? `${decodeTitleText(settings.dearrow && info.communityTitle ? info.communityTitle : info.title)} — YouTube Watcher` : "Portable YouTube Watcher v4";
       applyFavicon(DEFAULT_FAVICON);
     }
   }, [settings.cloak, settings.cloakPreset, settings.dearrow, info?.title, info?.communityTitle, videoId]);
@@ -21413,27 +21581,27 @@ function WatcherApp({
       variant: activeTab === "discover" && discoverCategory === "home" && !browseTarget ? "secondary" : "ghost",
       className: itemCls,
       onClick: () => navigateDiscoverCategory("home")
-    }, React.createElement(Icons.House, null), "Home"), settings.showDiscoverTab !== false && settings.showShorts !== false && React.createElement(Button, {
+    }, React.createElement(YtNavIcon, { name: "home", active: activeTab === "discover" && discoverCategory === "home" && !browseTarget }), "Home"), settings.showDiscoverTab !== false && settings.showShorts !== false && React.createElement(Button, {
       variant: activeTab === "discover" && discoverCategory === "shorts" && !browseTarget ? "secondary" : "ghost",
       className: itemCls,
       onClick: () => navigateDiscoverCategory("shorts")
-    }, React.createElement(Icons.Zap, null), "Shorts"), settings.showDiscoverTab !== false && React.createElement(Button, {
+    }, React.createElement(YtNavIcon, { name: "shorts", active: activeTab === "discover" && discoverCategory === "shorts" && !browseTarget }), "Shorts"), settings.showDiscoverTab !== false && React.createElement(Button, {
       variant: activeTab === "discover" && discoverCategory === "subscriptions" && !browseTarget ? "secondary" : "ghost",
       className: itemCls,
       onClick: () => navigateDiscoverCategory("subscriptions")
-    }, React.createElement(Icons.Radio, null), "Subscriptions"), React.createElement(Button, {
+    }, React.createElement(YtNavIcon, { name: "subscriptions", active: activeTab === "discover" && discoverCategory === "subscriptions" && !browseTarget }), "Subscriptions"), React.createElement(Button, {
       variant: activeTab === "watcher" ? "secondary" : "ghost",
       className: itemCls,
       onClick: () => switchMainTab("watcher")
-    }, React.createElement(Icons.Play, null), "Watch"), settings.showLibrarySection !== false && !isExpanded && React.createElement(Button, {
+    }, React.createElement(YtNavIcon, { name: "watch", active: activeTab === "watcher" }), "Watch"), settings.showLibrarySection !== false && !isExpanded && React.createElement(Button, {
       variant: activeTab === "library" && librarySubTab === "you" ? "secondary" : "ghost",
       className: itemCls,
       onClick: () => switchMainTab("library", { librarySubTab: "you" })
-    }, React.createElement(Icons.Layers, null), "You"), settings.showLibrarySection !== false && !isExpanded && React.createElement(Button, {
+    }, React.createElement(YtNavIcon, { name: "you", active: activeTab === "library" }), "You"), settings.showLibrarySection !== false && !isExpanded && React.createElement(Button, {
       variant: activeTab === "library" && librarySubTab === "history" ? "secondary" : "ghost",
       className: itemCls,
       onClick: () => switchMainTab("library", { librarySubTab: "history" })
-    }, React.createElement(Icons.History, null), "History"), isExpanded && settings.showLibrarySection !== false && React.createElement(React.Fragment, null, React.createElement("div", {
+    }, React.createElement(YtNavIcon, { name: "history", active: activeTab === "library" && librarySubTab === "history" }), "History"), isExpanded && settings.showLibrarySection !== false && React.createElement(React.Fragment, null, React.createElement("div", {
       className: "my-1.5 border-t border-border/60"
     }), React.createElement("button", {
       type: "button",
