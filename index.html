@@ -4561,6 +4561,17 @@ html.dark .yt-logo-wordmark,
     .lg\:top-20 { top: calc(var(--spacing) * 20); }
   }
 }
+
+/* Responsive comments dock and timestamp-following region. */
+.yt-timed-comments { max-height: min(55vh, 570px); overflow-y: auto; overscroll-behavior: contain; padding: 4px; }
+.yt-timed-item, .yt-timed-active { border-radius: 12px; padding: 10px; margin-bottom: 8px; border: 1px solid transparent; }
+.yt-timed-active { background: var(--secondary); border-color: var(--primary); }
+.yt-time-chip { display: inline-block; border: 0; border-radius: 999px; padding: 3px 9px; margin-bottom: 8px; background: var(--secondary); color: var(--foreground); font-size: 12px; cursor: pointer; }
+.yt-time-chip:focus-visible, .yt-timed-comments:focus-visible { outline: 2px solid var(--primary); outline-offset: 2px; }
+@media (min-width: 1024px) {
+  .yt-comments-side { position: fixed; z-index: 35; top: calc(76px + env(safe-area-inset-top, 0px)); right: max(12px, env(safe-area-inset-right, 0px)); bottom: max(12px, env(safe-area-inset-bottom, 0px)); width: min(402px, 38vw); overflow-y: auto; overscroll-behavior: contain; margin: 0; padding: 16px; border: 1px solid var(--border); border-radius: 16px; background: var(--card); color: var(--card-foreground); box-shadow: 0 10px 32px #0008; }
+  .yt-comments-side.yt-comments-collapsed { bottom: auto; max-height: calc(100vh - 100px); }
+}
 </style></head><body><div id="root"></div><script>"use strict";(()=>{
 var vb=Object.create;var ji=Object.defineProperty;var Lb=Object.getOwnPropertyDescriptor;var bb=Object.getOwnPropertyNames;var Sb=Object.getPrototypeOf,Cb=Object.prototype.hasOwnProperty;var Ib=(e,a)=>()=>(e&&(a=e(e=0)),a);var yt=(e,a)=>()=>(a||e((a={exports:{}}).exports,a),a.exports),wb=(e,a)=>{for(var t in a)ji(e,t,{get:a[t],enumerable:!0})},kb=(e,a,t,l)=>{if(a&&typeof a=="object"||typeof a=="function")for(let o of bb(a))!Cb.call(e,o)&&o!==t&&ji(e,o,{get:()=>a[o],enumerable:!(l=Lb(a,o))||l.enumerable});return e};var P=(e,a,t)=>(t=e!=null?vb(Sb(e)):{},kb(a||!e||!e.__esModule?ji(t,"default",{value:e,enumerable:!0}):t,e));var tp=yt(Fe=>{"use strict";function Qi(e,a){var t=e.length;e.push(a);e:for(;0<t;){var l=t-1>>>1,o=e[l];if(0<Nn(o,a))e[l]=a,e[t]=o,t=l;else break e}}function Tt(e){return e.length===0?null:e[0]}function Pn(e){if(e.length===0)return null;var a=e[0],t=e.pop();if(t!==a){e[0]=t;e:for(var l=0,o=e.length,u=o>>>1;l<u;){var r=2*(l+1)-1,n=e[r],s=r+1,i=e[s];if(0>Nn(n,t))s<o&&0>Nn(i,n)?(e[l]=i,e[s]=t,l=s):(e[l]=n,e[r]=t,l=r);else if(s<o&&0>Nn(i,t))e[l]=i,e[s]=t,l=s;else break e}}return a}function Nn(e,a){var t=e.sortIndex-a.sortIndex;return t!==0?t:e.id-a.id}Fe.unstable_now=void 0;typeof performance=="object"&&typeof performance.now=="function"?(Ym=performance,Fe.unstable_now=function(){return Ym.now()}):(Xi=Date,Km=Xi.now(),Fe.unstable_now=function(){return Xi.now()-Km});var Ym,Xi,Km,Gt=[],yl=[],Ab=1,Ja=null,xa=3,Wi=!1,Gu=!1,ju=!1,Zi=!1,Zm=typeof setTimeout=="function"?setTimeout:null,Jm=typeof clearTimeout=="function"?clearTimeout:null,Qm=typeof setImmediate<"u"?setImmediate:null;function _n(e){for(var a=Tt(yl);a!==null;){if(a.callback===null)Pn(yl);else if(a.startTime<=e)Pn(yl),a.sortIndex=a.expirationTime,Qi(Gt,a);else break;a=Tt(yl)}}function Ji(e){if(ju=!1,_n(e),!Gu)if(Tt(Gt)!==null)Gu=!0,No||(No=!0,Oo());else{var a=Tt(yl);a!==null&&$i(Ji,a.startTime-e)}}var No=!1,Xu=-1,$m=5,ep=-1;function ap(){return Zi?!0:!(Fe.unstable_now()-ep<$m)}function Yi(){if(Zi=!1,No){var e=Fe.unstable_now();ep=e;var a=!0;try{e:{Gu=!1,ju&&(ju=!1,Jm(Xu),Xu=-1),Wi=!0;var t=xa;try{a:{for(_n(e),Ja=Tt(Gt);Ja!==null&&!(Ja.expirationTime>e&&ap());){var l=Ja.callback;if(typeof l=="function"){Ja.callback=null,xa=Ja.priorityLevel;var o=l(Ja.expirationTime<=e);if(e=Fe.unstable_now(),typeof o=="function"){Ja.callback=o,_n(e),a=!0;break a}Ja===Tt(Gt)&&Pn(Gt),_n(e)}else Pn(Gt);Ja=Tt(Gt)}if(Ja!==null)a=!0;else{var u=Tt(yl);u!==null&&$i(Ji,u.startTime-e),a=!1}}break e}finally{Ja=null,xa=t,Wi=!1}a=void 0}}finally{a?Oo():No=!1}}}var Oo;typeof Qm=="function"?Oo=function(){Qm(Yi)}:typeof MessageChannel<"u"?(Ki=new MessageChannel,Wm=Ki.port2,Ki.port1.onmessage=Yi,Oo=function(){Wm.postMessage(null)}):Oo=function(){Zm(Yi,0)};var Ki,Wm;function $i(e,a){Xu=Zm(function(){e(Fe.unstable_now())},a)}Fe.unstable_IdlePriority=5;Fe.unstable_ImmediatePriority=1;Fe.unstable_LowPriority=4;Fe.unstable_NormalPriority=3;Fe.unstable_Profiling=null;Fe.unstable_UserBlockingPriority=2;Fe.unstable_cancelCallback=function(e){e.callback=null};Fe.unstable_forceFrameRate=function(e){0>e||125<e?console.error("forceFrameRate takes a positive int between 0 and 125, forcing frame rates higher than 125 fps is not supported"):$m=0<e?Math.floor(1e3/e):5};Fe.unstable_getCurrentPriorityLevel=function(){return xa};Fe.unstable_next=function(e){switch(xa){case 1:case 2:case 3:var a=3;break;default:a=xa}var t=xa;xa=a;try{return e()}finally{xa=t}};Fe.unstable_requestPaint=function(){Zi=!0};Fe.unstable_runWithPriority=function(e,a){switch(e){case 1:case 2:case 3:case 4:case 5:break;default:e=3}var t=xa;xa=e;try{return a()}finally{xa=t}};Fe.unstable_scheduleCallback=function(e,a,t){var l=Fe.unstable_now();switch(typeof t=="object"&&t!==null?(t=t.delay,t=typeof t=="number"&&0<t?l+t:l):t=l,e){case 1:var o=-1;break;case 2:o=250;break;case 5:o=1073741823;break;case 4:o=1e4;break;default:o=5e3}return o=t+o,e={id:Ab++,callback:a,priorityLevel:e,startTime:t,expirationTime:o,sortIndex:-1},t>l?(e.sortIndex=t,Qi(yl,e),Tt(Gt)===null&&e===Tt(yl)&&(ju?(Jm(Xu),Xu=-1):ju=!0,$i(Ji,t-l))):(e.sortIndex=o,Qi(Gt,e),Gu||Wi||(Gu=!0,No||(No=!0,Oo()))),e};Fe.unstable_shouldYield=ap;Fe.unstable_wrapCallback=function(e){var a=xa;return function(){var t=xa;xa=a;try{return e.apply(this,arguments)}finally{xa=t}}}});var op=yt((zw,lp)=>{"use strict";lp.exports=tp()});var hp=yt(oe=>{"use strict";var td=Symbol.for("react.transitional.element"),Rb=Symbol.for("react.portal"),Tb=Symbol.for("react.fragment"),Mb=Symbol.for("react.strict_mode"),Db=Symbol.for("react.profiler"),Eb=Symbol.for("react.consumer"),Bb=Symbol.for("react.context"),Ob=Symbol.for("react.forward_ref"),Nb=Symbol.for("react.suspense"),_b=Symbol.for("react.memo"),ip=Symbol.for("react.lazy"),Pb=Symbol.for("react.activity"),up=Symbol.iterator;function Ub(e){return e===null||typeof e!="object"?null:(e=up&&e[up]||e["@@iterator"],typeof e=="function"?e:null)}var dp={isMounted:function(){return!1},enqueueForceUpdate:function(){},enqueueReplaceState:function(){},enqueueSetState:function(){}},cp=Object.assign,fp={};function Po(e,a,t){this.props=e,this.context=a,this.refs=fp,this.updater=t||dp}Po.prototype.isReactComponent={};Po.prototype.setState=function(e,a){if(typeof e!="object"&&typeof e!="function"&&e!=null)throw Error("takes an object of state variables to update or a function which returns an object of state variables.");this.updater.enqueueSetState(this,e,a,"setState")};Po.prototype.forceUpdate=function(e){this.updater.enqueueForceUpdate(this,e,"forceUpdate")};function mp(){}mp.prototype=Po.prototype;function ld(e,a,t){this.props=e,this.context=a,this.refs=fp,this.updater=t||dp}var od=ld.prototype=new mp;od.constructor=ld;cp(od,Po.prototype);od.isPureReactComponent=!0;var rp=Array.isArray;function ad(){}var Be={H:null,A:null,T:null,S:null},pp=Object.prototype.hasOwnProperty;function ud(e,a,t){var l=t.ref;return{$$typeof:td,type:e,key:a,ref:l!==void 0?l:null,props:t}}function zb(e,a){return ud(e.type,a,e.props)}function rd(e){return typeof e=="object"&&e!==null&&e.$$typeof===td}function qb(e){var a={"=":"=0",":":"=2"};return"$"+e.replace(/[=:]/g,function(t){return a[t]})}var np=/\/+/g;function ed(e,a){return typeof e=="object"&&e!==null&&e.key!=null?qb(""+e.key):a.toString(36)}function Hb(e){switch(e.status){case"fulfilled":return e.value;case"rejected":throw e.reason;default:switch(typeof e.status=="string"?e.then(ad,ad):(e.status="pending",e.then(function(a){e.status==="pending"&&(e.status="fulfilled",e.value=a)},function(a){e.status==="pending"&&(e.status="rejected",e.reason=a)})),e.status){case"fulfilled":return e.value;case"rejected":throw e.reason}}throw e}function _o(e,a,t,l,o){var u=typeof e;(u==="undefined"||u==="boolean")&&(e=null);var r=!1;if(e===null)r=!0;else switch(u){case"bigint":case"string":case"number":r=!0;break;case"object":switch(e.$$typeof){case td:case Rb:r=!0;break;case ip:return r=e._init,_o(r(e._payload),a,t,l,o)}}if(r)return o=o(e),r=l===""?"."+ed(e,0):l,rp(o)?(t="",r!=null&&(t=r.replace(np,"$&/")+"/"),_o(o,a,t,"",function(i){return i})):o!=null&&(rd(o)&&(o=zb(o,t+(o.key==null||e&&e.key===o.key?"":(""+o.key).replace(np,"$&/")+"/")+r)),a.push(o)),1;r=0;var n=l===""?".":l+":";if(rp(e))for(var s=0;s<e.length;s++)l=e[s],u=n+ed(l,s),r+=_o(l,a,t,u,o);else if(s=Ub(e),typeof s=="function")for(e=s.call(e),s=0;!(l=e.next()).done;)l=l.value,u=n+ed(l,s++),r+=_o(l,a,t,u,o);else if(u==="object"){if(typeof e.then=="function")return _o(Hb(e),a,t,l,o);throw a=String(e),Error("Objects are not valid as a React child (found: "+(a==="[object Object]"?"object with keys {"+Object.keys(e).join(", ")+"}":a)+"). If you meant to render a collection of children, use an array instead.")}return r}function Un(e,a,t){if(e==null)return e;var l=[],o=0;return _o(e,l,"","",function(u){return a.call(t,u,o++)}),l}function Fb(e){if(e._status===-1){var a=e._result;a=a(),a.then(function(t){(e._status===0||e._status===-1)&&(e._status=1,e._result=t)},function(t){(e._status===0||e._status===-1)&&(e._status=2,e._result=t)}),e._status===-1&&(e._status=0,e._result=a)}if(e._status===1)return e._result.default;throw e._result}var sp=typeof reportError=="function"?reportError:function(e){if(typeof window=="object"&&typeof window.ErrorEvent=="function"){var a=new window.ErrorEvent("error",{bubbles:!0,cancelable:!0,message:typeof e=="object"&&e!==null&&typeof e.message=="string"?String(e.message):String(e),error:e});if(!window.dispatchEvent(a))return}else if(typeof process=="object"&&typeof process.emit=="function"){process.emit("uncaughtException",e);return}console.error(e)},Vb={map:Un,forEach:function(e,a,t){Un(e,function(){a.apply(this,arguments)},t)},count:function(e){var a=0;return Un(e,function(){a++}),a},toArray:function(e){return Un(e,function(a){return a})||[]},only:function(e){if(!rd(e))throw Error("React.Children.only expected to receive a single React element child.");return e}};oe.Activity=Pb;oe.Children=Vb;oe.Component=Po;oe.Fragment=Tb;oe.Profiler=Db;oe.PureComponent=ld;oe.StrictMode=Mb;oe.Suspense=Nb;oe.__CLIENT_INTERNALS_DO_NOT_USE_OR_WARN_USERS_THEY_CANNOT_UPGRADE=Be;oe.__COMPILER_RUNTIME={__proto__:null,c:function(e){return Be.H.useMemoCache(e)}};oe.cache=function(e){return function(){return e.apply(null,arguments)}};oe.cacheSignal=function(){return null};oe.cloneElement=function(e,a,t){if(e==null)throw Error("The argument must be a React element, but you passed "+e+".");var l=cp({},e.props),o=e.key;if(a!=null)for(u in a.key!==void 0&&(o=""+a.key),a)!pp.call(a,u)||u==="key"||u==="__self"||u==="__source"||u==="ref"&&a.ref===void 0||(l[u]=a[u]);var u=arguments.length-2;if(u===1)l.children=t;else if(1<u){for(var r=Array(u),n=0;n<u;n++)r[n]=arguments[n+2];l.children=r}return ud(e.type,o,l)};oe.createContext=function(e){return e={$$typeof:Bb,_currentValue:e,_currentValue2:e,_threadCount:0,Provider:null,Consumer:null},e.Provider=e,e.Consumer={$$typeof:Eb,_context:e},e};oe.createElement=function(e,a,t){var l,o={},u=null;if(a!=null)for(l in a.key!==void 0&&(u=""+a.key),a)pp.call(a,l)&&l!=="key"&&l!=="__self"&&l!=="__source"&&(o[l]=a[l]);var r=arguments.length-2;if(r===1)o.children=t;else if(1<r){for(var n=Array(r),s=0;s<r;s++)n[s]=arguments[s+2];o.children=n}if(e&&e.defaultProps)for(l in r=e.defaultProps,r)o[l]===void 0&&(o[l]=r[l]);return ud(e,u,o)};oe.createRef=function(){return{current:null}};oe.forwardRef=function(e){return{$$typeof:Ob,render:e}};oe.isValidElement=rd;oe.lazy=function(e){return{$$typeof:ip,_payload:{_status:-1,_result:e},_init:Fb}};oe.memo=function(e,a){return{$$typeof:_b,type:e,compare:a===void 0?null:a}};oe.startTransition=function(e){var a=Be.T,t={};Be.T=t;try{var l=e(),o=Be.S;o!==null&&o(t,l),typeof l=="object"&&l!==null&&typeof l.then=="function"&&l.then(ad,sp)}catch(u){sp(u)}finally{a!==null&&t.types!==null&&(a.types=t.types),Be.T=a}};oe.unstable_useCacheRefresh=function(){return Be.H.useCacheRefresh()};oe.use=function(e){return Be.H.use(e)};oe.useActionState=function(e,a,t){return Be.H.useActionState(e,a,t)};oe.useCallback=function(e,a){return Be.H.useCallback(e,a)};oe.useContext=function(e){return Be.H.useContext(e)};oe.useDebugValue=function(){};oe.useDeferredValue=function(e,a){return Be.H.useDeferredValue(e,a)};oe.useEffect=function(e,a){return Be.H.useEffect(e,a)};oe.useEffectEvent=function(e){return Be.H.useEffectEvent(e)};oe.useId=function(){return Be.H.useId()};oe.useImperativeHandle=function(e,a,t){return Be.H.useImperativeHandle(e,a,t)};oe.useInsertionEffect=function(e,a){return Be.H.useInsertionEffect(e,a)};oe.useLayoutEffect=function(e,a){return Be.H.useLayoutEffect(e,a)};oe.useMemo=function(e,a){return Be.H.useMemo(e,a)};oe.useOptimistic=function(e,a){return Be.H.useOptimistic(e,a)};oe.useReducer=function(e,a,t){return Be.H.useReducer(e,a,t)};oe.useRef=function(e){return Be.H.useRef(e)};oe.useState=function(e){return Be.H.useState(e)};oe.useSyncExternalStore=function(e,a,t){return Be.H.useSyncExternalStore(e,a,t)};oe.useTransition=function(){return Be.H.useTransition()};oe.version="19.2.8"});var ue=yt((Hw,gp)=>{"use strict";gp.exports=hp()});var xp=yt(ba=>{"use strict";var Gb=ue();function yp(e){var a="https://react.dev/errors/"+e;if(1<arguments.length){a+="?args[]="+encodeURIComponent(arguments[1]);for(var t=2;t<arguments.length;t++)a+="&args[]="+encodeURIComponent(arguments[t])}return"Minified React error #"+e+"; visit "+a+" for the full message or use the non-minified dev environment for full errors and additional helpful warnings."}function xl(){}var La={d:{f:xl,r:function(){throw Error(yp(522))},D:xl,C:xl,L:xl,m:xl,X:xl,S:xl,M:xl},p:0,findDOMNode:null},jb=Symbol.for("react.portal");function Xb(e,a,t){var l=3<arguments.length&&arguments[3]!==void 0?arguments[3]:null;return{$$typeof:jb,key:l==null?null:""+l,children:e,containerInfo:a,implementation:t}}var Yu=Gb.__CLIENT_INTERNALS_DO_NOT_USE_OR_WARN_USERS_THEY_CANNOT_UPGRADE;function zn(e,a){if(e==="font")return"";if(typeof a=="string")return a==="use-credentials"?a:""}ba.__DOM_INTERNALS_DO_NOT_USE_OR_WARN_USERS_THEY_CANNOT_UPGRADE=La;ba.createPortal=function(e,a){var t=2<arguments.length&&arguments[2]!==void 0?arguments[2]:null;if(!a||a.nodeType!==1&&a.nodeType!==9&&a.nodeType!==11)throw Error(yp(299));return Xb(e,a,null,t)};ba.flushSync=function(e){var a=Yu.T,t=La.p;try{if(Yu.T=null,La.p=2,e)return e()}finally{Yu.T=a,La.p=t,La.d.f()}};ba.preconnect=function(e,a){typeof e=="string"&&(a?(a=a.crossOrigin,a=typeof a=="string"?a==="use-credentials"?a:"":void 0):a=null,La.d.C(e,a))};ba.prefetchDNS=function(e){typeof e=="string"&&La.d.D(e)};ba.preinit=function(e,a){if(typeof e=="string"&&a&&typeof a.as=="string"){var t=a.as,l=zn(t,a.crossOrigin),o=typeof a.integrity=="string"?a.integrity:void 0,u=typeof a.fetchPriority=="string"?a.fetchPriority:void 0;t==="style"?La.d.S(e,typeof a.precedence=="string"?a.precedence:void 0,{crossOrigin:l,integrity:o,fetchPriority:u}):t==="script"&&La.d.X(e,{crossOrigin:l,integrity:o,fetchPriority:u,nonce:typeof a.nonce=="string"?a.nonce:void 0})}};ba.preinitModule=function(e,a){if(typeof e=="string")if(typeof a=="object"&&a!==null){if(a.as==null||a.as==="script"){var t=zn(a.as,a.crossOrigin);La.d.M(e,{crossOrigin:t,integrity:typeof a.integrity=="string"?a.integrity:void 0,nonce:typeof a.nonce=="string"?a.nonce:void 0})}}else a==null&&La.d.M(e)};ba.preload=function(e,a){if(typeof e=="string"&&typeof a=="object"&&a!==null&&typeof a.as=="string"){var t=a.as,l=zn(t,a.crossOrigin);La.d.L(e,t,{crossOrigin:l,integrity:typeof a.integrity=="string"?a.integrity:void 0,nonce:typeof a.nonce=="string"?a.nonce:void 0,type:typeof a.type=="string"?a.type:void 0,fetchPriority:typeof a.fetchPriority=="string"?a.fetchPriority:void 0,referrerPolicy:typeof a.referrerPolicy=="string"?a.referrerPolicy:void 0,imageSrcSet:typeof a.imageSrcSet=="string"?a.imageSrcSet:void 0,imageSizes:typeof a.imageSizes=="string"?a.imageSizes:void 0,media:typeof a.media=="string"?a.media:void 0})}};ba.preloadModule=function(e,a){if(typeof e=="string")if(a){var t=zn(a.as,a.crossOrigin);La.d.m(e,{as:typeof a.as=="string"&&a.as!=="script"?a.as:void 0,crossOrigin:t,integrity:typeof a.integrity=="string"?a.integrity:void 0})}else La.d.m(e)};ba.requestFormReset=function(e){La.d.r(e)};ba.unstable_batchedUpdates=function(e,a){return e(a)};ba.useFormState=function(e,a,t){return Yu.H.useFormState(e,a,t)};ba.useFormStatus=function(){return Yu.H.useHostTransitionStatus()};ba.version="19.2.8"});var qn=yt((Vw,Lp)=>{"use strict";function vp(){if(!(typeof __REACT_DEVTOOLS_GLOBAL_HOOK__>"u"||typeof __REACT_DEVTOOLS_GLOBAL_HOOK__.checkDCE!="function"))try{__REACT_DEVTOOLS_GLOBAL_HOOK__.checkDCE(vp)}catch(e){console.error(e)}}vp(),Lp.exports=xp()});var Ex=yt(ci=>{"use strict";var ta=op(),Xh=ue(),Yb=qn();function A(e){var a="https://react.dev/errors/"+e;if(1<arguments.length){a+="?args[]="+encodeURIComponent(arguments[1]);for(var t=2;t<arguments.length;t++)a+="&args[]="+encodeURIComponent(arguments[t])}return"Minified React error #"+e+"; visit "+a+" for the full message or use the non-minified dev environment for full errors and additional helpful warnings."}function Yh(e){return!(!e||e.nodeType!==1&&e.nodeType!==9&&e.nodeType!==11)}function Br(e){var a=e,t=e;if(e.alternate)for(;a.return;)a=a.return;else{e=a;do a=e,(a.flags&4098)!==0&&(t=a.return),e=a.return;while(e)}return a.tag===3?t:null}function Kh(e){if(e.tag===13){var a=e.memoizedState;if(a===null&&(e=e.alternate,e!==null&&(a=e.memoizedState)),a!==null)return a.dehydrated}return null}function Qh(e){if(e.tag===31){var a=e.memoizedState;if(a===null&&(e=e.alternate,e!==null&&(a=e.memoizedState)),a!==null)return a.dehydrated}return null}function bp(e){if(Br(e)!==e)throw Error(A(188))}function Kb(e){var a=e.alternate;if(!a){if(a=Br(e),a===null)throw Error(A(188));return a!==e?null:e}for(var t=e,l=a;;){var o=t.return;if(o===null)break;var u=o.alternate;if(u===null){if(l=o.return,l!==null){t=l;continue}break}if(o.child===u.child){for(u=o.child;u;){if(u===t)return bp(o),e;if(u===l)return bp(o),a;u=u.sibling}throw Error(A(188))}if(t.return!==l.return)t=o,l=u;else{for(var r=!1,n=o.child;n;){if(n===t){r=!0,t=o,l=u;break}if(n===l){r=!0,l=o,t=u;break}n=n.sibling}if(!r){for(n=u.child;n;){if(n===t){r=!0,t=u,l=o;break}if(n===l){r=!0,l=u,t=o;break}n=n.sibling}if(!r)throw Error(A(189))}}if(t.alternate!==l)throw Error(A(190))}if(t.tag!==3)throw Error(A(188));return t.stateNode.current===t?e:a}function Wh(e){var a=e.tag;if(a===5||a===26||a===27||a===6)return e;for(e=e.child;e!==null;){if(a=Wh(e),a!==null)return a;e=e.sibling}return null}var _e=Object.assign,Qb=Symbol.for("react.element"),Hn=Symbol.for("react.transitional.element"),ar=Symbol.for("react.portal"),Vo=Symbol.for("react.fragment"),Zh=Symbol.for("react.strict_mode"),qd=Symbol.for("react.profiler"),Jh=Symbol.for("react.consumer"),Jt=Symbol.for("react.context"),Nc=Symbol.for("react.forward_ref"),Hd=Symbol.for("react.suspense"),Fd=Symbol.for("react.suspense_list"),_c=Symbol.for("react.memo"),vl=Symbol.for("react.lazy");Symbol.for("react.scope");var Vd=Symbol.for("react.activity");Symbol.for("react.legacy_hidden");Symbol.for("react.tracing_marker");var Wb=Symbol.for("react.memo_cache_sentinel");Symbol.for("react.view_transition");var Sp=Symbol.iterator;function Ku(e){return e===null||typeof e!="object"?null:(e=Sp&&e[Sp]||e["@@iterator"],typeof e=="function"?e:null)}var Zb=Symbol.for("react.client.reference");function Gd(e){if(e==null)return null;if(typeof e=="function")return e.$$typeof===Zb?null:e.displayName||e.name||null;if(typeof e=="string")return e;switch(e){case Vo:return"Fragment";case qd:return"Profiler";case Zh:return"StrictMode";case Hd:return"Suspense";case Fd:return"SuspenseList";case Vd:return"Activity"}if(typeof e=="object")switch(e.$$typeof){case ar:return"Portal";case Jt:return e.displayName||"Context";case Jh:return(e._context.displayName||"Context")+".Consumer";case Nc:var a=e.render;return e=e.displayName,e||(e=a.displayName||a.name||"",e=e!==""?"ForwardRef("+e+")":"ForwardRef"),e;case _c:return a=e.displayName||null,a!==null?a:Gd(e.type)||"Memo";case vl:a=e._payload,e=e._init;try{return Gd(e(a))}catch{}}return null}var tr=Array.isArray,ee=Xh.__CLIENT_INTERNALS_DO_NOT_USE_OR_WARN_USERS_THEY_CANNOT_UPGRADE,Le=Yb.__DOM_INTERNALS_DO_NOT_USE_OR_WARN_USERS_THEY_CANNOT_UPGRADE,lo={pending:!1,data:null,method:null,action:null},jd=[],Go=-1;function Ot(e){return{current:e}}function sa(e){0>Go||(e.current=jd[Go],jd[Go]=null,Go--)}function De(e,a){Go++,jd[Go]=e.current,e.current=a}var Bt=Ot(null),vr=Ot(null),Ml=Ot(null),Ls=Ot(null);function bs(e,a){switch(De(Ml,a),De(vr,e),De(Bt,null),a.nodeType){case 9:case 11:e=(e=a.documentElement)&&(e=e.namespaceURI)?Th(e):0;break;default:if(e=a.tagName,a=a.namespaceURI)a=Th(a),e=xx(a,e);else switch(e){case"svg":e=1;break;case"math":e=2;break;default:e=0}}sa(Bt),De(Bt,e)}function su(){sa(Bt),sa(vr),sa(Ml)}function Xd(e){e.memoizedState!==null&&De(Ls,e);var a=Bt.current,t=xx(a,e.type);a!==t&&(De(vr,e),De(Bt,t))}function Ss(e){vr.current===e&&(sa(Bt),sa(vr)),Ls.current===e&&(sa(Ls),Mr._currentValue=lo)}var nd,Cp;function $l(e){if(nd===void 0)try{throw Error()}catch(t){var a=t.stack.trim().match(/\n( *(at )?)/);nd=a&&a[1]||"",Cp=-1<t.stack.indexOf(`
     at`)?" (<anonymous>)":-1<t.stack.indexOf("@")?"@unknown:0:0":""}return`
@@ -6062,6 +6073,9 @@ function createDefaultSettings() {
     showWrappedTab: true,
     showLibrarySection: true,
     showComments: true,
+    preloadComments: true,
+    preloadBrowse: true,
+    commentsLayout: "below",
     showRelated: true,
     showMetrics: true,
     showShorts: true,
@@ -6196,6 +6210,17 @@ function createDefaultLibrary() {
     settings: createDefaultSettings(),
     updatedAt: 0
   };
+}
+// Queue a video immediately after the current one, retaining existing metadata and order.
+function queueVideoNext(queue, currentId, video, now = Date.now()) {
+  if (!video?.id || !VIDEO_ID_RE.test(video.id) || video.id === currentId) return queue;
+  const existing = queue.find(item => item.videoId === video.id);
+  const without = queue.filter(item => item.videoId !== video.id);
+  const currentIndex = without.findIndex(item => item.videoId === currentId);
+  const record = existing || { ...createBlankVideo(video.id, video.title || video.id, video.channel || "", video.channelId || ""), lastWatched: now };
+  const next = [...without];
+  next.splice(currentIndex < 0 ? 0 : currentIndex + 1, 0, record);
+  return next;
 }
 function trackVideoProgress(entry, position, duration, watchedDelta, now) {
   const effectiveDur = duration > 0 ? duration : entry.duration;
@@ -8295,6 +8320,7 @@ async function fetchVideoComments(params) {
     order,
     token = "",
     parent = "",
+    sourceBase = "",
     signal
   } = params;
   if (!VIDEO_ID_RE.test(id)) throw new Error("Invalid video ID.");
@@ -8308,7 +8334,7 @@ async function fetchVideoComments(params) {
     const q = new URLSearchParams({
       key: key.trim(),
       part: "snippet",
-      maxResults: "20",
+      maxResults: "100",
       textFormat: "plainText",
       ...(parent ? {
         parentId: parent
@@ -8340,7 +8366,7 @@ async function fetchVideoComments(params) {
     };
   }
   const invBases = [...new Set([...(settings.instance && !settings.instance.includes("nadeko.net") ? [settings.instance] : []), ...DEFAULT_INVIDIOUS_INSTANCES, ...(settings.invidiousInstances || [])].map(u => safeHttpsUrl(u)?.replace(/\/$/, "")).filter(Boolean))].slice(0, 3);
-  for (const base of invBases) {
+  for (const base of (sourceBase ? invBases.filter(b => b === sourceBase) : invBases)) {
     try {
       const q = new URLSearchParams({
         sort_by: order === "newest" ? "new" : "top",
@@ -8351,13 +8377,14 @@ async function fetchVideoComments(params) {
       const body = await proxyFetchJson(`${base}/api/v1/comments/${id}?${q}`, signal, proxyCfg, 9000);
       if (!Array.isArray(body?.comments)) continue;
       return {
-        comments: body.comments.map(mapInvidiousComment).filter(Boolean).sort((a, b) => Number(!!b.pinned) - Number(!!a.pinned)),
+        comments: body.comments.map(mapInvidiousComment).filter(Boolean).map(c => ({ ...c, sourceBase: base })).sort((a, b) => Number(!!b.pinned) - Number(!!a.pinned)),
+        sourceBase: base,
         next: String(body.continuation || ""),
         total: body.commentCount == null ? undefined : safeNonNeg(body.commentCount),
         source: `Invidious (${new URL(base).hostname})`
       };
     } catch (err) {
-      if (signal.aborted) throw err;
+      if (signal?.aborted) throw err;
     }
   }
   throw new Error("Comments could not be loaded from Invidious proxies. Try another instance or web proxy in Settings.");
@@ -11997,6 +12024,7 @@ function CommentItem({
   apiKey,
   settings,
   order,
+  active = true,
   onSeek,
   onChannel
 }) {
@@ -12062,20 +12090,30 @@ function CommentItem({
     settings: settings,
     order: order,
     parent: comment.replyToken,
+    initialSourceBase: comment.sourceBase || "",
+    active: active,
     onSeek: onSeek,
     onChannel: onChannel
   }))));
 }
-function CommentThreadList({
-  videoId,
-  apiKey,
-  settings,
-  order,
-  filterText = "",
-  parent = "",
-  onSeek,
-  onChannel
-}) {
+function timedCommentEntries(comments, filterText = "") {
+  const query = String(filterText).trim().toLowerCase();
+  const entries = [];
+  comments.forEach((comment, index) => {
+    if (query && !`${comment.author || ""} ${comment.text || ""}`.toLowerCase().includes(query)) return;
+    const times = [...new Set(tokenizeTimestamps(String(comment.text || "")).filter(part => Number.isFinite(part.at)).map(part => part.at))];
+    times.forEach((at, occurrence) => entries.push({ comment, at, index, occurrence }));
+  });
+  return entries.sort((a, b) => a.at - b.at || a.index - b.index || a.occurrence - b.occurrence);
+}
+function timedCommentActiveTime(entries, position) {
+  const pos = Number(position);
+  if (!Number.isFinite(pos)) return null;
+  let lo = 0, hi = entries.length;
+  while (lo < hi) { const mid = (lo + hi) >> 1; if (entries[mid].at <= pos) lo = mid + 1; else hi = mid; }
+  return lo ? entries[lo - 1].at : null;
+}
+function CommentThreadList({ videoId, apiKey, settings, order, filterText = "", parent = "", initialSourceBase = "", active = true, position = 0, followTime = true, onSeek, onChannel }) {
   const Button = SoftButton;
   const [comments, setComments] = React.useState([]);
   const [token, setToken] = React.useState("");
@@ -12084,71 +12122,71 @@ function CommentThreadList({
   const [error, setError] = React.useState("");
   const [sourceName, setSourceName] = React.useState("");
   const [retryCount, setRetryCount] = React.useState(0);
+  const [paused, setPaused] = React.useState(false);
+  const [limited, setLimited] = React.useState(false);
+  const [visibleCount, setVisibleCount] = React.useState(100);
+  const pageCount = React.useRef(0);
+  const seenTokens = React.useRef(new Set());
+  const pinnedSource = React.useRef(initialSourceBase);
+  const scrollRef = React.useRef(null);
+  const activeRef = React.useRef(null);
+  const fetchOrder = order === "newest" ? "newest" : "top";
   React.useEffect(() => {
+    if (!active) return;
     const controller = new AbortController();
-    setLoading(true);
-    setError("");
-    fetchVideoComments({
-      id: videoId,
-      key: apiKey,
-      settings,
-      order,
-      parent,
-      token,
-      signal: controller.signal
-    }).then(res => {
+    setLoading(true); setError("");
+    fetchVideoComments({ id: videoId, key: apiKey, settings, order: fetchOrder, parent, token, sourceBase: pinnedSource.current, signal: controller.signal }).then(res => {
       if (controller.signal.aborted) return;
+      if (res.sourceBase) pinnedSource.current = res.sourceBase;
       setComments(prev => [...new Map([...(token ? prev : []), ...res.comments].map(c => [c.id, c])).values()]);
-      setNextToken(res.next);
+      seenTokens.current.add(token);
+      const next = res.next && !seenTokens.current.has(res.next) ? res.next : "";
+      setNextToken(next);
+      pageCount.current++;
+      if (next && pageCount.current >= 40) setLimited(true);
       setSourceName(res.source);
     }).catch(err => {
-      if (!controller.signal.aborted) {
-        setError(err instanceof Error ? err.message : "Comments could not be loaded.");
-      }
-    }).finally(() => {
-      if (!controller.signal.aborted) setLoading(false);
-    });
+      if (!controller.signal.aborted) setError(err instanceof Error ? err.message : "Comments could not be loaded.");
+    }).finally(() => { if (!controller.signal.aborted) setLoading(false); });
     return () => controller.abort();
-  }, [videoId, apiKey, settings.instance, settings.webProxyMode, settings.webProxyProvider, order, parent, token, retryCount]);
-  const shownComments = filterText.trim()
-    ? comments.filter(c => `${c.author || ""} ${c.text || ""}`.toLowerCase().includes(filterText.trim().toLowerCase()))
-    : comments;
-  return React.createElement("div", {
-    className: "min-w-0"
-  }, React.createElement("div", {
-    className: "space-y-5"
-  }, shownComments.map(c => React.createElement(CommentItem, {
-    key: c.id,
-    comment: c,
-    videoId: videoId,
-    apiKey: apiKey,
-    settings: settings,
-    order: order,
-    onSeek: onSeek,
-    onChannel: onChannel
-  }))), loading && React.createElement("p", {
-    role: "status",
-    className: "flex items-center gap-2 py-4 text-sm text-muted-foreground"
-  }, React.createElement(Icons.LoaderCircle, {
-    className: "size-4 animate-spin"
-  }), "Loading ", parent ? "replies" : "comments", "\u2026"), error && React.createElement("div", {
-    className: "mt-3"
-  }, React.createElement("p", {
-    role: "alert",
-    className: "text-sm text-destructive"
-  }, error), React.createElement(Button, {
-    variant: "link",
-    className: "px-0",
-    onClick: () => setRetryCount(n => n + 1)
-  }, "Try again")), !loading && !error && !comments.length && React.createElement("p", {
-    className: "py-4 text-sm text-muted-foreground"
-  }, parent ? "No replies available." : "No comments yet."), !loading && nextToken && !error && React.createElement(Button, {
-    variant: "secondary",
-    className: "mt-4",
-    onClick: () => setToken(nextToken)
-  }, React.createElement(Icons.ChevronDown, null), "Load more ", parent ? "replies" : "comments"), !parent && sourceName && React.createElement("p", {
-    className: "mt-4 text-xs text-muted-foreground"
-  }, "Source: ", sourceName));
+  }, [active, videoId, apiKey, settings.instance, settings.invidiousInstances, settings.webProxyMode, settings.webProxyProvider, settings.customWebProxy, fetchOrder, parent, token, retryCount]);
+  React.useEffect(() => {
+    if (!active || settings.preloadComments === false || paused || limited || loading || error || !nextToken) return;
+    const timer = setTimeout(() => setToken(nextToken), 250);
+    return () => clearTimeout(timer);
+  }, [active, settings.preloadComments, paused, limited, loading, error, nextToken]);
+  const timed = React.useMemo(() => order === "time" && !parent ? timedCommentEntries(comments, filterText) : [], [comments, filterText, order, parent]);
+  const activeTime = timedCommentActiveTime(timed, position);
+  const activeIndex = activeTime == null ? -1 : timed.findIndex(entry => entry.at === activeTime);
+  const timedStart = followTime && activeIndex >= 0 ? Math.max(0, activeIndex - 30) : 0;
+  const timedEnd = Math.min(timed.length, followTime ? timedStart + 100 : visibleCount);
+  React.useEffect(() => {
+    if (order !== "time" || !followTime || !active || activeTime == null) return;
+    const region = scrollRef.current, item = activeRef.current;
+    if (!region || !item) return;
+    const target = region.scrollTop + item.getBoundingClientRect().top - region.getBoundingClientRect().top - 12;
+    try { region.scrollTo({ top: Math.max(0, target), behavior: "smooth" }); } catch { region.scrollTop = Math.max(0, target); }
+  }, [order, followTime, active, activeTime]);
+  const filtered = filterText.trim() ? comments.filter(c => `${c.author || ""} ${c.text || ""}`.toLowerCase().includes(filterText.trim().toLowerCase())) : comments;
+  const renderItem = (c, key) => React.createElement(CommentItem, { key, comment: c, videoId, apiKey, settings, order: fetchOrder, active, onSeek, onChannel });
+  return React.createElement("div", { className: "min-w-0" },
+    order === "time" && !parent ? React.createElement(React.Fragment, null,
+      React.createElement("p", { className: "mb-2 text-xs text-muted-foreground" }, `${timed.length} timestamps in loaded public top-level comments. Follow highlights the latest timestamp at or before playback when the player reports time. Replies and local notes are separate.`),
+      React.createElement("div", { ref: scrollRef, className: "yt-timed-comments", tabIndex: 0, "aria-label": "Timed comments" }, timed.slice(timedStart, timedEnd).map((entry, idx) => {
+        const index = timedStart + idx;
+        const firstActive = activeTime != null && entry.at === activeTime && (index === 0 || timed[index - 1].at !== activeTime);
+        return React.createElement("div", { key: `${entry.comment.id}:${entry.at}:${entry.occurrence}`, ref: firstActive ? activeRef : undefined, className: entry.at === activeTime && activeTime != null ? "yt-timed-active" : "yt-timed-item" },
+          React.createElement("button", { type: "button", onClick: () => onSeek?.(entry.at), className: "yt-time-chip" }, formatDuration(entry.at)), renderItem(entry.comment, `${entry.comment.id}:${entry.at}:${entry.occurrence}`));
+      })), timed.length > 0 && React.createElement("p", { className: "mt-1 text-xs text-muted-foreground" }, `Showing ${timedStart + 1}–${timedEnd} of ${timed.length} timestamps${followTime ? " around playback; turn off Follow playback to browse from the start." : "."}`), !followTime && timedEnd < timed.length && React.createElement(Button, { variant: "secondary", onClick: () => setVisibleCount(n => n + 100) }, "Show more timestamps"), !loading && !timed.length && React.createElement("p", { className: "py-3 text-sm text-muted-foreground" }, "No timestamps found in loaded comments."))
+    : React.createElement("div", { className: "space-y-5" }, filtered.slice(0, visibleCount).map(c => renderItem(c, c.id)), filtered.length > visibleCount && React.createElement(Button, { variant: "secondary", onClick: () => setVisibleCount(n => n + 100) }, `Show ${Math.min(100, filtered.length - visibleCount)} more loaded ${parent ? "replies" : "comments"}`)),
+    loading && React.createElement("p", { role: "status", className: "flex items-center gap-2 py-4 text-sm text-muted-foreground" }, React.createElement(Icons.LoaderCircle, { className: "size-4 animate-spin" }), "Loading ", parent ? "replies" : "comments", "…"),
+    error && React.createElement("div", { className: "mt-3" }, React.createElement("p", { role: "alert", className: "text-sm text-destructive" }, error), React.createElement(Button, { variant: "link", className: "px-0", onClick: () => setRetryCount(n => n + 1) }, "Try again")),
+    !loading && !error && !comments.length && React.createElement("p", { className: "py-4 text-sm text-muted-foreground" }, parent ? "No replies available." : "No comments yet."),
+    React.createElement("p", { className: "mt-3 text-xs text-muted-foreground" }, `${comments.length} ${parent ? "replies" : "comments"} loaded${nextToken ? " · more available" : " · provider supplied no further pages"}${sourceName ? ` · ${sourceName}` : ""}`),
+    nextToken && React.createElement("div", { className: "mt-2 flex flex-wrap gap-2" },
+      !loading && !error && React.createElement(Button, { variant: "secondary", onClick: () => setToken(nextToken) }, "Load next page"),
+      settings.preloadComments !== false && React.createElement(Button, { variant: "ghost", onClick: () => { if (limited) { pageCount.current = 0; setLimited(false); setPaused(false); } else setPaused(v => !v); } }, limited ? "Continue preloading" : paused ? "Resume preloading" : "Pause preloading")),
+    limited && nextToken && React.createElement("p", { className: "mt-1 text-xs text-muted-foreground" }, "Paused after 40 pages to protect your device and API quota. Continue to load more."));
 }
 function CommentsSection({
   id,
@@ -12159,6 +12197,9 @@ function CommentsSection({
   onChannel,
   onHashtag,
   defaultOpen = false,
+  active = true,
+  position = 0,
+  onPatchSettings,
   userComments = [],
   onAddUserComment,
   onDeleteUserComment,
@@ -12167,6 +12208,7 @@ function CommentsSection({
   const Button = SoftButton;
   const [open, setOpen] = React.useState(defaultOpen);
   const [order, setOrder] = React.useState("top");
+  const [followTime, setFollowTime] = React.useState(true);
   const [commentDraft, setCommentDraft] = React.useState("");
   const [composerFocused, setComposerFocused] = React.useState(false);
   const [filterText, setFilterText] = React.useState("");
@@ -12188,7 +12230,7 @@ function CommentsSection({
   const totalWithLocal = (total != null ? total : 0) + (userComments?.length || 0);
 
   return React.createElement("section", {
-    className: "mt-6 border-t border-border/70 pt-5",
+    className: VENDOR.cn("mt-6 border-t border-border/70 pt-5", settings.commentsLayout === "side" && "yt-comments-side", settings.commentsLayout === "side" && !open && "yt-comments-collapsed"),
     "aria-label": "Video comments"
   }, React.createElement("div", {
     className: "mb-4 flex flex-wrap items-center gap-3"
@@ -12199,7 +12241,7 @@ function CommentsSection({
     className: "flex items-center gap-2 text-lg font-bold tracking-tight text-foreground hover:text-primary transition-colors cursor-pointer"
   }, total != null || userComments.length > 0 ? `${totalWithLocal.toLocaleString()} Comments` : "Comments", React.createElement(open ? Icons.ChevronUp : Icons.ChevronDown, {
     className: "size-4 text-muted-foreground"
-  })), open && React.createElement("div", {
+  })), onPatchSettings && React.createElement(Button, { size: "sm", variant: "secondary", onClick: () => onPatchSettings({ commentsLayout: settings.commentsLayout === "side" ? "below" : "side" }), title: "Side view uses a wide screen; smaller screens stay below the player" }, settings.commentsLayout === "side" ? "Move below" : "Comments on side"), open && React.createElement("div", {
     className: "ml-auto flex flex-wrap items-center gap-2"
   }, React.createElement("input", {
     type: "search",
@@ -12215,7 +12257,7 @@ function CommentsSection({
     className: "rounded-full bg-secondary px-3 py-1.5 text-xs font-medium text-foreground cursor-pointer",
     value: order,
     onChange: e => setOrder(e.target.value)
-  }, React.createElement("option", { value: "top" }, "Top comments"), React.createElement("option", { value: "newest" }, "Newest first"))))), onAddUserComment && React.createElement("form", {
+  }, React.createElement("option", { value: "top" }, "Top comments"), React.createElement("option", { value: "newest" }, "Newest first"), React.createElement("option", { value: "time" }, "Video timestamp"))), order === "time" && React.createElement("label", { className: "flex items-center gap-1 text-xs" }, React.createElement("input", { type: "checkbox", checked: followTime, onChange: e => setFollowTime(e.target.checked) }), "Follow playback"))), onAddUserComment && React.createElement("form", {
     onSubmit: submitUserComment,
     className: "mb-5 flex items-start gap-3"
   }, React.createElement(AvatarCircle, {
@@ -12226,7 +12268,7 @@ function CommentsSection({
   }, React.createElement("input", {
     type: "text",
     "aria-label": "Add a comment",
-    placeholder: "Add a comment (supports 01:24 timestamps & #hashtags)…",
+    placeholder: "Add a local note (supports 01:24 timestamps & #hashtags)…",
     value: commentDraft,
     onFocus: () => setComposerFocused(true),
     onChange: e => setCommentDraft(e.target.value),
@@ -12246,7 +12288,7 @@ function CommentsSection({
     size: "sm",
     disabled: !commentDraft.trim(),
     className: "rounded-full px-4"
-  }, "Comment")))), userComments.length > 0 && React.createElement("div", {
+  }, "Save locally")))), userComments.length > 0 && React.createElement("div", {
     className: "mb-5 space-y-3"
   }, [...userComments].sort((a, b) => Number(Boolean(b.pinned)) - Number(Boolean(a.pinned)) || b.createdAt - a.createdAt).filter(uc => !filterText.trim() || uc.text.toLowerCase().includes(filterText.trim().toLowerCase())).map(uc => React.createElement("article", {
     key: uc.id,
@@ -12283,16 +12325,19 @@ function CommentsSection({
     "aria-label": "Delete your comment",
     onClick: () => onDeleteUserComment(uc.id),
     className: "rounded-full p-1.5 text-muted-foreground hover:bg-destructive/15 hover:text-destructive cursor-pointer"
-  }, React.createElement(Icons.Trash2, { className: "size-3.5" })))))), open && React.createElement(CommentThreadList, {
-    key: `${id}:${order}:${apiKey ? "api" : "public"}:${settings.instance}:${settings.webProxyMode}`,
+  }, React.createElement(Icons.Trash2, { className: "size-3.5" })))))), React.createElement("div", { hidden: !open }, React.createElement(CommentThreadList, {
+    key: `${id}:${order === "newest" ? "newest" : "top"}:${apiKey ? "api" : "public"}:${settings.instance}:${settings.webProxyMode}`,
     videoId: id,
     apiKey: apiKey,
     settings: settings,
     order: order,
     filterText: filterText,
+    active: active,
+    position: position,
+    followTime: followTime,
     onSeek: onSeek,
     onChannel: onChannel
-  }));
+  })));
 }
 
 function ActiveQueueStrip({
@@ -14452,7 +14497,9 @@ function WatchDetailsSection({
   onChannel,
   onHashtag,
   apiKey,
-  settings
+  settings,
+  onPatchSettings,
+  active = true
 }) {
   const Button = SoftButton;
   const [descExpanded, setDescExpanded] = React.useState(false);
@@ -14701,6 +14748,9 @@ function WatchDetailsSection({
     onChannel: onChannel,
     onHashtag: onHashtag,
     defaultOpen: true,
+    active: active,
+    position: position,
+    onPatchSettings: onPatchSettings,
     userComments: userComments,
     onAddUserComment: onAddUserComment,
     onDeleteUserComment: onDeleteUserComment,
@@ -14731,6 +14781,7 @@ function WatchSecondaryRail({
   onMarkNotInterested,
   onUndoNotInterested,
   onQuickQueue,
+  onPlayNext,
   onQuickLater,
   onOpenPlaylistModal,
   onShareVideo,
@@ -14986,7 +15037,11 @@ function WatchSecondaryRail({
       type: "button",
       onClick: () => { onQuickQueue({ id: rel.id, title: rel.title, channel: rel.channel }); setOpenMenuId(null); },
       className: "flex w-full items-center gap-2.5 px-3 py-2 text-left hover:bg-secondary cursor-pointer"
-    }, React.createElement(Icons.ListPlus, { className: "size-3.5" }), "Add to queue"), React.createElement("button", {
+    }, React.createElement(Icons.ListPlus, { className: "size-3.5" }), "Add to queue"), onPlayNext && React.createElement("button", {
+      type: "button",
+      onClick: () => { onPlayNext({ id: rel.id, title: rel.title, channel: rel.channel, channelId: rel.channelId }); setOpenMenuId(null); },
+      className: "flex w-full items-center gap-2.5 px-3 py-2 text-left hover:bg-secondary cursor-pointer"
+    }, React.createElement(Icons.SkipForward, { className: "size-3.5" }), "Play next"), React.createElement("button", {
       type: "button",
       onClick: () => { onQuickLater({ id: rel.id, title: rel.title, channel: rel.channel }); setOpenMenuId(null); },
       className: "flex w-full items-center gap-2.5 px-3 py-2 text-left hover:bg-secondary cursor-pointer"
@@ -16422,7 +16477,9 @@ function DeviceLibrarySection({
       disabled: items.length < 2,
       onClick: () => playVideoCollection(items, title, true),
       className: "flex h-9 flex-1 items-center justify-center gap-2 rounded-full bg-white/15 px-4 text-sm font-semibold text-white transition hover:bg-white/25 disabled:opacity-40 cursor-pointer"
-    }, React.createElement(Icons.Shuffle, { className: "size-4" }), "Shuffle")), extraHeroActions && React.createElement("div", {
+    }, React.createElement(Icons.Shuffle, { className: "size-4" }), "Shuffle")), items.length > 0 && React.createElement(Button, {
+      size: "sm", variant: "secondary", className: "mt-3 rounded-full", onClick: () => void copyTextWithFallback(items.map(v => `https://youtu.be/${v.videoId}`).join("\n"), onToast, `Copied ${items.length} visible video link${items.length === 1 ? "" : "s"}.`)
+    }, React.createElement(Icons.Copy, { className: "size-3.5" }), "Copy visible links"), search && items.length > 0 && React.createElement("p", { className: "mt-1 text-[11px] text-white/70" }, "Only the current search results are copied."), extraHeroActions && React.createElement("div", {
       className: "mt-3 flex flex-wrap items-center gap-1.5"
     }, extraHeroActions))), React.createElement("div", {
       className: "min-w-0"
@@ -16780,8 +16837,8 @@ function DeviceLibrarySection({
       type: "button",
       onClick: () => effChannelId && onBrowseChannel && onBrowseChannel(effChannelId, effChannel),
       className: VENDOR.cn("truncate max-w-[220px]", effChannelId ? "hover:text-foreground cursor-pointer" : "cursor-default")
-    }, effChannel), effChannel && React.createElement("span", null, "•"), React.createElement("span", null, item.completed ? "Watched" : prog ? `${Math.round(prog * 100)}% watched` : "Watched"), (item.watchCount || 0) >= 2 && React.createElement("span", null, `• ${item.watchCount}× plays`)), React.createElement("div", {
-      className: "mt-2 flex flex-wrap items-center gap-1.5 opacity-100 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity"
+    }, effChannel), effChannel && React.createElement("span", null, "•"), React.createElement("span", null, item.completed ? "Watched" : prog ? `${Math.round(prog * 100)}% watched` : "Not completed"), (item.watchCount || 0) >= 2 && React.createElement("span", null, `• ${item.watchCount}× plays`)), React.createElement("div", {
+      className: "mt-2 flex flex-wrap items-center gap-1.5"
     }, React.createElement("button", {
       type: "button",
       onClick: () => {
@@ -16793,6 +16850,13 @@ function DeviceLibrarySection({
       },
       className: "flex items-center gap-1 rounded-full bg-secondary px-2.5 py-1 text-[11px] font-medium text-foreground hover:bg-accent cursor-pointer"
     }, React.createElement(Icons.ListPlus, { className: "size-3" }), "Add to queue"), React.createElement("button", {
+      type: "button",
+      onClick: () => {
+        update(prev => ({ ...prev, history: prev.history.map(h => h.videoId === item.videoId ? { ...h, completed: !h.completed, lastPosition: 0 } : h) }));
+        onToast(item.completed ? "Watch progress reset; history retained." : "Marked as completed.");
+      },
+      className: "flex items-center gap-1 rounded-full bg-secondary px-2.5 py-1 text-[11px] font-medium text-foreground hover:bg-accent cursor-pointer"
+    }, React.createElement(item.completed ? Icons.RotateCcw : Icons.Check, { className: "size-3" }), item.completed ? "Reset progress" : "Mark completed"), React.createElement("button", {
       type: "button",
       onClick: () => {
         update(prev => prev.later.some(lItem => lItem.videoId === item.videoId) ? prev : {
@@ -16902,6 +16966,15 @@ function DeviceLibrarySection({
     items: filteredVideoList,
     listKey: "later",
     allowReorder: false,
+    extraHeroActions: (() => {
+      const completedIds = new Set(library.history.filter(h => h.completed).map(h => h.videoId));
+      const count = library.later.filter(v => completedIds.has(v.videoId)).length;
+      return count > 0 ? React.createElement(Button, { size: "sm", variant: "secondary", onClick: () => {
+        if (!confirm(`Remove ${count} completed video${count === 1 ? "" : "s"} from the entire Watch later list? Your watch history will be kept.`)) return;
+        update(prev => { const done = new Set(prev.history.filter(h => h.completed).map(h => h.videoId)); return { ...prev, later: prev.later.filter(v => !done.has(v.videoId)) }; });
+        onToast("Removed completed videos from Watch later.");
+      } }, React.createElement(Icons.Check, { className: "size-3.5" }), `Remove completed (${count})`) : null;
+    })(),
     onRemoveItem: vid => update(prev => ({ ...prev, later: prev.later.filter(x => x.videoId !== vid) }))
   }),
 
@@ -17415,13 +17488,13 @@ function useHydratedMediaDetails(videos, historyMap, settings, active) {
   return extra;
 }
 // Observe the actual button so dynamic list growth, navigation and fallback clicks share one path.
-function InfiniteLoadButton({ active, loading, error, token, onLoad, onRetry }) {
+function InfiniteLoadButton({ active, loading, error, token, onLoad, onRetry, autoLoad = true }) {
   const ref = React.useRef(null);
   const requested = React.useRef(null);
   React.useEffect(() => { requested.current = null; }, [token]);
   React.useEffect(() => {
     const el = ref.current;
-    if (!el || !active || loading || error || !token || typeof IntersectionObserver === "undefined") return;
+    if (!el || !active || !autoLoad || loading || error || !token || typeof IntersectionObserver === "undefined") return;
     const observer = new IntersectionObserver(entries => {
       if (entries.some(e => e.isIntersecting) && requested.current !== token) {
         requested.current = token;
@@ -17430,7 +17503,7 @@ function InfiniteLoadButton({ active, loading, error, token, onLoad, onRetry }) 
     }, { rootMargin: "600px 0px", threshold: 0 });
     observer.observe(el);
     return () => observer.disconnect();
-  }, [active, loading, error, token]);
+  }, [active, autoLoad, loading, error, token]);
   if (!token || !active) return null;
   return React.createElement("div", { className: "mt-6 text-center" },
     error && React.createElement("p", { role: "alert", className: "text-sm text-destructive" }, error),
@@ -17447,6 +17520,7 @@ function BrowseDetailView({
   onChangeNotifyMode,
   historyMap,
   onQuickQueue,
+  onPlayNext,
   onQuickLater,
   onOpenPlaylistModal,
   onQueueAllPlaylist,
@@ -17473,6 +17547,11 @@ function BrowseDetailView({
   const [error, setError] = React.useState("");
   const [retry, setRetry] = React.useState(0);
   const browseDuplicatePagesRef = React.useRef(0);
+  const browsePageCountRef = React.useRef(0);
+  const browseSeenTokensRef = React.useRef(new Set());
+  const [browsePaused, setBrowsePaused] = React.useState(false);
+  const [browseLimited, setBrowseLimited] = React.useState(false);
+  const [browseVisible, setBrowseVisible] = React.useState(80);
   const [playlistShareStatus, setPlaylistShareStatus] = React.useState("");
   const copyPlaylistLink = async () => {
     const route = channelRouteUrl({ tab: "discover", browseTarget: target }, window.location.protocol === "file:");
@@ -17494,8 +17573,9 @@ function BrowseDetailView({
     onQueueAllPlaylist(shuffled, displayTitle);
   };
 
-  const hydratedDetails = useHydratedMediaDetails(videos, historyMap, settings, active);
-  useEmbedStatusLookup(videos, apiKey, active);
+  const hydrationVideos = React.useMemo(() => videos.slice(0, browseVisible), [videos, browseVisible]);
+  const hydratedDetails = useHydratedMediaDetails(hydrationVideos, historyMap, settings, active);
+  useEmbedStatusLookup(hydrationVideos, apiKey, active);
 
   React.useEffect(() => {
     if (!active) return;
@@ -17525,7 +17605,11 @@ function BrowseDetailView({
       const previousIds = new Set([...videos, ...entries].map(item => item.id));
       const added = [...(res.videos || []), ...(res.entries || [])].some(item => !previousIds.has(item.id));
       browseDuplicatePagesRef.current = token && !added ? browseDuplicatePagesRef.current + 1 : 0;
-      setNextToken(res.next && res.next !== token && browseDuplicatePagesRef.current < 2 ? res.next : "");
+      browseSeenTokensRef.current.add(token);
+      const next = res.next && !browseSeenTokensRef.current.has(res.next) && browseDuplicatePagesRef.current < 2 ? res.next : "";
+      setNextToken(next);
+      browsePageCountRef.current++;
+      if (next && browsePageCountRef.current >= 40) setBrowseLimited(true);
       setSourceName(res.source || "");
     }).catch(err => {
       if (!controller.signal.aborted) setError(err instanceof Error ? err.message : "Could not load.");
@@ -17534,6 +17618,12 @@ function BrowseDetailView({
     });
     return () => controller.abort();
   }, [target, tab, token, apiKey, settings.instance, settings.webProxyMode, settings.webProxyProvider, active, retry]);
+
+  React.useEffect(() => {
+    if (!active || settings.preloadBrowse === false || browsePaused || browseLimited || loading || error || !nextToken || tab === "about" || tab === "community") return;
+    const timer = setTimeout(() => setToken(nextToken), 250);
+    return () => clearTimeout(timer);
+  }, [active, settings.preloadBrowse, browsePaused, browseLimited, loading, error, nextToken, tab]);
 
   const resolvedChannelId = target.kind === "channel" && CHANNEL_ID_RE.test(target.id || "") ? target.id : meta.channelId;
   const subRecord = resolvedChannelId ? subscriptions.find(s => s.channelId === resolvedChannelId) : null;
@@ -17607,7 +17697,7 @@ function BrowseDetailView({
     className: "mt-0.5 flex flex-wrap items-center gap-x-2 text-xs text-muted-foreground"
   }, React.createElement("span", { className: "font-medium text-foreground/85" }, handleText), meta.subscribers != null && React.createElement("span", null, `· ${formatCompact(meta.subscribers)} subscribers`), videos.length > 0 && React.createElement("span", null, `· ${videos.length}+ videos`)), meta.description && React.createElement("button", {
     type: "button",
-    onClick: () => { if (tab === "about") return; browseDuplicatePagesRef.current = 0; setToken(""); setNextToken(""); setEntries([]); setVideos([]); setTab("about"); },
+    onClick: () => { if (tab === "about") return; browseDuplicatePagesRef.current = 0; browsePageCountRef.current = 0; browseSeenTokensRef.current.clear(); setBrowseLimited(false); setBrowsePaused(false); setBrowseVisible(80); setToken(""); setNextToken(""); setEntries([]); setVideos([]); setTab("about"); },
     className: "mt-1.5 line-clamp-1 max-w-xl text-left text-xs text-muted-foreground hover:text-foreground cursor-pointer"
   }, meta.description, " …more"))), React.createElement("div", {
     className: "flex flex-wrap items-center gap-2"
@@ -17660,6 +17750,7 @@ function BrowseDetailView({
     onClick: () => {
       if (tab === tId) return;
       browseDuplicatePagesRef.current = 0;
+      browsePageCountRef.current = 0; browseSeenTokensRef.current.clear(); setBrowseLimited(false); setBrowsePaused(false); setBrowseVisible(80);
       setToken("");
       setNextToken("");
       setEntries([]);
@@ -17744,7 +17835,7 @@ function BrowseDetailView({
     className: "mt-0.5 truncate text-xs text-muted-foreground"
   }, entry.kind === "playlist" ? `${entry.channel || displayTitle}${entry.count != null ? ` · ${entry.count} videos` : ""}` : entry.subscribers != null ? `${formatCompact(entry.subscribers)} subscribers` : entry.description || entry.id))))), tab !== "about" && tab !== "community" && displayedChannelVideos.length > 0 && React.createElement("div", {
     className: tab === "shorts" ? getFeedGridClass(settings.gridColumns, true, "shorts") : "yt-feed-grid-4 grid grid-cols-1 gap-x-4 gap-y-8 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4"
-  }, displayedChannelVideos.map(v => {
+  }, displayedChannelVideos.slice(0, browseVisible).map(v => {
     const hist = historyMap.get(v.id);
     const prog = hist && hist.duration > 0 ? hist.lastPosition / hist.duration : 0;
     const effDur = v.durationSec || hydratedDetails[v.id]?.durationSec || (hist?.duration > 0 ? hist.duration : undefined);
@@ -17770,15 +17861,16 @@ function BrowseDetailView({
     }, formatDisplayTitle(v.title, settings.deShoutTitles, settings))), React.createElement("p", {
       className: "mt-1 text-xs text-muted-foreground"
     }, v.views != null ? `${formatCompact(v.views)} views` : "", v.published && Number.isFinite(Date.parse(v.published)) ? `${v.views != null ? " · " : ""}${formatRelativeDate(v.published, Date.now())}` : "")), React.createElement("div", {
-      className: "mt-2 flex items-center gap-1 opacity-0 group-hover:opacity-100 focus-within:opacity-100 transition-opacity"
+      className: "mt-2 flex flex-wrap items-center gap-1"
     }, React.createElement(Button, {
       size: "sm",
       variant: "secondary",
       className: "h-7 rounded-full px-2.5 text-xs",
       onClick: () => onQuickQueue({ id: v.id, title: v.title, channel: v.channel || displayTitle })
-    }, React.createElement(Icons.ListPlus, { className: "size-3.5" }), "Queue"), React.createElement(Button, {
-      size: "sm",
-      variant: "secondary",
+    }, React.createElement(Icons.ListPlus, { className: "size-3.5" }), "Queue"), onPlayNext && React.createElement(Button, {
+      size: "sm", variant: "secondary", onClick: () => onPlayNext({ id: v.id, title: v.title, channel: v.channel || displayTitle, channelId: v.channelId })
+    }, React.createElement(Icons.SkipForward, { className: "size-3.5" }), "Play next"), React.createElement(Button, {
+      size: "sm", variant: "secondary",
       className: "h-7 rounded-full px-2.5 text-xs",
       onClick: () => onQuickLater({ id: v.id, title: v.title, channel: v.channel || displayTitle })
     }, React.createElement(Icons.Clock, { className: "size-3.5" }), "Later"), onShareVideo && React.createElement(Button, {
@@ -17793,7 +17885,7 @@ function BrowseDetailView({
       title: "Add to playlist",
       onClick: () => onOpenPlaylistModal({ id: v.id, title: v.title, channel: v.channel || displayTitle })
     }, React.createElement(Icons.Bookmark, { className: "size-3.5" }))));
-  })), loading && React.createElement("div", {
+  })), displayedChannelVideos.length > browseVisible && React.createElement(Button, { variant: "secondary", onClick: () => setBrowseVisible(n => n + 80) }, `Show more loaded videos (${displayedChannelVideos.length - browseVisible} remaining)`), (videos.length > 0 || entries.length > 0) && React.createElement("p", { className: "text-xs text-muted-foreground" }, `${videos.length} videos and ${entries.length} entries loaded${nextToken ? " · more available" : " · provider supplied no further pages; results may be incomplete"}`), nextToken && settings.preloadBrowse !== false && React.createElement(Button, { size: "sm", variant: "secondary", onClick: () => { if (browseLimited) { browsePageCountRef.current = 0; setBrowseLimited(false); setBrowsePaused(false); } else setBrowsePaused(v => !v); } }, browseLimited ? "Continue preloading" : browsePaused ? "Resume preloading" : "Pause preloading"), browseLimited && nextToken && React.createElement("p", { className: "text-xs text-muted-foreground" }, "Paused after 40 pages to protect your device and API quota."), loading && React.createElement("div", {
     role: "status",
     className: "flex items-center justify-center gap-2 py-10 text-sm text-muted-foreground"
   }, React.createElement(Icons.LoaderCircle, { className: "size-5 animate-spin" }), "Loading…"), error && React.createElement("div", {
@@ -17805,6 +17897,7 @@ function BrowseDetailView({
     onClick: () => setRetry(n => n + 1)
   }, "Try again")), nextToken && tab !== "about" && tab !== "community" && React.createElement(InfiniteLoadButton, {
     active, loading, error, token: nextToken,
+    autoLoad: settings.preloadBrowse === false,
     onLoad: () => setToken(nextToken), onRetry: () => setRetry(n => n + 1)
   }));
 }
@@ -17891,6 +17984,7 @@ function DiscoverSection({
   setSavedSearches,
   historyMap,
   onQuickQueue,
+  onPlayNext,
   onQuickLater,
   onOpenPlaylistModal,
   onQueueAllPlaylist,
@@ -18260,6 +18354,7 @@ function DiscoverSection({
     onChangeNotifyMode: onChangeNotifyMode,
     historyMap: historyMap,
     onQuickQueue: onQuickQueue,
+    onPlayNext: onPlayNext,
     onQuickLater: onQuickLater,
     onOpenPlaylistModal: onOpenPlaylistModal,
     onQueueAllPlaylist: onQueueAllPlaylist,
@@ -18728,7 +18823,11 @@ function DiscoverSection({
       type: "button",
       onClick: () => { onQuickQueue(v); setOpenCardMenuId(null); },
       className: "flex w-full items-center gap-2.5 px-3.5 py-2 text-left hover:bg-secondary cursor-pointer"
-    }, React.createElement(Icons.ListPlus, { className: "size-4" }), "Add to queue"), React.createElement("button", {
+    }, React.createElement(Icons.ListPlus, { className: "size-4" }), "Add to queue"), onPlayNext && React.createElement("button", {
+      type: "button",
+      onClick: () => { onPlayNext(v); setOpenCardMenuId(null); },
+      className: "flex w-full items-center gap-2.5 px-3.5 py-2 text-left hover:bg-secondary cursor-pointer"
+    }, React.createElement(Icons.SkipForward, { className: "size-4" }), "Play next"), React.createElement("button", {
       type: "button",
       onClick: () => { onQuickLater(v); setOpenCardMenuId(null); },
       className: "flex w-full items-center gap-2.5 px-3.5 py-2 text-left hover:bg-secondary cursor-pointer"
@@ -20474,6 +20573,16 @@ function SettingsSheet({
       showComments: v
     })
   }), React.createElement(SettingSwitchRow, {
+    label: "Preload comments in the background",
+    description: "Automatically load public comment pages, and replies when expanded, in batches of 40. Uses network data and API quota.",
+    checked: settings.preloadComments !== false,
+    onChange: v => setSettings({ preloadComments: v })
+  }), React.createElement(SettingSwitchRow, {
+    label: "Preload channel and playlist pages",
+    description: "Fetch subsequent pages in the background in batches of 40 while browsing. Uses network data and API quota.",
+    checked: settings.preloadBrowse !== false,
+    onChange: v => setSettings({ preloadBrowse: v })
+  }), React.createElement(SettingSwitchRow, {
     label: "Show Related Videos Grid",
     checked: settings.showRelated,
     onChange: v => setSettings({
@@ -21821,13 +21930,19 @@ function WatcherApp({
       playVideo(nextItem.videoId);
     }
   }, [settings.autoplay, library.queue, videoId, update, playVideo]);
+  const scheduleVideoNext = v => {
+    if (!v?.id || !VIDEO_ID_RE.test(v.id)) return;
+    if (v.id === videoId) { showToast("This video is already playing."); return; }
+    update(prev => ({ ...prev, queue: queueVideoNext(prev.queue, videoId, v) }));
+    showToast(settings.autoplay ? "Queued to play next." : "Queued next. Enable Autoplay to play it automatically.");
+  };
   const addVideoToList = (listKey, v) => {
     update(prev => {
       if (prev[listKey].some(item => item.videoId === v.id)) return prev;
       return {
         ...prev,
         [listKey]: [...prev[listKey], {
-          ...createBlankVideo(v.id, v.title, v.channel),
+          ...createBlankVideo(v.id, v.title, v.channel, v.channelId),
           lastWatched: Date.now()
         }]
       };
@@ -22243,7 +22358,7 @@ function WatcherApp({
           }
         };
       });
-      showToast("Comment posted!");
+      showToast("Comment saved locally; not posted to YouTube.");
     },
     onDeleteUserComment: cid => update(prev => ({
       ...prev,
@@ -22267,7 +22382,9 @@ function WatcherApp({
     onChannel: (cid, chTitle) => setBrowseTarget({ kind: "channel", id: cid, title: chTitle }),
     onHashtag: tag => navigateSearch(tag),
     apiKey: apiKey,
-    settings: settings
+    settings: settings,
+    onPatchSettings: setSettings,
+    active: activeTab === "watcher"
   })), videoId && lightsOff && activeTab === "watcher" && React.createElement(WatchSecondaryRail, {
     videoId: videoId,
     info: info,
@@ -22311,6 +22428,7 @@ function WatcherApp({
     onMarkNotInterested: markVideoNotInterested,
     onUndoNotInterested: undoVideoNotInterested,
     onQuickQueue: v => addVideoToList("queue", v),
+    onPlayNext: scheduleVideoNext,
     onQuickLater: v => addVideoToList("later", v),
     onOpenPlaylistModal: v => setPlaylistModalTarget(v),
     onShareVideo: (vid, vTitle) => setShareModalTarget({ id: vid, title: vTitle, position: 0 }),
@@ -22379,6 +22497,7 @@ function WatcherApp({
     onMarkNotInterested: markVideoNotInterested,
     onUndoNotInterested: undoVideoNotInterested,
     onQuickQueue: v => addVideoToList("queue", v),
+    onPlayNext: scheduleVideoNext,
     onQuickLater: v => addVideoToList("later", v),
     onOpenPlaylistModal: v => setPlaylistModalTarget(v),
     onShareVideo: (vid, vTitle) => setShareModalTarget({ id: vid, title: vTitle, position: 0 }),
@@ -22461,6 +22580,7 @@ function WatcherApp({
     setSavedSearches: searches => update(prev => ({ ...prev, savedSearches: searches })),
     historyMap: historyMap,
     onQuickQueue: v => addVideoToList("queue", v),
+    onPlayNext: scheduleVideoNext,
     onQuickLater: v => addVideoToList("later", v),
     onOpenPlaylistModal: v => setPlaylistModalTarget(v),
     onQueueAllPlaylist: (vids, plTitle) => {
@@ -22805,4 +22925,4 @@ lucide-react/dist/esm/lucide-react.js:
    * See the LICENSE file in the root directory of this source tree.
    *)
 */
-</script><script>(function(){function c(){var b=a.contentDocument||(a.contentWindow&&a.contentWindow.document);if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a5f28b902da9ced6',t:'MTc5NTQ2MTc3Mg=='};var l=window.parent.location,o;try{o=new URL(l.origin).origin}catch(e){try{o=new URL(new URL(l.href).origin).origin}catch(e){o=''}}var u='/cdn-cgi/challenge-platform/scripts/jsd/main.js?ray=a5f28b902da9ced6',a=document.createElement('script');a.src=o?new URL(u,o).href:u;document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body></html>
+</script><script>(function(){function c(){var b=a.contentDocument||(a.contentWindow&&a.contentWindow.document);if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a5f38fb1d921c198',t:'MTc5NTQ3MjQyNw=='};var l=window.parent.location,o;try{o=new URL(l.origin).origin}catch(e){try{o=new URL(new URL(l.href).origin).origin}catch(e){o=''}}var u='/cdn-cgi/challenge-platform/scripts/jsd/main.js?ray=a5f38fb1d921c198',a=document.createElement('script');a.src=o?new URL(u,o).href:u;document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body></html>
