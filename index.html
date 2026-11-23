@@ -5981,6 +5981,7 @@ function createDefaultSettings() {
     pipedInstances: [...DEFAULT_PIPED_INSTANCES],
     invidiousInstances: [...DEFAULT_INVIDIOUS_INSTANCES],
     customEmbedProxy: "",
+    webPlayerProxies: [],
     proxyThumbnails: true,
     proxyPlayback: false,
     proxyRequests: false,
@@ -7572,6 +7573,44 @@ function resolveRelativeToInstance(rawUrl, instanceBase) {
     return null;
   }
 }
+// Web-player launchers are distinct from CORS/stream relays. Scramjet's
+// default percent codec and Ultraviolet's default alternating XOR are documented
+// by their respective projects; individual deployments may use different settings.
+function uvXorEncode(value) {
+  return encodeURIComponent(String(value).split("").map((ch, i) => i % 2 ? String.fromCharCode(ch.charCodeAt(0) ^ 2) : ch).join(""));
+}
+function noCookieTargetUrl(videoId, startSec, settings = {}) {
+  if (!VIDEO_ID_RE.test(videoId || "")) return "";
+  const q = new URLSearchParams({ autoplay: settings.autoplay ? "1" : "0", start: String(Math.max(0, Math.floor(Number(startSec) || 0))), rel: "0", playsinline: "1", enablejsapi: "1" });
+  return `https://www.youtube-nocookie.com/embed/${videoId}?${q}`;
+}
+function safeConfiguredProxyUrl(value) {
+  try {
+    const u = new URL(String(value).trim());
+    if (u.protocol !== "https:" || u.username || u.password) return null;
+    return u.href;
+  } catch { return null; }
+}
+function buildWebPlayerUrl(entry, videoId, startSec, settings = {}) {
+  if (!entry || !VIDEO_ID_RE.test(videoId || "")) return null;
+  const target = noCookieTargetUrl(videoId, startSec, settings);
+  const raw = String(entry.url || "").trim();
+  if (!raw || entry.type === "manual") return null;
+  const time = String(Math.max(0, Math.floor(Number(startSec) || 0)));
+  if (entry.type === "template") {
+    if (!/\{(?:url|rawUrl|uvXor|base64|id)\}/.test(raw)) return null;
+    const result = raw.replaceAll("{url}", encodeURIComponent(target)).replaceAll("{rawUrl}", target).replaceAll("{uvXor}", uvXorEncode(target)).replaceAll("{base64}", encodeURIComponent(btoa(target))).replaceAll("{id}", videoId).replaceAll("{start}", time);
+    return safeConfiguredProxyUrl(result);
+  }
+  if (entry.type !== "scramjet" && entry.type !== "uv") return null;
+  const safe = safeConfiguredProxyUrl(raw);
+  if (!safe) return null;
+  const u = new URL(safe);
+  if (u.search || u.hash) return null;
+  if (u.pathname === "/") u.pathname = entry.type === "uv" ? "/service/" : "/scramjet/";
+  if (!u.pathname.endsWith("/")) u.pathname += "/";
+  return safeConfiguredProxyUrl(u.href + (entry.type === "uv" ? uvXorEncode(target) : encodeURIComponent(target)));
+}
 function buildProxiedEmbedList(videoId, startSec, settings) {
   const s = Math.max(0, Math.floor(startSec || 0));
   const embeds = [];
@@ -7586,16 +7625,19 @@ function buildProxiedEmbedList(videoId, startSec, settings) {
       url: clean
     });
   };
+  for (const proxy of (Array.isArray(settings.webPlayerProxies) ? settings.webPlayerProxies : []).slice(0, 30)) {
+    const url = buildWebPlayerUrl(proxy, videoId, s, settings);
+    if (url) pushEmbed(`${proxy.label || "Web proxy"} · NoCookie`, url);
+  }
   if (settings.customEmbedProxy?.trim()) {
     const tpl = settings.customEmbedProxy.trim().replaceAll("{id}", videoId).replaceAll("{start}", String(s));
     pushEmbed("Custom Proxy Embed", tpl);
   }
   pushEmbed("Invidious Proxy (yt.chocolatemoo53.com)", `https://yt.chocolatemoo53.com/embed/${videoId}?autoplay=1&local=true&start=${s}`);
-  pushEmbed("Invidious API Mirror (inv.thepixora.com)", `https://inv.thepixora.com/embed/${videoId}?autoplay=1&local=true&start=${s}`);
+  pushEmbed("Invidious Embed (invidious.tiekoetter.com)", `https://invidious.tiekoetter.com/embed/${videoId}?autoplay=1&start=${s}`);
   pushEmbed("PokeTube InnerTube Proxy (poketube.fun)", `https://poketube.fun/embed/${videoId}`);
   pushEmbed("Piped Official (piped.video)", `https://piped.video/embed/${videoId}?autoplay=true&t=${s}`);
   pushEmbed("Piped Private.Coffee", `https://piped.private.coffee/embed/${videoId}?autoplay=true&t=${s}`);
-  pushEmbed("Invidious Mirror (iv.ggtyler.dev)", `https://iv.ggtyler.dev/embed/${videoId}?autoplay=1&local=true&start=${s}`);
   const invBases = [...new Set([settings.instance, ...DEFAULT_INVIDIOUS_INSTANCES, ...(settings.invidiousInstances || [])].map(x => safeHttpsUrl(x)?.replace(/\/$/, "")).filter(Boolean))];
   for (const inv of invBases) {
     const host = new URL(inv).hostname;
@@ -7605,7 +7647,7 @@ function buildProxiedEmbedList(videoId, startSec, settings) {
   pushEmbed("YouTube NoCookie Fallback", `https://www.youtube-nocookie.com/embed/${videoId}?autoplay=1&start=${s}&rel=0&modestbranding=1${validOrigin}`);
   return embeds;
 }
-async function resolveProxiedVideoStreams(videoId, startSec, settings, signal) {
+async function resolveProxiedVideoStreams(videoId, startSec, settings, signal, excludedSources = [], mode = "proxy-stream") {
   const proxyCfg = {
     webProxyMode: settings.webProxyMode,
     webProxyProvider: settings.webProxyProvider,
@@ -7618,14 +7660,14 @@ async function resolveProxiedVideoStreams(videoId, startSec, settings, signal) {
   const subtitles = [];
   const embeds = buildProxiedEmbedList(videoId, startSec, settings);
   const userPrimaryInv = settings.instance && !settings.instance.includes("nadeko.net") ? [settings.instance] : [];
-  const pipedBases = rankHealthyBases([...new Set([...(settings.pipedInstances || []), ...DEFAULT_PIPED_INSTANCES].map(x => safeHttpsUrl(x)?.replace(/\/$/, "")).filter(Boolean))]).slice(0, 3);
-  const invBases = rankHealthyBases([...new Set([...userPrimaryInv, ...DEFAULT_INVIDIOUS_INSTANCES, ...(settings.invidiousInstances || [])].map(x => safeHttpsUrl(x)?.replace(/\/$/, "")).filter(Boolean))]).slice(0, 3);
+  const pipedBases = rankHealthyBases([...new Set([...(settings.pipedInstances || []), ...DEFAULT_PIPED_INSTANCES].map(x => safeHttpsUrl(x)?.replace(/\/$/, "")).filter(Boolean))]).filter(x => !excludedSources.includes(x)).slice(0, 48);
+  const invBases = rankHealthyBases([...new Set([...userPrimaryInv, ...(settings.invidiousInstances || []), ...DEFAULT_INVIDIOUS_INSTANCES].map(x => safeHttpsUrl(x)?.replace(/\/$/, "")).filter(Boolean))]).filter(x => !excludedSources.includes(x)).slice(0, 48);
 
-  const raceSig = signal ? AbortSignal.any([signal, AbortSignal.timeout(4800)]) : AbortSignal.timeout(4800);
+  const raceSig = signal;
 
   const fetchFromPiped = async base => {
     const data = await proxyFetchJson(`${base}/streams/${videoId}`, raceSig, proxyCfg, 4200);
-    if (!data || (!Array.isArray(data.videoStreams) && !data.hls)) throw new Error("Empty Piped streams");
+    if (!data || (!Array.isArray(data.videoStreams) && !Array.isArray(data.audioStreams) && !data.hls)) throw new Error("Empty Piped streams");
     const host = new URL(base).hostname;
     const localStreams = [];
     const localSubs = [];
@@ -7696,7 +7738,7 @@ async function resolveProxiedVideoStreams(videoId, startSec, settings, signal) {
       }
     }
     if (!localStreams.length) throw new Error("No usable Piped stream URLs");
-    return { streams: localStreams, subtitles: localSubs };
+    return { streams: localStreams, subtitles: localSubs, sourceBase: base };
   };
 
   const fetchFromInv = async base => {
@@ -7709,7 +7751,8 @@ async function resolveProxiedVideoStreams(videoId, startSec, settings, signal) {
     if (hls) localStreams.push({ id: `inv-hls-${host}`, label: `HLS Auto (${host})`, height: 720, kind: "hls", videoUrl: hls, mimeType: "application/vnd.apple.mpegurl", via: `Invidious HLS · ${host}` });
     const adaptive = Array.isArray(data.adaptiveFormats) ? data.adaptiveFormats : [];
     const audioAdapts = adaptive.filter(a => String(a?.type || "").startsWith("audio/")).sort((a, b) => (Number(b.bitrate) || 0) - (Number(a.bitrate) || 0));
-    const bestInvAudio = audioAdapts[0] ? (resolveRelativeToInstance(`/latest_version?id=${videoId}&itag=${audioAdapts[0].itag}&local=true`, base) || safeHttpsUrl(audioAdapts[0].url)) : undefined;
+    const bestInvAudio = audioAdapts[0] ? ((audioAdapts[0].itag ? resolveRelativeToInstance(`/latest_version?id=${videoId}&itag=${audioAdapts[0].itag}&local=true`, base) : null) || safeHttpsUrl(audioAdapts[0].url)) : undefined;
+    if (bestInvAudio) localStreams.push({ id: `inv-audio-${host}-${audioAdapts[0].itag || "best"}`, label: `Audio (${host})`, height: 0, kind: "audio", audioUrl: bestInvAudio, mimeType: audioAdapts[0].type, via: `Invidious Audio · ${host}` });
     for (const fsItem of Array.isArray(data.formatStreams) ? data.formatStreams : []) {
       const h = parseHeightFromQuality(fsItem.qualityLabel || fsItem.resolution) || 360;
       const proxiedLocal = fsItem.itag ? resolveRelativeToInstance(`/latest_version?id=${videoId}&itag=${fsItem.itag}&local=true`, base) : null;
@@ -7756,17 +7799,27 @@ async function resolveProxiedVideoStreams(videoId, startSec, settings, signal) {
       }
     }
     if (!localStreams.length) throw new Error("No usable Invidious stream URLs");
-    return { streams: localStreams, subtitles: localSubs };
+    return { streams: localStreams, subtitles: localSubs, sourceBase: base };
   };
 
-  try {
-    const firstWin = await Promise.any([
-      ...pipedBases.map(fetchFromPiped),
-      ...invBases.map(fetchFromInv)
-    ]);
-    streams.push(...firstWin.streams);
-    subtitles.push(...firstWin.subtitles);
-  } catch {}
+  // Bounded waves: fast common mirrors first, then up to 48 configured sources per type.
+  // A dead mirror cannot prevent later sources from being tried.
+  for (let offset = 0; offset < Math.max(pipedBases.length, invBases.length); offset += 3) {
+    if (signal?.aborted) throw new DOMException("Aborted", "AbortError");
+    try {
+      const suitable = result => {
+        if (!result.streams.some(stream => mode === "audio-only" ? stream.kind === "audio" : stream.kind !== "audio")) throw new Error("No compatible media for this playback mode");
+        return result;
+      };
+      const firstWin = await Promise.any([
+        ...pipedBases.slice(offset, offset + 3).map(base => fetchFromPiped(base).then(suitable)),
+        ...invBases.slice(offset, offset + 3).map(base => fetchFromInv(base).then(suitable))
+      ]);
+      streams.push(...firstWin.streams.map(stream => ({ ...stream, sourceBase: firstWin.sourceBase })));
+      subtitles.push(...firstWin.subtitles);
+      break;
+    } catch (e) { if (signal?.aborted) throw e; }
+  }
 
   const seenIds = new Set();
   const dedupStreams = streams.filter(s => {
@@ -10606,6 +10659,9 @@ function VideoPlayer(props) {
   }));
   const [resolvingStreams, setResolvingStreams] = React.useState(false);
   const [streamIdx, setStreamIdx] = React.useState(0);
+  const failedStreamSourcesRef = React.useRef(new Set());
+  const failedStreamIdsRef = React.useRef(new Set());
+  const streamFailoverRef = React.useRef(null);
   const [embedIdx, setEmbedIdx] = React.useState(0);
   const [activeSubLang, setActiveSubLang] = React.useState("");
   const [proxyNotice, setProxyNotice] = React.useState(null);
@@ -10744,16 +10800,19 @@ function VideoPlayer(props) {
     document.addEventListener("mousedown", onDocPointerDown);
     return () => document.removeEventListener("mousedown", onDocPointerDown);
   }, [openMenu]);
-  const proxyConfigSig = `${settings.instance}|${settings.webProxyMode}|${settings.webProxyProvider}|${settings.customWebProxy}|${(settings.pipedInstances || []).join(",")}|${(settings.invidiousInstances || []).join(",")}|${settings.customEmbedProxy}`;
+  const proxyConfigSig = `${settings.instance}|${settings.webProxyMode}|${settings.webProxyProvider}|${settings.customWebProxy}|${(settings.pipedInstances || []).join(",")}|${(settings.invidiousInstances || []).join(",")}|${settings.customEmbedProxy}|${JSON.stringify(settings.webPlayerProxies || [])}|${settings.autoplay}`;
   React.useEffect(() => {
     const ctrl = new AbortController();
+    streamFailoverRef.current?.abort(); streamFailoverRef.current = null;
+    failedStreamSourcesRef.current = new Set(); failedStreamIdsRef.current = new Set();
+    setEmbedIdx(0);
     setBundle({ streams: [], subtitles: [], embeds: buildProxiedEmbedList(videoId, start, settings) });
     if (engine !== "proxy-stream" && engine !== "audio-only") {
       setResolvingStreams(false);
       return () => ctrl.abort();
     }
     setResolvingStreams(true);
-    resolveProxiedVideoStreams(videoId, start, settings, ctrl.signal).then(res => {
+    resolveProxiedVideoStreams(videoId, start, settings, ctrl.signal, [], engine).then(res => {
       if (ctrl.signal.aborted) return;
       setBundle(res);
       const bestIdx = pickPreferredStream(res.streams, settings.preferredQuality, engineRef.current);
@@ -10969,28 +11028,33 @@ function VideoPlayer(props) {
     if (!v.paused && a.paused) a.play().catch(() => {});else if (v.paused && !a.paused) a.pause();
   }, [usesSyncedAudio]);
   const handleStreamError = React.useCallback(() => {
-    setBundle(prev => {
-      const nextIdx = streamIdx + 1;
-      if (nextIdx < prev.streams.length) {
-        const nextStream = prev.streams[nextIdx];
-        if (engineRef.current !== "audio-only" && nextStream.kind === "audio") {
-          const nextVideoIdx = prev.streams.findIndex((s, i) => i > streamIdx && s.kind !== "audio");
-          if (nextVideoIdx >= 0) {
-            setStreamIdx(nextVideoIdx);
-            setProxyNotice(`Switched proxy stream -> ${prev.streams[nextVideoIdx].via}`);
-            return prev;
-          }
-        } else {
-          setStreamIdx(nextIdx);
-          setProxyNotice(`Switched proxy stream -> ${nextStream.via}`);
-          return prev;
-        }
-      }
-      setEngine("proxy-embed");
-      setProxyNotice("Switched to Web Proxy Embed mirror");
-      return prev;
+    if (streamFailoverRef.current) return;
+    const currentStream = bundle.streams[streamIdx];
+    if (currentStream?.id) failedStreamIdsRef.current.add(currentStream.id);
+    const nextIdx = bundle.streams.findIndex(candidate => !failedStreamIdsRef.current.has(candidate.id) && (engineRef.current === "audio-only" ? candidate.kind === "audio" : candidate.kind !== "audio"));
+    if (nextIdx >= 0) {
+      setStreamIdx(nextIdx);
+      setProxyNotice(`Switched proxy stream → ${bundle.streams[nextIdx].via}`);
+      return;
+    }
+    const failedBase = bundle.streams[streamIdx]?.sourceBase;
+    if (!failedBase) { setEngine("proxy-embed"); setProxyNotice("Stream failed; try a proxy embed mirror."); return; }
+    failedStreamSourcesRef.current.add(failedBase);
+    const ctrl = new AbortController(); streamFailoverRef.current = ctrl;
+    setResolvingStreams(true); setProxyNotice("Trying another video source…");
+    resolveProxiedVideoStreams(videoId, liveTimeRef.current || start, settings, ctrl.signal, [...failedStreamSourcesRef.current], engineRef.current).then(res => {
+      if (ctrl.signal.aborted) return;
+      let idx = pickPreferredStream(res.streams, settings.preferredQuality, engineRef.current);
+      const compatible = item => engineRef.current === "audio-only" ? item.kind === "audio" : item.kind !== "audio";
+      if (idx < 0 || !compatible(res.streams[idx])) idx = res.streams.findIndex(compatible);
+      if (idx < 0) { setEngine("proxy-embed"); setProxyNotice("No more streams found; try a proxy embed mirror."); return; }
+      failedStreamIdsRef.current = new Set();
+      setBundle(res); setStreamIdx(idx); setProxyNotice(`Trying ${res.streams[idx].via}`);
+    }).catch(() => { if (!ctrl.signal.aborted) { setEngine("proxy-embed"); setProxyNotice("No more streams found; try a proxy embed mirror."); } }).finally(() => {
+      if (streamFailoverRef.current === ctrl) { streamFailoverRef.current = null; setResolvingStreams(false); }
     });
-  }, [streamIdx]);
+  }, [bundle.streams, streamIdx, videoId, start, settings]);
+  React.useEffect(() => () => { streamFailoverRef.current?.abort(); streamFailoverRef.current = null; }, [videoId, engine, proxyConfigSig]);
   React.useEffect(() => {
     if (!proxyNotice) return;
     const id = window.setTimeout(() => setProxyNotice(null), 4500);
@@ -11699,7 +11763,17 @@ function VideoPlayer(props) {
     onClick: () => setEmbedIdx(i => (i + 1) % bundle.embeds.length),
     title: activeEmbed?.label,
     className: "rounded-full bg-secondary px-3 py-1 text-xs font-medium text-foreground hover:bg-accent transition cursor-pointer"
-  }, "Mirror ", embedIdx + 1, "/", bundle.embeds.length, " · Next"), engine === "proxy-stream" && bundle.streams.length > 1 && React.createElement("button", {
+  }, "Mirror ", embedIdx + 1, "/", bundle.embeds.length, " · Next"), engine === "proxy-embed" && activeEmbed?.url && React.createElement("a", {
+    href: activeEmbed.url, target: "_blank", rel: "noopener noreferrer", className: "rounded-full bg-secondary px-3 py-1 text-xs hover:bg-accent", title: "Try opening this proxy in a separate tab"
+  }, "Open mirror in tab"), engine === "proxy-embed" && (Array.isArray(settings.webPlayerProxies) ? settings.webPlayerProxies : []).filter(x => x && x.type === "manual" && safeConfiguredProxyUrl(x.url)).map(proxy => React.createElement("button", {
+    key: proxy.id, type: "button", className: "rounded-full bg-secondary px-3 py-1 text-xs hover:bg-accent",
+    title: "Open the proxy and paste the no-cookie embed URL", onClick: () => {
+      window.open(safeConfiguredProxyUrl(proxy.url), "_blank", "noopener,noreferrer");
+      const url = noCookieTargetUrl(videoId, start, settings);
+      if (!navigator.clipboard?.writeText) { window.prompt("Copy this NoCookie URL and paste it into the proxy:", url); return; }
+      navigator.clipboard.writeText(url).then(() => onToast?.("NoCookie link copied. Paste it into the proxy."), () => window.prompt("Copy this NoCookie URL and paste it into the proxy:", url));
+    }
+  }, `Open ${proxy.label || "proxy"} · copy link`)), engine === "proxy-stream" && bundle.streams.length > 1 && React.createElement("button", {
     type: "button",
     onClick: () => setStreamIdx(i => (i + 1) % bundle.streams.length),
     title: activeStream?.label,
@@ -19454,6 +19528,89 @@ function SettingSwitchRow({
     className: "size-4 shrink-0 accent-primary cursor-pointer"
   }));
 }
+function normalizePublicRegistryEndpoint(raw) {
+  try {
+    const u = new URL(raw);
+    const host = u.hostname.toLowerCase();
+    if (u.protocol !== "https:" || u.username || u.password || u.search || u.hash || u.pathname !== "/" || !host.includes(".") || host === "localhost" || host.endsWith(".local") || host.endsWith(".internal") || /^\d+(?:\.\d+){3}$/.test(host) || host.includes(":")) return null;
+    return u.origin;
+  } catch { return null; }
+}
+function parsePublicVideoRegistries(piped, invidious) {
+  const ps = (Array.isArray(piped?.instances) ? piped.instances : []).map(x => normalizePublicRegistryEndpoint(x?.api_url)).filter(Boolean);
+  const iv = (Array.isArray(invidious) ? invidious : []).flatMap(row => {
+    const info = Array.isArray(row) ? row[1] : null;
+    if (!info || info.api !== true || (info.type && info.type !== "https")) return [];
+    const url = normalizePublicRegistryEndpoint(info.uri || (typeof row[0] === "string" ? `https://${row[0]}` : ""));
+    return url ? [url] : [];
+  });
+  return { piped: [...new Set(ps)].slice(0, 30), invidious: [...new Set(iv)].slice(0, 30) };
+}
+function WebProxyManager({ settings, setSettings }) {
+  const [kind, setKind] = React.useState("scramjet");
+  const [label, setLabel] = React.useState("");
+  const [url, setUrl] = React.useState("");
+  const [message, setMessage] = React.useState("");
+  const [discovering, setDiscovering] = React.useState(false);
+  const discoverController = React.useRef(null);
+  const settingsRef = React.useRef(settings);
+  settingsRef.current = settings;
+  React.useEffect(() => () => discoverController.current?.abort(), []);
+  const saved = Array.isArray(settings.webPlayerProxies) ? settings.webPlayerProxies.filter(entry => entry && typeof entry === "object" && typeof entry.id === "string" && typeof entry.url === "string" && ["scramjet", "uv", "template", "manual"].includes(entry.type)) : [];
+  const add = () => {
+    const value = url.trim();
+    const entry = { id: safeUUID(), label: label.trim().slice(0, 60), type: kind, url: value };
+    const valid = kind === "manual" ? safeConfiguredProxyUrl(value) : buildWebPlayerUrl(entry, "dQw4w9WgXcQ", 0, settings);
+    if (!valid) { setMessage(kind === "template" ? "Use an HTTPS template containing {url}, {rawUrl}, {uvXor}, {base64}, or {id}." : "Enter an HTTPS proxy URL. A path prefix must not contain a query or fragment."); return; }
+    if (saved.length >= 30) { setMessage("Remove an entry before adding more (limit 30)."); return; }
+    if (!entry.label) entry.label = new URL(valid).hostname;
+    setSettings({ webPlayerProxies: [...saved, entry] });
+    setUrl(""); setLabel(""); setMessage(kind === "manual" ? "Saved. Open it from the player and paste the copied NoCookie link." : "Saved. Select Proxy Embed in the player to use it.");
+  };
+  const discover = async () => {
+    const ctrl = new AbortController(); discoverController.current?.abort(); discoverController.current = ctrl;
+    setDiscovering(true); setMessage("Checking public instance directories…");
+    const current = settingsRef.current;
+    const cfg = { webProxyMode: current.webProxyMode, webProxyProvider: current.webProxyProvider, customWebProxy: current.customWebProxy, wispEnabled: current.wispEnabled, wispServers: current.wispServers, customWispServer: current.customWispServer };
+    const results = await Promise.allSettled([
+      proxyFetchJson("https://raw.githubusercontent.com/jayxdcode/piped-instances/main/public/lite.json", ctrl.signal, cfg, 9000),
+      proxyFetchJson("https://api.invidious.io/instances.json?sort_by=health", ctrl.signal, cfg, 9000)
+    ]);
+    if (ctrl.signal.aborted) return;
+    const parsed = parsePublicVideoRegistries(results[0].status === "fulfilled" ? results[0].value : null, results[1].status === "fulfilled" ? results[1].value : null);
+    const now = settingsRef.current;
+    const oldP = Array.isArray(now.pipedInstances) ? now.pipedInstances : [];
+    const oldI = Array.isArray(now.invidiousInstances) ? now.invidiousInstances : [];
+    const nextP = [...new Set([...oldP, ...parsed.piped])];
+    const nextI = [...new Set([...oldI, ...parsed.invidious])];
+    if (parsed.piped.length || parsed.invidious.length) setSettings({ pipedInstances: nextP, invidiousInstances: nextI });
+    const unavailable = results.filter(r => r.status !== "fulfilled").length;
+    setMessage(`Added ${nextP.length - oldP.length} Piped and ${nextI.length - oldI.length} Invidious sources.${unavailable ? ` ${unavailable} director${unavailable === 1 ? "y was" : "ies were"} unreachable.` : ""} Sources may be offline or unable to stream.`);
+    setDiscovering(false); discoverController.current = null;
+  };
+  const placeholder = kind === "uv" ? "https://proxy.example/service/" : kind === "scramjet" ? "https://proxy.example/scramjet/" : kind === "manual" ? "https://your-gust-or-nautilus-site.example/" : "https://proxy.example/?url={url}";
+  return React.createElement("div", { className: "space-y-3 border-t border-border pt-3" },
+    React.createElement("h4", { className: "text-xs font-semibold" }, "NoCookie through a web proxy"),
+    React.createElement("p", { className: "text-[11px] text-muted-foreground" }, "Add a trusted proxy, then choose Proxy Embed on a video. The proxy can see video requests. Playback and iframe support depend on that proxy."),
+    React.createElement("p", { className: "text-[11px] text-muted-foreground" }, "Scramjet and Ultraviolet use their default codecs; enter the actual service prefix if it differs. Visit the proxy site first to initialize its service worker. GUST/Nautilus or unknown launchers: choose Manual, then paste the copied link into that site."),
+    React.createElement("label", { className: "block space-y-1" }, React.createElement("span", { className: "text-xs font-medium" }, "Proxy type"), React.createElement("select", { value: kind, onChange: e => setKind(e.target.value), className: "w-full rounded-lg bg-secondary px-3 py-2 text-xs" },
+      React.createElement("option", { value: "scramjet" }, "Scramjet — default URL encoding"),
+      React.createElement("option", { value: "uv" }, "Ultraviolet — default XOR"),
+      React.createElement("option", { value: "template" }, "Custom web proxy URL template"),
+      React.createElement("option", { value: "manual" }, "GUST / Nautilus / other — manual launcher"))),
+    React.createElement("input", { value: label, onChange: e => setLabel(e.target.value), placeholder: "Name (optional)", "aria-label": "Proxy name", className: "w-full rounded-lg bg-secondary px-2.5 py-1.5 text-xs" }),
+    React.createElement("div", { className: "flex gap-1.5" }, React.createElement("input", { value: url, onChange: e => setUrl(e.target.value), placeholder, "aria-label": "Web proxy address", className: "min-w-0 flex-1 rounded-lg bg-secondary px-2.5 py-1.5 font-mono text-xs" }), React.createElement(SoftButton, { size: "sm", variant: "secondary", onClick: add }, "Add proxy")),
+    kind === "template" && React.createElement("p", { className: "text-[11px] text-muted-foreground" }, "Templates: {url} = encoded NoCookie URL; {rawUrl} = raw URL; {uvXor} = Ultraviolet XOR; {base64} = Base64; {id} and {start} = video ID and seconds."),
+    saved.map(entry => React.createElement("div", { key: entry.id, className: "flex flex-wrap items-center gap-2 rounded-lg bg-secondary/60 px-2.5 py-2 text-xs" },
+      React.createElement("span", { className: "min-w-0 flex-1 break-all" }, entry.label || "Proxy", " · ", entry.type, " · ", entry.url),
+      entry.type !== "template" && safeConfiguredProxyUrl(entry.url) && React.createElement("a", { href: entry.type === "manual" ? safeConfiguredProxyUrl(entry.url) : new URL(safeConfiguredProxyUrl(entry.url)).origin, target: "_blank", rel: "noopener noreferrer", className: "underline" }, "Open proxy site"),
+      React.createElement("button", { type: "button", onClick: () => setSettings({ webPlayerProxies: saved.filter(x => x.id !== entry.id) }), className: "text-muted-foreground hover:text-destructive", "aria-label": `Remove ${entry.label || "proxy"}` }, "Remove"))),
+    React.createElement("div", { className: "border-t border-border pt-3" }, React.createElement(SoftButton, { size: "sm", variant: "secondary", disabled: discovering, onClick: discover }, discovering ? "Checking directories…" : "Discover public video sources"),
+      React.createElement("p", { className: "mt-1 text-[11px] text-muted-foreground" }, "Fetches community Piped and official Invidious directories; adds API-capable HTTPS sources. This does not verify playback.")),
+    message && React.createElement("p", { role: "status", className: "text-xs text-muted-foreground" }, message)
+  );
+}
+
 function SettingsSheet({
   open,
   onOpenChange,
@@ -19573,7 +19730,7 @@ function SettingsSheet({
     className: "text-xs font-semibold uppercase tracking-wider text-muted-foreground"
   }, "Default Video Playback Source"), React.createElement("div", {
     className: "grid gap-2 sm:grid-cols-2"
-  }, [["proxy-stream", "Web Proxy Stream (Recommended)", "Native HTML5 <video> routed via Piped & Invidious ?local=true media proxies.", "Server"], ["proxy-embed", "Web Proxy Embed", "Multi-mirror proxied iframe (Invidious, Piped, PokeTube, or Custom).", "Globe"], ["audio-only", "Audio-Only Proxy", "Streams only proxied audio (~90% less data) with cover art.", "Headphones"], ["yt-nocookie", "YouTube NoCookie", "Direct youtube-nocookie.com iframe with auto-fallback to proxy.", "Play"]].map(([id, title, desc, ic]) => React.createElement("button", {
+  }, [["proxy-stream", "Web Proxy Stream (Recommended)", "Native HTML5 <video> routed via Piped & Invidious ?local=true media proxies.", "Server"], ["proxy-embed", "Web Proxy Embed", "Multi-mirror proxied iframe (Invidious, Piped, PokeTube, or Custom).", "Globe"], ["audio-only", "Audio-Only Proxy", "Streams only proxied audio (~90% less data) with cover art.", "Headphones"], ["yt-nocookie", "YouTube NoCookie", "Direct youtube-nocookie.com iframe. Switch to Proxy Embed to try configured web proxies.", "Play"]].map(([id, title, desc, ic]) => React.createElement("button", {
     key: id,
     type: "button",
     onClick: () => setSettings({
@@ -19749,7 +19906,7 @@ function SettingsSheet({
     className: "text-xs font-semibold"
   }, "Piped & Invidious Video Proxy Pool"), React.createElement("p", {
     className: "text-[11px] text-muted-foreground"
-  }, "Automatic failover across all mirrors below.")), React.createElement(Button, {
+  }, "Tries configured mirrors in bounded waves; operators and uptime vary.")), React.createElement(Button, {
     size: "sm",
     variant: "secondary",
     disabled: benching,
@@ -19862,7 +20019,7 @@ function SettingsSheet({
       customEmbedProxy: e.target.value
     }),
     className: "w-full rounded-lg bg-secondary px-2.5 py-1.5 font-mono text-xs"
-  }))), React.createElement("section", {
+  })), React.createElement(WebProxyManager, { settings, setSettings })), React.createElement("section", {
     className: "space-y-2 rounded-xl border border-border bg-secondary/30 p-3"
   }, React.createElement("label", {
     className: "block space-y-1"
@@ -22575,4 +22732,4 @@ lucide-react/dist/esm/lucide-react.js:
    * See the LICENSE file in the root directory of this source tree.
    *)
 */
-</script><script>(function(){function c(){var b=a.contentDocument||(a.contentWindow&&a.contentWindow.document);if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a5f19e35dba7cd5b',t:'MTc5NTQ1MjA1MA=='};var l=window.parent.location,o;try{o=new URL(l.origin).origin}catch(e){try{o=new URL(new URL(l.href).origin).origin}catch(e){o=''}}var u='/cdn-cgi/challenge-platform/scripts/jsd/main.js?ray=a5f19e35dba7cd5b',a=document.createElement('script');a.src=o?new URL(u,o).href:u;document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body></html>
+</script></body></html>
