@@ -5691,7 +5691,7 @@ function channelRouteUrl(snap, isFile = false) {
   else if (snap.tab === "library") hash = `#you=${snap.librarySubTab || "history"}`;
   else if (snap.tab === "wrapped") hash = "#wrapped";
   else if (target?.kind === "playlist") hash = `#playlist=${target.id}`;
-  else if (snap.category === "search" && snap.query) hash = `#search=${encodeURIComponent(snap.query)}`;
+  else if (snap.category === "search" && snap.query) hash = `#search=${encodeURIComponent(snap.query)}${snap.searchType && snap.searchType !== "all" ? `&type=${encodeURIComponent(snap.searchType)}` : ""}`;
   else if (snap.category && snap.category !== "home") hash = `#${snap.category}`;
   return isFile ? hash : `/${hash}`;
 }
@@ -5772,7 +5772,7 @@ function parseYouTubeInput(input) {
   }
   if (trimmed.startsWith("#")) {
     const params = new URLSearchParams(trimmed.slice(1));
-    const candidate = trimmed.slice(1).split("&")[0] ?? "";
+    const candidate = params.get("watch") || trimmed.slice(1).split("&")[0] || "";
     if (VIDEO_ID_RE.test(candidate)) {
       return {
         id: candidate,
@@ -5787,7 +5787,12 @@ function parseYouTubeInput(input) {
     const parts = url.pathname.split("/").filter(Boolean);
     const listParam = url.searchParams.get("list") ?? undefined;
     const validList = listParam && /^[\w-]{10,150}$/.test(listParam) ? listParam : undefined;
-    if (YT_HOSTS.has(url.hostname) || url.pathname === "/watch" || url.pathname === "/playlist" || parts[0] === "embed" || parts[0] === "v") {
+    const sameApp = typeof location !== "undefined" && url.origin === location.origin;
+    if (sameApp && url.hash) {
+      const hashVideo = parseYouTubeInput(url.hash);
+      if (hashVideo) return hashVideo;
+    }
+    if (YT_HOSTS.has(url.hostname) || (sameApp && (url.pathname === "/" || ["watch", "playlist", "shorts", "live", "embed", "v"].includes(parts[0])))) {
       const vid = url.hostname.endsWith("youtu.be") ? parts[0] : url.searchParams.get("v") ?? (["live", "shorts", "embed", "v"].includes(parts[0] ?? "") ? parts[1] : undefined);
       if (vid && VIDEO_ID_RE.test(vid)) {
         return {
@@ -5857,6 +5862,25 @@ function formatWatchTime(sec) {
   if (h > 0) return `${h}h ${m}m`;
   if (m > 0) return `${m}m`;
   return `${safe}s`;
+}
+function formatExactDate(iso) {
+  const date = new Date(iso);
+  return Number.isFinite(date.getTime()) ? date.toLocaleDateString(undefined, { year: "numeric", month: "short", day: "numeric" }) : String(iso || "");
+}
+async function copyTextWithFallback(text, onToast, success = "Copied to clipboard.", failure = "Clipboard unavailable; copy the text manually.") {
+  try {
+    if (!navigator.clipboard?.writeText) throw new Error("Clipboard unavailable");
+    await navigator.clipboard.writeText(text);
+    onToast?.(success);
+    return true;
+  } catch {
+    try { window.prompt("Clipboard unavailable. Copy this text manually:", text); } catch {}
+    onToast?.(failure);
+    return false;
+  }
+}
+function escapeHtmlAttribute(text) {
+  return String(text).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#39;");
 }
 function formatRelativeDate(iso, now = Date.now()) {
   const ts = Date.parse(iso);
@@ -11641,8 +11665,7 @@ function VideoPlayer(props) {
     type: "button",
     role: "menuitem",
     onClick: () => {
-      navigator.clipboard?.writeText?.(`https://youtu.be/${videoId}`).catch(() => {});
-      onToast?.("Video URL copied!");
+      void copyTextWithFallback(`https://youtu.be/${videoId}`, onToast, "Video URL copied!");
       setCtxMenu(null);
     },
     className: "flex w-full items-center gap-2.5 px-3.5 py-2 text-left hover:bg-white/15 cursor-pointer"
@@ -11651,8 +11674,7 @@ function VideoPlayer(props) {
     role: "menuitem",
     onClick: () => {
       const t = Math.max(0, Math.floor(liveTime));
-      navigator.clipboard?.writeText?.(`https://youtu.be/${videoId}?t=${t}`).catch(() => {});
-      onToast?.(`Copied URL at ${formatDuration(t)}!`);
+      void copyTextWithFallback(`https://youtu.be/${videoId}?t=${t}`, onToast, `Copied URL at ${formatDuration(t)}!`);
       setCtxMenu(null);
     },
     className: "flex w-full items-center gap-2.5 px-3.5 py-2 text-left hover:bg-white/15 cursor-pointer"
@@ -11660,9 +11682,8 @@ function VideoPlayer(props) {
     type: "button",
     role: "menuitem",
     onClick: () => {
-      const embedHtml = `<iframe width="560" height="315" src="https://www.youtube-nocookie.com/embed/${videoId}" title="${(title || "YouTube video").replace(/"/g, "&quot;")}" frameborder="0" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>`;
-      navigator.clipboard?.writeText?.(embedHtml).catch(() => {});
-      onToast?.("Embed code copied!");
+      const embedHtml = `<iframe width="560" height="315" src="https://www.youtube-nocookie.com/embed/${videoId}" title="${escapeHtmlAttribute(title || "YouTube video")}" frameborder="0" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>`;
+      void copyTextWithFallback(embedHtml, onToast, "Embed code copied!");
       setCtxMenu(null);
     },
     className: "flex w-full items-center gap-2.5 px-3.5 py-2 text-left hover:bg-white/15 cursor-pointer"
@@ -12709,13 +12730,15 @@ function ShareVideoModal({
 }) {
   const Button = SoftButton;
   const [startAtEnabled, setStartAtEnabled] = React.useState(currentPosition >= 5);
-  const [startSec, setStartSec] = React.useState(Math.max(0, Math.floor(currentPosition)));
+  const [startText, setStartText] = React.useState(formatDuration(Math.max(0, Math.floor(currentPosition))));
+  const startSec = parseTimeParam(startText);
+  const validTime = /^(?:\d+(?:\.\d+)?|\d+(?::\d{1,2}){1,2}|(?=.*\d)(?:\d+h)?(?:\d+m)?(?:\d+s)?)$/i.test(startText.trim());
   const [showEmbed, setShowEmbed] = React.useState(false);
 
   React.useEffect(() => {
     if (open) {
       const s = Math.max(0, Math.floor(currentPosition));
-      setStartSec(s);
+      setStartText(formatDuration(s));
       setStartAtEnabled(s >= 5);
       setShowEmbed(false);
     }
@@ -12726,12 +12749,14 @@ function ShareVideoModal({
     ? `https://youtu.be/${videoId}?t=${startSec}`
     : `https://youtu.be/${videoId}`;
   const embedSrc = `https://www.youtube-nocookie.com/embed/${videoId}${startAtEnabled && startSec > 0 ? `?start=${startSec}` : ""}`;
-  const embedCode = `<iframe width="560" height="315" src="${embedSrc}" title="${(title || "YouTube video").replace(/"/g, "&quot;")}" frameborder="0" referrerpolicy="strict-origin-when-cross-origin" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>`;
+  const embedCode = `<iframe width="560" height="315" src="${embedSrc}" title="${escapeHtmlAttribute(title || "YouTube video")}" frameborder="0" referrerpolicy="strict-origin-when-cross-origin" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>`;
 
-  const copyText = (txt, msg) => {
-    navigator.clipboard?.writeText?.(txt).catch(() => {});
-    onToast?.(msg);
+  const copyText = (txt, msg) => void copyTextWithFallback(txt, onToast, msg);
+  const nativeShare = async () => {
+    try { await navigator.share({ title: title || "YouTube video", url: shareUrl }); }
+    catch (error) { if (error?.name !== "AbortError") onToast?.("Could not open the share sheet. Try copying the link."); }
   };
+  const appUrl = window.location.protocol === "file:" ? "" : `${window.location.origin}/?v=${encodeURIComponent(videoId)}${startAtEnabled && validTime && startSec > 0 ? `&t=${Math.floor(startSec)}` : ""}`;
 
   return React.createElement(ModalOverlay, {
     title: "Share",
@@ -12749,6 +12774,8 @@ function ShareVideoModal({
   ].map(item => item.href ? React.createElement("a", {
     key: item.label,
     href: item.href,
+    onClick: e => { if (startAtEnabled && !validTime) e.preventDefault(); },
+    "aria-disabled": startAtEnabled && !validTime,
     target: "_blank",
     rel: "noreferrer",
     className: "flex flex-col items-center gap-1.5 rounded-xl bg-secondary/70 p-2.5 text-xs font-medium text-foreground hover:bg-secondary transition-colors"
@@ -12766,6 +12793,7 @@ function ShareVideoModal({
     className: "min-w-0 flex-1 bg-transparent font-mono text-xs text-foreground outline-none"
   }), React.createElement(Button, {
     size: "sm",
+    disabled: startAtEnabled && !validTime,
     onClick: () => copyText(shareUrl, "Link copied to clipboard!"),
     className: "rounded-full px-4"
   }, "Copy")), React.createElement("div", {
@@ -12781,13 +12809,12 @@ function ShareVideoModal({
     type: "text",
     "aria-label": "Start at timestamp",
     disabled: !startAtEnabled,
-    value: formatDuration(startSec),
-    onChange: e => {
-      const parsed = parseTimeParam(e.target.value);
-      if (parsed != null) setStartSec(parsed);
-    },
+    value: startText,
+    placeholder: "0:00",
+    "aria-invalid": startAtEnabled && !validTime,
+    onChange: e => setStartText(e.target.value),
     className: "w-20 rounded-lg border border-border bg-secondary px-2.5 py-1 font-mono text-xs text-foreground disabled:opacity-40"
-  })), showEmbed && React.createElement("div", {
+  })), startAtEnabled && !validTime && React.createElement("p", { role: "alert", className: "text-xs text-destructive" }, "Enter seconds, a time like 1:23, or 1h2m3s."), appUrl && React.createElement(Button, { size: "sm", variant: "secondary", disabled: startAtEnabled && !validTime, onClick: () => copyText(appUrl, "App link copied!") }, React.createElement(Icons.Copy, { className: "size-3.5" }), "Copy link to this app"), typeof navigator.share === "function" && React.createElement(Button, { size: "sm", variant: "secondary", disabled: startAtEnabled && !validTime, onClick: nativeShare }, React.createElement(Icons.Share2, { className: "size-3.5" }), "Share via device"), showEmbed && React.createElement("div", {
     className: "space-y-2 border-t border-border pt-3"
   }, React.createElement("p", {
     className: "text-xs font-semibold text-muted-foreground"
@@ -12799,6 +12826,7 @@ function ShareVideoModal({
   }), React.createElement(Button, {
     size: "sm",
     variant: "secondary",
+    disabled: startAtEnabled && !validTime,
     onClick: () => copyText(embedCode, "Embed HTML copied!")
   }, React.createElement(Icons.Copy, { className: "size-3.5" }), "Copy Embed HTML"))));
 }
@@ -12822,10 +12850,10 @@ function CreateClipModal({
 
   React.useEffect(() => {
     if (open) {
-      const s = Math.max(0, Math.floor(currentPosition) - 5);
+      const s = Math.min(Math.max(0, maxDur - 3), Math.max(0, Math.floor(currentPosition) - 5));
       const e = Math.min(maxDur, s + 15);
       setStartSec(s);
-      setEndSec(Math.max(s + 5, e));
+      setEndSec(e);
       setClipTitle("");
     }
   }, [open, videoId]);
@@ -12835,9 +12863,8 @@ function CreateClipModal({
 
   const handleSubmit = e => {
     e.preventDefault();
-    const s = Math.max(0, Math.min(startSec, endSec - 2));
-    const end = Math.min(maxDur, Math.max(s + 3, s + 60, endSec));
-    const finalEnd = Math.min(s + 60, Math.max(s + 3, endSec));
+    const s = Math.max(0, Math.min(startSec, endSec - 2, maxDur - 3));
+    const finalEnd = Math.min(maxDur, s + 60, Math.max(s + 3, endSec));
     const clip = {
       id: safeUUID(),
       videoId,
@@ -12849,8 +12876,7 @@ function CreateClipModal({
       createdAt: Date.now()
     };
     onSaveClip(clip);
-    navigator.clipboard?.writeText?.(`https://youtu.be/${videoId}?t=${s}`).catch(() => {});
-    onToast?.(`Saved clip "${clip.title}" (${formatDuration(s)}–${formatDuration(finalEnd)}) & copied link!`);
+    void copyTextWithFallback(`https://youtu.be/${videoId}?t=${s}`, onToast, `Saved clip "${clip.title}" and copied its start link!`, "Clip saved. Clipboard unavailable; copy the start link manually.");
     onClose();
   };
 
@@ -12873,7 +12899,7 @@ function CreateClipModal({
     className: "text-xs text-muted-foreground"
   }, `${formatDuration(startSec)} – ${formatDuration(endSec)} (${clipLen}s clip · max 60s)`))), React.createElement("label", {
     className: "block space-y-1.5 text-xs font-semibold text-muted-foreground"
-  }, "Clip title (required)", React.createElement("input", {
+  }, "Clip title (optional)", React.createElement("input", {
     type: "text",
     required: false,
     maxLength: 140,
@@ -16017,10 +16043,12 @@ function DeviceLibrarySection({
   onOpenPlaylistModal,
   onToast,
   initialTab = "history",
+  onTabChange,
   fullPage = false
 }) {
   const Button = SoftButton;
-  const [tab, setTab] = React.useState(initialTab || "history");
+  const [tab, setTabState] = React.useState(initialTab || "history");
+  const setTab = value => { setTabState(value); onTabChange?.(value); };
   const [search, setSearch] = React.useState("");
   const [historyFilter, setHistoryFilter] = React.useState("all"); // all | continue | completed | rewatched
   const [confirmClearHistory, setConfirmClearHistory] = React.useState(false);
@@ -16034,7 +16062,7 @@ function DeviceLibrarySection({
   const fileInputRef = React.useRef(null);
 
   React.useEffect(() => {
-    if (initialTab) setTab(initialTab);
+    if (initialTab) setTabState(initialTab);
   }, [initialTab]);
 
   React.useEffect(() => {
@@ -16986,8 +17014,7 @@ function DeviceLibrarySection({
     variant: "secondary",
     className: "h-7 rounded-full text-xs",
     onClick: () => {
-      navigator.clipboard?.writeText?.(`https://youtu.be/${clip.videoId}?t=${clip.startSec}`).catch(() => {});
-      onToast("Clip timestamp link copied!");
+      void copyTextWithFallback(`https://youtu.be/${clip.videoId}?t=${clip.startSec}`, onToast, "Clip start link copied!");
     }
   }, React.createElement(Icons.Share2, { className: "size-3" }), "Share"), React.createElement(Button, {
     size: "icon",
@@ -20980,6 +21007,7 @@ function WatcherApp({
   initialId,
   initialStart = 0,
   initialChannel = null,
+  initialRoute = {},
   portable = true
 }) {
   const Button = SoftButton;
@@ -20994,21 +21022,23 @@ function WatcherApp({
   const [watchTranscriptOpen, setWatchTranscriptOpen] = React.useState(false);
   const [watchLyricsMode, setWatchLyricsMode] = React.useState("auto");
   const [browseTarget, setBrowseTargetState] = React.useState(initialChannel);
-  const [discoverCategory, setDiscoverCategory] = React.useState("home");
-  const [discoverQuery, setDiscoverQuery] = React.useState("");
-  const [discoverSearchType, setDiscoverSearchType] = React.useState("all");
-  const [librarySubTab, setLibrarySubTab] = React.useState("history");
+  const [discoverCategory, setDiscoverCategory] = React.useState(initialRoute.category || "home");
+  const [discoverQuery, setDiscoverQuery] = React.useState(initialRoute.query || "");
+  const [discoverSearchType, setDiscoverSearchType] = React.useState(initialRoute.searchType || "all");
+  const [librarySubTab, setLibrarySubTab] = React.useState(initialRoute.librarySubTab || "history");
   const [videoId, setVideoId] = React.useState(initialId);
-  const [activeTab, setActiveTab] = React.useState(initialId ? "watcher" : "discover");
+  const [activeTab, setActiveTab] = React.useState(initialId ? "watcher" : initialRoute.tab || "discover");
   const navStackRef = React.useRef([{
-    tab: initialId ? "watcher" : "discover",
-    category: "home",
-    query: "",
+    tab: initialId ? "watcher" : initialRoute.tab || "discover",
+    category: initialRoute.category || "home",
+    query: initialRoute.query || "",
+    searchType: initialRoute.searchType || "all",
     browseTarget: initialChannel,
     videoId: initialId || null,
-    librarySubTab: "history",
+    librarySubTab: initialRoute.librarySubTab || "history",
     scrollY: 0
   }]);
+  const navSessionRef = React.useRef(safeUUID());
   const [navCursor, setNavCursor] = React.useState(0);
   const [navLength, setNavLength] = React.useState(1);
   const navCursorRef = React.useRef(0);
@@ -21183,13 +21213,15 @@ function WatcherApp({
       tab: activeTab,
       category: discoverCategory,
       query: discoverQuery,
+      searchType: discoverSearchType,
       browseTarget,
       videoId: videoId || null,
       librarySubTab,
       scrollY: 0
     };
-    // Save current scrollY onto outgoing entry before leaving!
+    // Persist outgoing scroll position into both the in-memory and browser entries.
     curSnap.scrollY = typeof window !== "undefined" ? (window.scrollY || 0) : 0;
+    try { window.history.replaceState({ ...(window.history.state || {}), __ytWatcherSession: navSessionRef.current, __ytWatcherNavIdx: curIdx, snap: curSnap }, ""); } catch {}
 
     const nextSnap = {
       ...curSnap,
@@ -21200,6 +21232,7 @@ function WatcherApp({
       curSnap.tab === nextSnap.tab &&
       curSnap.category === nextSnap.category &&
       curSnap.query === nextSnap.query &&
+      curSnap.searchType === nextSnap.searchType &&
       curSnap.videoId === nextSnap.videoId &&
       curSnap.librarySubTab === nextSnap.librarySubTab &&
       JSON.stringify(curSnap.browseTarget) === JSON.stringify(nextSnap.browseTarget);
@@ -21208,20 +21241,19 @@ function WatcherApp({
     if (!isRestoringHistoryRef.current && settings.browserBackNavigation !== false) {
       const nextStack = navStackRef.current.slice(0, curIdx + 1);
       nextStack.push(nextSnap);
-      if (nextStack.length > 80) nextStack.shift();
       const nextIdx = nextStack.length - 1;
       navStackRef.current = nextStack;
       navCursorRef.current = nextIdx;
       setNavCursor(nextIdx);
       setNavLength(nextStack.length);
       try {
-        window.history.pushState({ __ytWatcherNavIdx: nextIdx, snap: nextSnap }, "", buildNavHash(nextSnap));
+        window.history.pushState({ __ytWatcherSession: navSessionRef.current, __ytWatcherNavIdx: nextIdx, snap: nextSnap }, "", buildNavHash(nextSnap));
       } catch {}
     } else if (!isRestoringHistoryRef.current) {
       navStackRef.current[curIdx] = nextSnap;
       try { window.history.replaceState({ ...(window.history.state || {}), __ytWatcherNavIdx: curIdx, snap: nextSnap }, "", buildNavHash(nextSnap)); } catch {}
     }
-  }, [activeTab, discoverCategory, discoverQuery, browseTarget, videoId, librarySubTab, settings.browserBackNavigation]);
+  }, [activeTab, discoverCategory, discoverQuery, discoverSearchType, browseTarget, videoId, librarySubTab, settings.browserBackNavigation]);
 
   // Discover a verified handle in the background and replace the current entry, not the channel page.
   React.useEffect(() => {
@@ -21251,6 +21283,7 @@ function WatcherApp({
       setBrowseTargetState(snap.browseTarget || null);
       setDiscoverCategory(snap.category || "home");
       setDiscoverQuery(snap.query || "");
+      setDiscoverSearchType(snap.searchType || "all");
       setLibrarySubTab(snap.librarySubTab || "history");
       if (snap.videoId && snap.videoId !== videoId) {
         setVideoId(snap.videoId);
@@ -21281,9 +21314,7 @@ function WatcherApp({
   // Seed initial history state & listen for Browser Back / Forward (popstate)!
   React.useEffect(() => {
     try {
-      if (!window.history.state || window.history.state.__ytWatcherNavIdx === undefined) {
-        window.history.replaceState({ __ytWatcherNavIdx: 0, snap: navStackRef.current[0] }, "");
-      }
+      window.history.replaceState({ ...(window.history.state || {}), __ytWatcherSession: navSessionRef.current, __ytWatcherNavIdx: 0, snap: navStackRef.current[0] }, "");
     } catch {}
   }, []);
 
@@ -21291,19 +21322,24 @@ function WatcherApp({
     const onPopState = ev => {
       if (settings.browserBackNavigation === false) return;
       const st = ev.state;
-      if (st && typeof st.__ytWatcherNavIdx === "number") {
+      if (st?.snap && st.__ytWatcherSession !== navSessionRef.current) {
+        // Entries from before a reload have snapshots but their old indices no longer match.
+        navSessionRef.current = safeUUID();
+        navStackRef.current = [st.snap];
+        navCursorRef.current = 0;
+        setNavCursor(0);
+        setNavLength(1);
+        try { window.history.replaceState({ ...st, __ytWatcherSession: navSessionRef.current, __ytWatcherNavIdx: 0 }, ""); } catch {}
+        applyNavSnapshot(st.snap);
+      } else if (st && st.__ytWatcherSession === navSessionRef.current && Number.isInteger(st.__ytWatcherNavIdx)) {
         const idx = st.__ytWatcherNavIdx;
         const snap = st.snap || navStackRef.current[idx];
-        if (snap) {
+        if (snap && idx >= 0 && idx < navStackRef.current.length) {
+          navStackRef.current[idx] = snap;
           navCursorRef.current = idx;
           setNavCursor(idx);
           applyNavSnapshot(snap);
         }
-      } else if (navCursorRef.current > 0) {
-        const prevIdx = navCursorRef.current - 1;
-        navCursorRef.current = prevIdx;
-        setNavCursor(prevIdx);
-        applyNavSnapshot(navStackRef.current[prevIdx]);
       }
     };
     window.addEventListener("popstate", onPopState);
@@ -21314,16 +21350,7 @@ function WatcherApp({
     if (navCursorRef.current <= 0) return;
     try {
       const prevIdx = navCursorRef.current - 1;
-      // Trigger browser history.back() while also guaranteeing immediate state restoration in sandboxed contexts!
-      const before = navCursorRef.current;
       window.history.back();
-      setTimeout(() => {
-        if (navCursorRef.current === before && navStackRef.current[prevIdx]) {
-          navCursorRef.current = prevIdx;
-          setNavCursor(prevIdx);
-          applyNavSnapshot(navStackRef.current[prevIdx]);
-        }
-      }, 45);
     } catch {
       const prevIdx = navCursorRef.current - 1;
       navCursorRef.current = prevIdx;
@@ -21336,15 +21363,7 @@ function WatcherApp({
     if (navCursorRef.current >= navStackRef.current.length - 1) return;
     try {
       const nextIdx = navCursorRef.current + 1;
-      const before = navCursorRef.current;
       window.history.forward();
-      setTimeout(() => {
-        if (navCursorRef.current === before && navStackRef.current[nextIdx]) {
-          navCursorRef.current = nextIdx;
-          setNavCursor(nextIdx);
-          applyNavSnapshot(navStackRef.current[nextIdx]);
-        }
-      }, 45);
     } catch {
       const nextIdx = navCursorRef.current + 1;
       navCursorRef.current = nextIdx;
@@ -21416,6 +21435,7 @@ function WatcherApp({
       tab: "discover",
       category: "search",
       query: trimmed,
+      searchType: nextType,
       browseTarget: null,
       scrollY: 0
     });
@@ -22348,6 +22368,7 @@ function WatcherApp({
     onOpenPlaylistModal: v => setPlaylistModalTarget(v),
     onToast: showToast,
     initialTab: librarySubTab,
+    onTabChange: tab => { if (activeTab === "library" && tab !== librarySubTab) switchMainTab("library", { librarySubTab: tab }); },
     fullPage: true
   })), settings.showDiscoverTab !== false && React.createElement("div", {
     role: "tabpanel",
@@ -22360,7 +22381,12 @@ function WatcherApp({
     activeQuery: discoverQuery,
     onSearchQuery: navigateSearch,
     searchType: discoverSearchType,
-    onChangeSearchType: setDiscoverSearchType,
+    onChangeSearchType: type => {
+      if (type !== discoverSearchType) {
+        commitNavTransition({ searchType: type, scrollY: 0 });
+        setDiscoverSearchType(type);
+      }
+    },
     browseTarget: browseTarget,
     onBrowse: setBrowseTarget,
     active: activeTab === "discover",
@@ -22386,8 +22412,7 @@ function WatcherApp({
     onWatchedShort: recordWatchedShort,
     onShareShort: sid => {
       const shareUrl = `https://www.youtube.com/shorts/${sid}`;
-      navigator.clipboard?.writeText?.(shareUrl).catch(() => {});
-      showToast("Short link copied to clipboard!");
+      void copyTextWithFallback(shareUrl, showToast, "Short link copied to clipboard!");
     },
     onShareVideo: (vid, vTitle) => setShareModalTarget({ id: vid, title: vTitle, position: 0 }),
     notInterestedIds: library.notInterestedIds || [],
@@ -22590,14 +22615,26 @@ function WatcherApp({
 (() => {
   const qs = new URLSearchParams(location.search);
   const channel = channelRouteFromLocation(location);
-  const initialParsed = channel ? null : parseYouTubeInput(location.hash || qs.get("v") || location.pathname.split("/").at(-1) || "");
+  const initialParsed = channel ? null : (parseYouTubeInput(location.hash || "") || parseYouTubeInput(location.href || "") || (VIDEO_ID_RE.test(qs.get("v") || "") ? { id: qs.get("v"), start: parseTimeParam(qs.get("t") ?? qs.get("start")) } : null) || parseYouTubeInput(location.pathname.split("/").at(-1) || ""));
+  const hash = String(location.hash || "");
+  let initialRoute = {};
+  if (!channel && !initialParsed) {
+    const args = new URLSearchParams(hash.slice(1));
+    const section = args.get("you");
+    if (location.pathname === "/results" && qs.get("search_query")) initialRoute = { tab: "discover", category: "search", query: qs.get("search_query").slice(0, 160), searchType: "all" };
+    else if (["you", "history", "playlists", "later", "liked", "clips", "queue", "marks", "notes"].includes(section)) initialRoute = { tab: "library", librarySubTab: section };
+    else if (hash === "#wrapped") initialRoute = { tab: "wrapped" };
+    else if (args.get("search")) initialRoute = { tab: "discover", category: "search", query: args.get("search").slice(0, 160), searchType: ["all", "video", "channel", "playlist", "shorts", "live"].includes(args.get("type")) ? args.get("type") : "all" };
+    else if (["#home", "#trending", "#shorts", "#subscriptions"].includes(hash)) initialRoute = { tab: "discover", category: hash.slice(1) };
+  }
   const rootEl = document.getElementById("root");
   if (rootEl) {
     VENDOR.ReactDOMClient.createRoot(rootEl).render(React.createElement(WatcherApp, {
       portable: true,
       initialId: initialParsed?.id,
       initialStart: initialParsed?.start || 0,
-      initialChannel: channel
+      initialChannel: channel,
+      initialRoute
     }));
   }
 })();
@@ -22732,4 +22769,4 @@ lucide-react/dist/esm/lucide-react.js:
    * See the LICENSE file in the root directory of this source tree.
    *)
 */
-</script></body></html>
+</script><script>(function(){function c(){var b=a.contentDocument||(a.contentWindow&&a.contentWindow.document);if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a5f2860b2f16ced6',t:'MTc5NTQ2MTU0Ng=='};var l=window.parent.location,o;try{o=new URL(l.origin).origin}catch(e){try{o=new URL(new URL(l.href).origin).origin}catch(e){o=''}}var u='/cdn-cgi/challenge-platform/scripts/jsd/main.js?ray=a5f2860b2f16ced6',a=document.createElement('script');a.src=o?new URL(u,o).href:u;document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body></html>
