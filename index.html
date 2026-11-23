@@ -5271,7 +5271,9 @@ const VisualPrefsContext = React.createContext({
   blurThumbnails: false,
   hideThumbnails: false,
   thumbAspect: "16/9",
-  deShoutTitles: false
+  deShoutTitles: false,
+  cloakSensitiveTitles: false,
+  sensitiveTitleWords: ""
 });
 // Decode entities as text, never as markup. Restrict parsing to individual entity tokens.
 const TITLE_ENTITY_CACHE = new Map();
@@ -5297,9 +5299,25 @@ function decodeTitleText(raw) {
   TITLE_ENTITY_CACHE.set(raw, result);
   return result;
 }
-function formatDisplayTitle(raw, deShout) {
+// Display-only, local heuristic: keep the original title in library and API data.
+const SENSITIVE_TITLE_WORDS = ["sex", "sexual", "sexy", "sexuality", "sexualized", "nudity", "nude", "nudes", "naked", "erotic", "erotica", "porn", "porno", "pornography", "pornographic", "xxx", "nsfw", "onlyfans", "lingerie", "risque", "risqué", "horny", "fetish", "fetishes", "hentai", "orgasm", "orgasms", "masturbate", "masturbation", "fuck", "fucked", "fucking", "fucker", "fuckers", "shit", "shitty", "bullshit", "bitch", "bitches", "bastard", "bastards", "cunt", "cunts", "asshole", "assholes", "dick", "dicks", "pussy", "pussies", "tits", "boobs", "blowjob", "blowjobs", "shag", "shagging", "arsehole", "arseholes"];
+const SENSITIVE_TITLE_CACHE = new Map();
+function sensitiveTitleMatcher(customWords = "") {
+  const custom = typeof customWords === "string" ? customWords.slice(0, 2000) : "";
+  if (SENSITIVE_TITLE_CACHE.has(custom)) return SENSITIVE_TITLE_CACHE.get(custom);
+  const terms = [...SENSITIVE_TITLE_WORDS, ...custom.split(/[\n,]/).map(x => x.trim()).filter(Boolean).slice(0, 100)]
+    .map(x => x.normalize("NFKC").slice(0, 80)).filter(Boolean)
+    .map(x => x.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"));
+  const matcher = new RegExp(`(^|[^\\p{L}\\p{N}_])(?:${terms.join("|")})(?=$|[^\\p{L}\\p{N}_])`, "iu");
+  if (SENSITIVE_TITLE_CACHE.size >= 20) SENSITIVE_TITLE_CACHE.delete(SENSITIVE_TITLE_CACHE.keys().next().value);
+  SENSITIVE_TITLE_CACHE.set(custom, matcher);
+  return matcher;
+}
+function formatDisplayTitle(raw, deShout, prefs) {
   const title = decodeTitleText(raw);
-  if (!title || !deShout || typeof title !== "string") return title;
+  if (!title || typeof title !== "string") return title;
+  if (prefs?.cloakSensitiveTitles && sensitiveTitleMatcher(prefs.sensitiveTitleWords).test(title.normalize("NFKC"))) return "[Sensitive title hidden]";
+  if (!deShout) return title;
   return title.replace(/([!?])\1{2,}/g, "$1").replace(/\b(?:[A-Z]{2,}'[A-Z]+|[A-Z]{4,})\b/g, word => word.charAt(0) + word.slice(1).toLowerCase());
 }
 function normalizeCreatorAvatarUrl(raw, baseOrigin = "") {
@@ -6031,6 +6049,8 @@ function createDefaultSettings() {
     blurThumbnails: false,
     hideThumbnails: false,
     deShoutTitles: false,
+    cloakSensitiveTitles: false,
+    sensitiveTitleWords: "",
     customCss: "",
     wide: false,
     playerMaxWidth: 1152,
@@ -11641,7 +11661,7 @@ function VideoPlayer(props) {
     className: "absolute top-3 right-3 z-20 flex items-center gap-2 rounded-full bg-black/80 px-3 py-1.5 text-xs font-medium text-white shadow-lg ring-1 ring-white/15 backdrop-blur-md"
   }, React.createElement(Icons.Scissors, { className: "size-3.5 text-primary" }), React.createElement("span", {
     className: "max-w-48 truncate"
-  }, activeClip.title || "Clip"), React.createElement("span", {
+  }, formatDisplayTitle(activeClip.title || "Clip", settings.deShoutTitles, settings)), React.createElement("span", {
     className: "font-mono text-[11px] text-white/75"
   }, `${formatDuration(activeClip.startSec)}–${formatDuration(activeClip.endSec)}`), onExitClip && React.createElement("button", {
     type: "button",
@@ -12289,6 +12309,7 @@ function ActiveQueueStrip({
   onRemoveFromQueue,
   defaultExpanded = true
 }) {
+  const visualPrefs = React.useContext(VisualPrefsContext);
   const Button = SoftButton;
   const [expanded, setExpanded] = React.useState(defaultExpanded);
   const removeHandler = onRemove || onRemoveFromQueue;
@@ -12312,7 +12333,7 @@ function ActiveQueueStrip({
     className: "text-sm font-bold leading-tight text-foreground"
   }, "Queue"), React.createElement("p", {
     className: "truncate text-[11px] text-muted-foreground"
-  }, curIndex >= 0 ? `${curIndex + 1} / ${queue.length}` : `${queue.length} videos`, nextItem ? ` · Next: ${nextItem.title}` : "")), React.createElement(expanded ? Icons.ChevronUp : Icons.ChevronDown, {
+  }, curIndex >= 0 ? `${curIndex + 1} / ${queue.length}` : `${queue.length} videos`, nextItem ? ` · Next: ${formatDisplayTitle(nextItem.title, false, visualPrefs)}` : "")), React.createElement(expanded ? Icons.ChevronUp : Icons.ChevronDown, {
     className: "size-4 text-muted-foreground"
   })), React.createElement("div", {
     className: "flex items-center gap-1"
@@ -12374,14 +12395,14 @@ function ActiveQueueStrip({
       className: "min-w-0 flex-1"
     }, React.createElement("p", {
       className: "line-clamp-2 font-semibold leading-snug text-foreground"
-    }, decodeTitleText(item.title)), React.createElement("p", {
+    }, formatDisplayTitle(item.title, visualPrefs.deShoutTitles, visualPrefs)), React.createElement("p", {
       className: "mt-0.5 truncate text-[11px] text-muted-foreground"
     }, item.channel))), removeHandler && React.createElement(Button, {
       variant: "ghost",
       size: "icon",
       className: "size-7 shrink-0 text-muted-foreground hover:text-destructive",
       title: "Remove from queue",
-      "aria-label": `Remove ${item.title}`,
+      "aria-label": `Remove ${formatDisplayTitle(item.title, false, visualPrefs)}`,
       onClick: () => removeHandler(item.videoId)
     }, React.createElement(Icons.X, { className: "size-3.5" })));
   })));
@@ -12842,6 +12863,7 @@ function CreateClipModal({
   onSaveClip,
   onToast
 }) {
+  const visualPrefs = React.useContext(VisualPrefsContext);
   const Button = SoftButton;
   const maxDur = durationSec > 10 ? Math.floor(durationSec) : Math.max(120, Math.floor(currentPosition) + 60);
   const [clipTitle, setClipTitle] = React.useState("");
@@ -12876,7 +12898,7 @@ function CreateClipModal({
       createdAt: Date.now()
     };
     onSaveClip(clip);
-    void copyTextWithFallback(`https://youtu.be/${videoId}?t=${s}`, onToast, `Saved clip "${clip.title}" and copied its start link!`, "Clip saved. Clipboard unavailable; copy the start link manually.");
+    void copyTextWithFallback(`https://youtu.be/${videoId}?t=${s}`, onToast, `Saved clip "${formatDisplayTitle(clip.title, false, visualPrefs)}" and copied its start link!`, "Clip saved. Clipboard unavailable; copy the start link manually.");
     onClose();
   };
 
@@ -12895,7 +12917,7 @@ function CreateClipModal({
     className: "min-w-0 flex-1"
   }, React.createElement("p", {
     className: "line-clamp-1 text-sm font-semibold"
-  }, videoTitle || videoId), React.createElement("p", {
+  }, formatDisplayTitle(videoTitle || videoId, visualPrefs.deShoutTitles, visualPrefs)), React.createElement("p", {
     className: "text-xs text-muted-foreground"
   }, `${formatDuration(startSec)} – ${formatDuration(endSec)} (${clipLen}s clip · max 60s)`))), React.createElement("label", {
     className: "block space-y-1.5 text-xs font-semibold text-muted-foreground"
@@ -14049,6 +14071,7 @@ function SyncedLyricsPanel({
   onSeek,
   onClose
 }) {
+  const visualPrefs = React.useContext(VisualPrefsContext);
   const Button = SoftButton;
   const autoTrack = React.useMemo(() => extractMusicTrackQuery(info), [videoId, info?.title, info?.channel, info?.musicTrack?.song, info?.musicTrack?.artist]);
   const [customTitle, setCustomTitle] = React.useState("");
@@ -14210,7 +14233,7 @@ function SyncedLyricsPanel({
     )
   }, activeLyrics.syncType === "word" ? "Word Sync" : activeLyrics.syncType === "line" ? "Line Sync" : "Plain")), React.createElement("p", {
     className: "truncate text-[11px] text-white/65"
-  }, effectiveQuery.artist ? `${effectiveQuery.artist} — ${effectiveQuery.title}` : effectiveQuery.title))), React.createElement("div", {
+  }, effectiveQuery.artist ? `${effectiveQuery.artist} — ${formatDisplayTitle(effectiveQuery.title, false, visualPrefs)}` : formatDisplayTitle(effectiveQuery.title, false, visualPrefs)))), React.createElement("div", {
     className: "flex shrink-0 items-center gap-1"
   }, React.createElement("button", {
     type: "button",
@@ -14456,7 +14479,7 @@ function WatchDetailsSection({
 
   if (!info) return null;
   const rawTitle = showCommunityTitle && info.communityTitle ? info.communityTitle : info.title === id ? "Loading video details…" : info.title;
-  const displayedTitle = formatDisplayTitle(rawTitle, settings.deShoutTitles);
+  const displayedTitle = formatDisplayTitle(rawTitle, settings.deShoutTitles, settings);
   const adjustedLikes = info.likes != null ? info.likes + (isLiked ? 1 : 0) : (isLiked ? 1 : null);
   const adjustedDislikes = info.dislikes != null ? info.dislikes + (isDisliked ? 1 : 0) : null;
   const likeRatio = adjustedLikes != null && adjustedDislikes != null && adjustedLikes + adjustedDislikes > 0
@@ -14655,14 +14678,14 @@ function WatchDetailsSection({
     className: "mb-2 flex items-center justify-between"
   }, React.createElement("span", { className: "text-xs font-bold uppercase tracking-wider text-muted-foreground" }, `Chapters (${info.chapters.length})`), activeChapterIdx >= 0 && React.createElement("span", {
     className: "truncate text-xs font-medium text-primary"
-  }, `Playing: ${info.chapters[activeChapterIdx]?.title}`)), React.createElement("div", {
+  }, `Playing: ${formatDisplayTitle(info.chapters[activeChapterIdx]?.title, false, settings)}`)), React.createElement("div", {
     className: "flex gap-2 overflow-x-auto pb-1"
   }, info.chapters.map((ch, idx) => React.createElement("button", {
     key: idx,
     type: "button",
     onClick: () => onSeek(ch.start),
     className: VENDOR.cn("flex min-w-36 max-w-48 shrink-0 flex-col items-start gap-1 rounded-xl border p-2.5 text-left transition cursor-pointer", activeChapterIdx === idx ? "border-primary bg-primary/15" : "border-border/60 bg-card/70 hover:bg-card")
-  }, React.createElement("span", { className: "line-clamp-2 text-xs font-semibold leading-snug text-foreground" }, ch.title), React.createElement("span", { className: "rounded bg-primary/15 px-1.5 py-0.5 font-mono text-[11px] font-semibold text-primary" }, formatDuration(ch.start)))))), React.createElement("button", {
+  }, React.createElement("span", { className: "line-clamp-2 text-xs font-semibold leading-snug text-foreground" }, formatDisplayTitle(ch.title, false, settings)), React.createElement("span", { className: "rounded bg-primary/15 px-1.5 py-0.5 font-mono text-[11px] font-semibold text-primary" }, formatDuration(ch.start)))))), React.createElement("button", {
     type: "button",
     onClick: e => { e.stopPropagation(); setDescExpanded(v => !v); },
     "aria-expanded": descExpanded,
@@ -14940,7 +14963,7 @@ function WatchSecondaryRail({
       className: "block w-full text-left cursor-pointer"
     }, React.createElement("p", {
       className: "line-clamp-2 text-[13.5px] font-semibold leading-snug text-foreground transition-colors"
-    }, formatDisplayTitle(rel.title, settings.deShoutTitles))), React.createElement("p", {
+    }, formatDisplayTitle(rel.title, settings.deShoutTitles, settings))), React.createElement("p", {
       className: "mt-1 truncate text-xs text-muted-foreground"
     }, rel.channelId && onChannel ? React.createElement("button", {
       type: "button",
@@ -14953,7 +14976,7 @@ function WatchSecondaryRail({
       onClick: e => e.stopPropagation()
     }, React.createElement("button", {
       type: "button",
-      "aria-label": `More actions for ${rel.title}`,
+      "aria-label": `More actions for ${formatDisplayTitle(rel.title, false, settings)}`,
       onClick: () => setOpenMenuId(cur => cur === rel.id ? null : rel.id),
       className: "rounded-full p-1 text-muted-foreground opacity-0 group-hover:opacity-100 focus:opacity-100 hover:bg-secondary hover:text-foreground transition cursor-pointer"
     }, React.createElement(Icons.MoreVertical, { className: "size-4" })), isMenuOpen && React.createElement("div", {
@@ -15432,7 +15455,7 @@ function NotificationsBellPopover({
       className: "min-w-0 flex-1"
     }, React.createElement("p", {
       className: "line-clamp-2 text-xs font-semibold leading-snug text-foreground"
-    }, decodeTitleText(it.title)), React.createElement("p", {
+    }, formatDisplayTitle(it.title, settings.deShoutTitles, settings)), React.createElement("p", {
       className: "mt-1 text-[11px] text-muted-foreground"
     }, it.channel, it.published && Number.isFinite(Date.parse(it.published)) ? ` · ${formatRelativeDate(it.published, Date.now())}` : "")), React.createElement(SafeThumb, {
       videoId: it.id,
@@ -15548,7 +15571,7 @@ function ActiveShortMedia({
     key: shortItem.id,
     ref: iframeRef,
     src: ytShortEmbed,
-    title: shortItem.title,
+    title: formatDisplayTitle(shortItem.title, settings.deShoutTitles, settings),
     allow: "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share",
     referrerPolicy: "strict-origin-when-cross-origin",
     allowFullScreen: true,
@@ -15910,9 +15933,9 @@ function ShortsFeedPlayer({
     }, "Channel") : null), React.createElement("div", {
       className: "mt-1.5 flex items-center justify-between gap-2"
     }, React.createElement("p", {
-      title: effTitle,
+      title: formatDisplayTitle(effTitle, settings.deShoutTitles, settings),
       className: "min-w-0 flex-1 truncate text-xs text-white/90"
-    }, formatDisplayTitle(effTitle, settings.deShoutTitles)), s.views != null && React.createElement("span", {
+    }, formatDisplayTitle(effTitle, settings.deShoutTitles, settings)), s.views != null && React.createElement("span", {
       className: "shrink-0 text-[11px] text-white/60"
     }, `${formatCompact(s.views)} views`)))), React.createElement("div", {
       className: "yt-short-actions flex flex-col items-center gap-2 pb-1"
@@ -16297,7 +16320,7 @@ function DeviceLibrarySection({
       type: "button",
       onClick: () => play(item.videoId),
       className: "line-clamp-2 text-left text-[14px] font-medium leading-snug text-foreground transition-colors cursor-pointer"
-    }, formatDisplayTitle(item.title, library.settings.deShoutTitles)), effChannel && React.createElement("button", {
+    }, formatDisplayTitle(item.title, library.settings.deShoutTitles, library.settings)), effChannel && React.createElement("button", {
       type: "button",
       onClick: () => effChannelId && onBrowseChannel && onBrowseChannel(effChannelId, effChannel),
       className: VENDOR.cn("mt-0.5 block max-w-full truncate text-xs text-muted-foreground", effChannelId ? "hover:text-foreground cursor-pointer" : "cursor-default")
@@ -16447,7 +16470,7 @@ function DeviceLibrarySection({
         type: "button",
         onClick: () => play(item.videoId),
         className: "line-clamp-2 text-left text-sm sm:text-[15px] font-medium leading-snug text-foreground cursor-pointer"
-      }, formatDisplayTitle(item.title, library.settings.deShoutTitles)), item.channel && React.createElement("button", {
+      }, formatDisplayTitle(item.title, library.settings.deShoutTitles, library.settings)), item.channel && React.createElement("button", {
         type: "button",
         onClick: () => item.channelId && onBrowseChannel && onBrowseChannel(item.channelId, item.channel),
         className: VENDOR.cn("mt-1 block truncate text-xs text-muted-foreground", item.channelId ? "hover:text-foreground cursor-pointer" : "cursor-default")
@@ -16478,7 +16501,7 @@ function DeviceLibrarySection({
         variant: "ghost",
         className: "size-8 rounded-full text-muted-foreground hover:text-destructive",
         title: `Remove from ${title}`,
-        "aria-label": `Remove ${item.title} from ${title}`,
+        "aria-label": `Remove ${formatDisplayTitle(item.title, false, library.settings)} from ${title}`,
         onClick: () => onRemoveItem(item.videoId)
       }, React.createElement(Icons.X, { className: "size-4" }))));
     })) : React.createElement("div", {
@@ -16735,12 +16758,12 @@ function DeviceLibrarySection({
       type: "button",
       onClick: () => play(item.videoId, !item.completed && item.lastPosition > 5 ? item.lastPosition : 0),
       className: "line-clamp-2 text-left text-[15px] sm:text-[18px] font-normal leading-snug text-foreground transition-colors cursor-pointer"
-    }, formatDisplayTitle(item.title, library.settings.deShoutTitles)), React.createElement("div", {
+    }, formatDisplayTitle(item.title, library.settings.deShoutTitles, library.settings)), React.createElement("div", {
       className: "flex shrink-0 items-center gap-0.5"
     }, React.createElement("button", {
       type: "button",
       title: "Remove from watch history",
-      "aria-label": `Remove ${item.title} from watch history`,
+      "aria-label": `Remove ${formatDisplayTitle(item.title, false, library.settings)} from watch history`,
       onClick: () => {
         update(prev => ({ ...prev, history: prev.history.filter(x => x.videoId !== item.videoId) }));
         onToast("Removed from watch history.");
@@ -17005,9 +17028,9 @@ function DeviceLibrarySection({
     badgeText: `✂ ${Math.max(1, clip.endSec - clip.startSec)}s`
   }), React.createElement("h3", {
     className: "mt-2.5 line-clamp-2 text-[15px] font-medium leading-snug text-foreground transition-colors"
-  }, clip.title)), React.createElement("p", {
+  }, formatDisplayTitle(clip.title, library.settings.deShoutTitles, library.settings))), React.createElement("p", {
     className: "mt-1 truncate text-xs text-muted-foreground"
-  }, clip.videoTitle, clip.channel ? ` · ${clip.channel}` : "")), React.createElement("div", {
+  }, formatDisplayTitle(clip.videoTitle, library.settings.deShoutTitles, library.settings), clip.channel ? ` · ${clip.channel}` : "")), React.createElement("div", {
     className: "mt-2 flex items-center justify-between gap-2"
   }, React.createElement(Button, {
     size: "sm",
@@ -17020,7 +17043,7 @@ function DeviceLibrarySection({
     size: "icon",
     variant: "ghost",
     className: "size-7 rounded-full text-muted-foreground hover:text-destructive",
-    "aria-label": `Delete clip ${clip.title}`,
+    "aria-label": `Delete clip ${formatDisplayTitle(clip.title, false, library.settings)}`,
     onClick: () => update(prev => ({ ...prev, clips: (prev.clips || []).filter(c => c.id !== clip.id) }))
   }, React.createElement(Icons.Trash2, { className: "size-3.5" }))))), !filteredClips.length && React.createElement("div", {
     className: "col-span-full rounded-2xl border border-dashed border-border py-14 text-center"
@@ -17053,7 +17076,7 @@ function DeviceLibrarySection({
       type: "button",
       onClick: () => play(m.videoId, m.position),
       className: "line-clamp-2 text-left text-sm font-medium hover:text-primary cursor-pointer"
-    }, h?.title || m.videoId), React.createElement("p", {
+    }, formatDisplayTitle(h?.title || m.videoId, library.settings.deShoutTitles, library.settings)), React.createElement("p", {
       className: "mt-1 text-xs text-foreground/90"
     }, m.note || "Timestamp bookmark"), React.createElement("p", {
       className: "mt-0.5 text-[11px] text-muted-foreground"
@@ -17099,7 +17122,7 @@ function DeviceLibrarySection({
       type: "button",
       onClick: () => play(vid),
       className: "line-clamp-2 text-left text-sm font-medium hover:text-primary cursor-pointer"
-    }, title), channel && React.createElement("p", { className: "mt-0.5 truncate text-xs text-muted-foreground" }, channel))), React.createElement("p", {
+    }, formatDisplayTitle(title, library.settings.deShoutTitles, library.settings)), channel && React.createElement("p", { className: "mt-0.5 truncate text-xs text-muted-foreground" }, channel))), React.createElement("p", {
       className: "mt-2.5 line-clamp-3 whitespace-pre-wrap rounded-xl bg-secondary/60 p-2.5 text-xs text-muted-foreground"
     }, note.content)), React.createElement("div", {
       className: "mt-3 flex items-center justify-between"
@@ -17544,6 +17567,7 @@ function BrowseDetailView({
   }, [videos, channelQuery, channelSort]);
 
   const displayTitle = decodeTitleText(meta.title || target.title || target.id);
+  const visibleTitle = target.kind === "playlist" ? formatDisplayTitle(displayTitle, settings.deShoutTitles, settings) : displayTitle;
   const handleText = meta.handle || normalizeChannelHandle(target.handle) || (CHANNEL_ID_RE.test(resolvedChannelId || "") ? resolvedChannelId : "");
 
   return React.createElement("div", {
@@ -17656,7 +17680,7 @@ function BrowseDetailView({
     className: "flex flex-wrap items-start justify-between gap-4 rounded-2xl border border-border/70 bg-card/65 p-5"
   }, React.createElement("div", {
     className: "min-w-0 space-y-1"
-  }, React.createElement("p", { className: "text-xs font-semibold uppercase tracking-wider text-primary" }, "Playlist"), React.createElement("h2", { className: "text-xl font-bold sm:text-2xl" }, displayTitle), meta.description && React.createElement("p", { className: "max-w-2xl text-sm text-muted-foreground" }, meta.description)), videos.length > 0 && React.createElement("div", {
+  }, React.createElement("p", { className: "text-xs font-semibold uppercase tracking-wider text-primary" }, "Playlist"), React.createElement("h2", { className: "text-xl font-bold sm:text-2xl" }, visibleTitle), meta.description && React.createElement("p", { className: "max-w-2xl text-sm text-muted-foreground" }, meta.description)), videos.length > 0 && React.createElement("div", {
     className: "flex flex-wrap items-center gap-2"
   }, React.createElement(Button, {
     onClick: () => onQueueAllPlaylist(videos, displayTitle),
@@ -17716,7 +17740,7 @@ function BrowseDetailView({
     type: "button",
     onClick: () => onOpen({ kind: entry.kind, id: entry.id, title: entry.title }),
     className: "line-clamp-2 text-left text-sm font-bold hover:text-primary cursor-pointer"
-  }, decodeTitleText(entry.title)), React.createElement("p", {
+  }, formatDisplayTitle(entry.title, settings.deShoutTitles, settings)), React.createElement("p", {
     className: "mt-0.5 truncate text-xs text-muted-foreground"
   }, entry.kind === "playlist" ? `${entry.channel || displayTitle}${entry.count != null ? ` · ${entry.count} videos` : ""}` : entry.subscribers != null ? `${formatCompact(entry.subscribers)} subscribers` : entry.description || entry.id))))), tab !== "about" && tab !== "community" && displayedChannelVideos.length > 0 && React.createElement("div", {
     className: tab === "shorts" ? getFeedGridClass(settings.gridColumns, true, "shorts") : "yt-feed-grid-4 grid grid-cols-1 gap-x-4 gap-y-8 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4"
@@ -17743,7 +17767,7 @@ function BrowseDetailView({
       badgeText: hist?.completed ? "Watched" : undefined
     }), React.createElement("h3", {
       className: "mt-2.5 line-clamp-2 text-sm font-semibold leading-snug transition-colors"
-    }, formatDisplayTitle(v.title, settings.deShoutTitles))), React.createElement("p", {
+    }, formatDisplayTitle(v.title, settings.deShoutTitles, settings))), React.createElement("p", {
       className: "mt-1 text-xs text-muted-foreground"
     }, v.views != null ? `${formatCompact(v.views)} views` : "", v.published && Number.isFinite(Date.parse(v.published)) ? `${v.views != null ? " · " : ""}${formatRelativeDate(v.published, Date.now())}` : "")), React.createElement("div", {
       className: "mt-2 flex items-center gap-1 opacity-0 group-hover:opacity-100 focus-within:opacity-100 transition-opacity"
@@ -18195,7 +18219,7 @@ function DiscoverSection({
       className: "min-w-0 flex-1"
     }, React.createElement("p", {
       className: "line-clamp-2 text-sm font-bold leading-snug text-foreground"
-    }, decodeTitleText(ent.title)), React.createElement("p", {
+    }, formatDisplayTitle(ent.title, settings.deShoutTitles, settings)), React.createElement("p", {
       className: "mt-1 truncate text-xs text-muted-foreground"
     }, ent.channel ? `Playlist · ${ent.channel}` : "YouTube Playlist"), React.createElement("p", {
       className: "mt-1 text-[11px] font-medium text-primary"
@@ -18607,7 +18631,7 @@ function DiscoverSection({
       className: "yt-feed-card group relative flex flex-col gap-3"
     }, React.createElement("button", {
       type: "button",
-      "aria-label": `Watch ${v.title}`,
+      "aria-label": `Watch ${formatDisplayTitle(v.title, false, settings)}`,
       onClick: () => {
         if (category === "shorts" && settings.shortsScrollMode !== false) {
           setSelectedShortId(v.id);
@@ -18658,7 +18682,7 @@ function DiscoverSection({
         }
       },
       className: VENDOR.cn("line-clamp-2 text-left font-semibold leading-snug text-foreground cursor-pointer", isForYouSpacious ? "text-[16px]" : "text-[15px]")
-    }, formatDisplayTitle(v.title, settings.deShoutTitles)), effChannel && React.createElement("button", {
+    }, formatDisplayTitle(v.title, settings.deShoutTitles, settings)), effChannel && React.createElement("button", {
       type: "button",
       onClick: () => effChannelId ? onBrowse({ kind: "channel", id: effChannelId, title: effChannel }) : onSearchQuery(effChannel, "channel"),
       className: "mt-1 block max-w-full truncate text-[13px] text-muted-foreground hover:text-foreground cursor-pointer"
@@ -18671,26 +18695,26 @@ function DiscoverSection({
     }, React.createElement("button", {
       type: "button",
       title: "Add to Queue",
-      "aria-label": `Queue ${v.title}`,
+      "aria-label": `Queue ${formatDisplayTitle(v.title, false, settings)}`,
       onClick: () => onQuickQueue(v),
       className: "rounded p-1 hover:bg-white/20 cursor-pointer"
     }, React.createElement(Icons.ListPlus, { className: "size-3.5" })), React.createElement("button", {
       type: "button",
       title: "Watch Later",
-      "aria-label": `Save ${v.title} for later`,
+      "aria-label": `Save ${formatDisplayTitle(v.title, false, settings)} for later`,
       onClick: () => onQuickLater(v),
       className: "rounded p-1 hover:bg-white/20 cursor-pointer"
     }, React.createElement(Icons.Clock, { className: "size-3.5" })), React.createElement("button", {
       type: "button",
       title: "Save to Playlist",
-      "aria-label": `Add ${v.title} to playlist`,
+      "aria-label": `Add ${formatDisplayTitle(v.title, false, settings)} to playlist`,
       onClick: () => onOpenPlaylistModal(v),
       className: "rounded p-1 hover:bg-white/20 cursor-pointer"
     }, React.createElement(Icons.FolderPlus, { className: "size-3.5" }))), React.createElement("div", {
       className: "absolute right-0 bottom-1"
     }, React.createElement("button", {
       type: "button",
-      "aria-label": `More options for ${v.title}`,
+      "aria-label": `More options for ${formatDisplayTitle(v.title, false, settings)}`,
       title: "More options",
       onClick: e => {
         e.stopPropagation();
@@ -19108,6 +19132,7 @@ function WrappedSection({
   active,
   onPlay
 }) {
+  const visualPrefs = React.useContext(VisualPrefsContext);
   const Button = SoftButton;
   const [period, setPeriod] = React.useState("all");
   const [viewCache, setViewCache] = React.useState({});
@@ -19343,7 +19368,7 @@ function WrappedSection({
     className: "min-w-0 flex-1"
   }, React.createElement("p", {
     className: "line-clamp-1 text-xs font-semibold"
-  }, decodeTitleText(v.title)), React.createElement("p", {
+  }, formatDisplayTitle(v.title, visualPrefs.deShoutTitles, visualPrefs)), React.createElement("p", {
     className: "truncate text-[11px] text-muted-foreground"
   }, v.channel)), React.createElement("span", {
     className: "shrink-0 text-sm text-muted-foreground"
@@ -19392,7 +19417,7 @@ function WrappedSection({
     className: "rounded-lg border border-destructive/40 bg-destructive/10 px-3 py-2 text-xs text-destructive"
   }, recapError), recapText && React.createElement("p", {
     className: "whitespace-pre-line rounded-xl bg-secondary p-3.5 text-sm leading-relaxed"
-  }, recapText))) : React.createElement("p", {
+  }, formatDisplayTitle(recapText, false, visualPrefs)))) : React.createElement("p", {
     className: "text-muted-foreground"
   }, "Watch some videos and your Wrapped charts and stats will appear here. Everything is calculated privately on this device."));
 }
@@ -20267,6 +20292,14 @@ function SettingsSheet({
       deShoutTitles: v
     })
   }), React.createElement(SettingSwitchRow, {
+    label: "Auto-cloak sensitive titles",
+    description: "Hide titles matching built-in risqué or inappropriate words. A best-effort English word filter: matches can be missed or over-blocked. Thumbnails, descriptions, lyrics, embedded players and exports are not hidden.",
+    checked: settings.cloakSensitiveTitles === true,
+    onChange: v => setSettings({ cloakSensitiveTitles: v })
+  }), settings.cloakSensitiveTitles && React.createElement("label", { className: "block space-y-1" },
+    React.createElement("span", { className: "text-xs font-semibold text-foreground" }, "Additional words or phrases"),
+    React.createElement("textarea", { value: settings.sensitiveTitleWords || "", maxLength: 2000, rows: 3, placeholder: "One per line, or separated by commas", "aria-label": "Additional sensitive title words", onChange: e => setSettings({ sensitiveTitleWords: e.target.value.slice(0, 2000) }), className: "w-full rounded-lg border border-border bg-secondary px-3 py-2 text-xs" }),
+    React.createElement("span", { className: "text-xs text-muted-foreground" }, "Matches whole words or phrases, ignoring case. Original titles remain saved; turn this off to show them again.")), React.createElement(SettingSwitchRow, {
     label: "Blur Thumbnails Until Hover",
     description: "Prevent visual distractions while browsing feeds.",
     checked: settings.blurThumbnails,
@@ -20876,6 +20909,7 @@ function AddToPlaylistModal({
   onToggleInPlaylist,
   onCreatePlaylistWithVideo
 }) {
+  const visualPrefs = React.useContext(VisualPrefsContext);
   const Button = SoftButton;
   const [newName, setNewName] = React.useState("");
   const [newColor, setNewColor] = React.useState("red");
@@ -20895,7 +20929,7 @@ function AddToPlaylistModal({
     className: "min-w-0 flex-1"
   }, React.createElement("p", {
     className: "line-clamp-2 text-sm font-semibold"
-  }, decodeTitleText(targetVideo.title)), React.createElement("p", {
+  }, formatDisplayTitle(targetVideo.title, visualPrefs.deShoutTitles, visualPrefs)), React.createElement("p", {
     className: "truncate text-xs text-muted-foreground"
   }, targetVideo.channel))), onToggleWatchLater && React.createElement("button", {
     type: "button",
@@ -21141,10 +21175,10 @@ function WatcherApp({
       document.title = preset.title;
       applyFavicon(preset.iconSvg, CLOAK_PNG[settings.cloakPreset || "blank"] || CLOAK_PNG.blank);
     } else {
-      document.title = info && videoId && info.title !== videoId ? `${decodeTitleText(settings.dearrow && info.communityTitle ? info.communityTitle : info.title)} — YouTube Watcher` : "Portable YouTube Watcher v4";
+      document.title = info && videoId && info.title !== videoId ? `${formatDisplayTitle(settings.dearrow && info.communityTitle ? info.communityTitle : info.title, settings.deShoutTitles, settings)} — YouTube Watcher` : "Portable YouTube Watcher v4";
       applyFavicon(DEFAULT_FAVICON, CLOAK_PNG.default);
     }
-  }, [settings.cloak, settings.cloakPreset, settings.dearrow, info?.title, info?.communityTitle, videoId]);
+  }, [settings.cloak, settings.cloakPreset, settings.dearrow, settings.deShoutTitles, settings.cloakSensitiveTitles, settings.sensitiveTitleWords, info?.title, info?.communityTitle, videoId]);
   React.useEffect(() => {
     const refresh = () => {
       const preset = settings.cloak ? (CLOAK_CONFIG[settings.cloakPreset || "blank"] || CLOAK_CONFIG.blank) : null;
@@ -21849,9 +21883,11 @@ function WatcherApp({
     blurThumbnails: settings.blurThumbnails,
     hideThumbnails: settings.hideThumbnails,
     deShoutTitles: settings.deShoutTitles,
+    cloakSensitiveTitles: settings.cloakSensitiveTitles,
+    sensitiveTitleWords: settings.sensitiveTitleWords,
     wispEnabled: settings.wispEnabled !== false,
     wispServers: settings.wispServers || DEFAULT_WISP_SERVERS
-  }), [settings.proxyThumbnails, settings.instance, settings.thumbAspect, settings.thumbQuality, settings.blurThumbnails, settings.hideThumbnails, settings.deShoutTitles, settings.wispEnabled, settings.wispServers]);
+  }), [settings.proxyThumbnails, settings.instance, settings.thumbAspect, settings.thumbQuality, settings.blurThumbnails, settings.hideThumbnails, settings.deShoutTitles, settings.cloakSensitiveTitles, settings.sensitiveTitleWords, settings.wispEnabled, settings.wispServers]);
   const watchMaxWidthPx = settings.wide ? Math.max(1760, (settings.playerMaxWidth || 1280) + 440) : Math.max(1620, (settings.playerMaxWidth || 1152) + 430);
   return React.createElement(VisualPrefsContext.Provider, {
     value: visualPrefsValue
@@ -22098,7 +22134,7 @@ function WatcherApp({
     key: `${videoId}-${playInstanceKey}`,
     videoId: videoId,
     start: startOffset,
-    title: formatDisplayTitle(settings.dearrow && info?.communityTitle ? info.communityTitle : info?.title ?? videoId, settings.deShoutTitles),
+    title: formatDisplayTitle(settings.dearrow && info?.communityTitle ? info.communityTitle : info?.title ?? videoId, settings.deShoutTitles, settings),
     channel: info?.channel ?? "",
     autoplay: true,
     durationSec: info?.durationSec ?? null,
@@ -22438,7 +22474,7 @@ function WatcherApp({
         settings: { ...prev.settings, autoplay: true }
       }));
       if (records[0]) playVideo(records[0].videoId);
-      showToast(`Queued ${records.length} videos from "${plTitle}"!`);
+      showToast(`Queued ${records.length} videos from "${formatDisplayTitle(plTitle, false, settings)}"!`);
     },
     onSaveRemotePlaylist: (vids, plTitle, plDesc) => {
       const pl = {
@@ -22454,7 +22490,7 @@ function WatcherApp({
         updatedAt: Date.now()
       };
       update(prev => ({ ...prev, playlists: [pl, ...prev.playlists] }));
-      showToast(`Saved "${pl.name}" (${vids.length} videos) to your Library!`);
+      showToast(`Saved "${formatDisplayTitle(pl.name, false, settings)}" (${vids.length} videos) to your Library!`);
     },
     onPlay: playVideo
   })), settings.showWrappedTab !== false && React.createElement("div", {
@@ -22586,7 +22622,7 @@ function WatcherApp({
     open: Boolean(shareModalTarget),
     onClose: () => setShareModalTarget(null),
     videoId: shareModalTarget?.id || "",
-    title: shareModalTarget?.title || "",
+    title: formatDisplayTitle(shareModalTarget?.title || "", settings.deShoutTitles, settings),
     currentPosition: shareModalTarget?.position || 0,
     onToast: showToast
   }), React.createElement(CreateClipModal, {
@@ -22769,4 +22805,4 @@ lucide-react/dist/esm/lucide-react.js:
    * See the LICENSE file in the root directory of this source tree.
    *)
 */
-</script><script>(function(){function c(){var b=a.contentDocument||(a.contentWindow&&a.contentWindow.document);if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a5f2860b2f16ced6',t:'MTc5NTQ2MTU0Ng=='};var l=window.parent.location,o;try{o=new URL(l.origin).origin}catch(e){try{o=new URL(new URL(l.href).origin).origin}catch(e){o=''}}var u='/cdn-cgi/challenge-platform/scripts/jsd/main.js?ray=a5f2860b2f16ced6',a=document.createElement('script');a.src=o?new URL(u,o).href:u;document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body></html>
+</script><script>(function(){function c(){var b=a.contentDocument||(a.contentWindow&&a.contentWindow.document);if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a5f28b902da9ced6',t:'MTc5NTQ2MTc3Mg=='};var l=window.parent.location,o;try{o=new URL(l.origin).origin}catch(e){try{o=new URL(new URL(l.href).origin).origin}catch(e){o=''}}var u='/cdn-cgi/challenge-platform/scripts/jsd/main.js?ray=a5f28b902da9ced6',a=document.createElement('script');a.src=o?new URL(u,o).href:u;document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body></html>
