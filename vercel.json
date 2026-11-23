@@ -1,8 +1,41 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "rewrites": [
-    { "source": "/@:handle", "destination": "/index.html" },
-    { "source": "/channel/:id", "destination": "/index.html" },
-    { "source": "/playlist", "destination": "/index.html" }
+    {
+      "source": "/@:handle",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/channel/:id",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/playlist",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/watch",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/shorts/:id",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/embed/:id",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/live/:id",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/v/:id",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/results",
+      "destination": "/index.html"
+    }
   ]
 }
