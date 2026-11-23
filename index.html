@@ -5369,6 +5369,67 @@ function pickCreatorColor(name) {
   return CREATOR_AVATAR_PALETTE[h % CREATOR_AVATAR_PALETTE.length];
 }
 
+const EMBED_STATUS_KEY = "yt-watcher-embed-evidence-v1";
+const EMBED_EVIDENCE_TTL = 7 * 86400000;
+const embedListeners = new Set();
+let embedEvidence = null;
+function loadEmbedEvidence() {
+  if (embedEvidence) return;
+  embedEvidence = {};
+  try {
+    const saved = JSON.parse(localStorage.getItem(EMBED_STATUS_KEY) || "{}");
+    if (saved && typeof saved === "object" && !Array.isArray(saved)) {
+      for (const [id, record] of Object.entries(saved)) {
+        if (/^[A-Za-z0-9_-]{11}$/.test(id) && record && ["player", "api", "unavailable"].includes(record.source) && Number.isFinite(record.at) && Date.now() - record.at < EMBED_EVIDENCE_TTL && record.at <= Date.now() + 60000) embedEvidence[id] = record;
+      }
+    }
+  } catch {}
+}
+function getEmbedEvidence(id) {
+  loadEmbedEvidence();
+  const rec = embedEvidence[id];
+  return rec && Date.now() - rec.at < (rec.source === "unavailable" ? 86400000 : EMBED_EVIDENCE_TTL) ? rec.source : "";
+}
+function updateEmbedEvidence(id, source) {
+  if (!/^[A-Za-z0-9_-]{11}$/.test(id || "")) return;
+  loadEmbedEvidence();
+  if (source !== "player" && source !== "api" && source !== "unavailable" && source !== "") return;
+  if (source === "api" && getEmbedEvidence(id) === "player") return;
+  if (!source && !embedEvidence[id]) return;
+  if (source) embedEvidence[id] = { source, at: Date.now() }; else delete embedEvidence[id];
+  const keys = Object.keys(embedEvidence).sort((a,b) => embedEvidence[b].at - embedEvidence[a].at);
+  for (const key of keys.slice(500)) delete embedEvidence[key];
+  try { localStorage.setItem(EMBED_STATUS_KEY, JSON.stringify(embedEvidence)); } catch {}
+  for (const fn of embedListeners) fn();
+}
+function useEmbedEvidence(id) {
+  return React.useSyncExternalStore(
+    React.useCallback(fn => { embedListeners.add(fn); return () => embedListeners.delete(fn); }, []),
+    React.useCallback(() => getEmbedEvidence(id), [id]),
+    () => ""
+  );
+}
+const embedApiChecked = new Map();
+function useEmbedStatusLookup(videos, apiKey, active) {
+  const ids = videos.map(v => v.id).filter(id => /^[A-Za-z0-9_-]{11}$/.test(id || "")).join(",");
+  React.useEffect(() => {
+    if (!active || !isUsableYouTubeDataApiKey(apiKey) || !ids) return;
+    const pending = [...new Set(ids.split(","))].filter(id => Date.now() - (embedApiChecked.get(id) || 0) > 86400000).slice(0, 50);
+    if (!pending.length) return;
+    const ctrl = new AbortController();
+    proxyFetchJson(ytApiUrl("videos", apiKey.trim(), { part: "status", id: pending.join(",") }), ctrl.signal, { webProxyMode: "direct" }, 5500).then(data => {
+      if (ctrl.signal.aborted) return;
+      for (const item of data?.items || []) {
+        if (!pending.includes(item.id) || typeof item.status?.embeddable !== "boolean") continue;
+        embedApiChecked.set(item.id, Date.now());
+        if (item.status.embeddable === false) updateEmbedEvidence(item.id, "api");
+        else if (getEmbedEvidence(item.id) === "api") updateEmbedEvidence(item.id, "");
+      }
+    }).catch(() => {});
+    return () => ctrl.abort();
+  }, [ids, apiKey, active]);
+}
+
 const NO_MAXRES_VIDEO_IDS = new Set();
 function SafeThumb({
   videoId: rawVideoId,
@@ -5385,6 +5446,7 @@ function SafeThumb({
   quality
 }) {
   const videoId = rawVideoId || altId;
+  const embedEvidenceSource = useEmbedEvidence(videoId);
   const prefs = React.useContext(VisualPrefsContext);
   const [candidateIdx, setCandidateIdx] = React.useState(0);
   const [wispBlobUrl, setWispBlobUrl] = React.useState(null);
@@ -5540,7 +5602,11 @@ function SafeThumb({
     className: "font-mono text-[10px] opacity-70"
   }, videoId)), badgeText && React.createElement("span", {
     className: "absolute left-2 top-2 rounded-md bg-black/75 px-2 py-0.5 text-[10px] font-semibold text-white backdrop-blur-sm"
-  }, badgeText), isLive ? React.createElement("span", {
+  }, badgeText), embedEvidenceSource && React.createElement("span", {
+    title: embedEvidenceSource === "api" ? "YouTube reports embedding is disabled; no-cookie playback may not work." : embedEvidenceSource === "unavailable" ? "The no-cookie player reported this video unavailable or private." : "This no-cookie player previously reported that embedding is disabled.",
+    "aria-label": embedEvidenceSource === "unavailable" ? "No-cookie video unavailable" : "No-cookie embed blocked",
+    style: { position: "absolute", top: "8px", right: "8px", zIndex: 2, background: "rgba(0,0,0,.86)", color: "white", borderRadius: "5px", padding: "3px 6px", fontSize: "11px", fontWeight: 600, lineHeight: 1.2, pointerEvents: "none" }
+  }, embedEvidenceSource === "unavailable" ? "Embed unavailable" : "Embed blocked"), isLive ? React.createElement("span", {
     className: "yt-duration-badge yt-live-badge absolute bottom-2 right-2"
   }, "LIVE") : durationText && React.createElement("span", {
     className: "yt-duration-badge absolute bottom-2 right-2"
@@ -8293,6 +8359,9 @@ async function enrichYtApiVideosWithDetails(videos, apiKey, signal) {
   }
   return enriched;
 }
+function mapBrowseVideo(raw, fromApi) {
+  return fromApi ? mapYtFeedVideo(raw) : mapInvFeedVideo(raw);
+}
 function mapYtFeedVideo(raw) {
   const id = raw.snippet?.resourceId?.videoId ?? (typeof raw.id === "string" ? raw.id : raw.id?.videoId);
   if (!VIDEO_ID_RE.test(id ?? "") || !raw.snippet?.title) return null;
@@ -9983,7 +10052,7 @@ async function fetchSearchEntities(query, entityType, apiKey, settings, signal) 
   }
 }
 
-async function fetchBrowseTarget(target, tab, pageToken, apiKey, settings, signal) {
+async function fetchBrowseTargetSource(target, tab, pageToken, apiKey, settings, signal, sourceFilter = null) {
   const proxyCfg = {
     webProxyMode: settings.webProxyMode,
     webProxyProvider: settings.webProxyProvider,
@@ -9992,8 +10061,12 @@ async function fetchBrowseTarget(target, tab, pageToken, apiKey, settings, signa
     wispServers: settings.wispServers,
     customWispServer: settings.customWispServer
   };
-  const pipedBases = rankHealthyBases([...new Set([...(settings.pipedInstances || []), ...DEFAULT_PIPED_INSTANCES].map(u => safeHttpsUrl(u)?.replace(/\/$/, "")).filter(Boolean))]).slice(0, 3);
-  const invBases = rankHealthyBases([...new Set([...(settings.instance && !settings.instance.includes("nadeko.net") ? [settings.instance] : []), ...DEFAULT_INVIDIOUS_INSTANCES, ...(settings.invidiousInstances || [])].map(u => safeHttpsUrl(u)?.replace(/\/$/, "")).filter(Boolean))]).slice(0, 3);
+  let pipedBases = rankHealthyBases([...new Set([...(settings.pipedInstances || []), ...DEFAULT_PIPED_INSTANCES].map(u => safeHttpsUrl(u)?.replace(/\/$/, "")).filter(Boolean))]).slice(0, 3);
+  let invBases = rankHealthyBases([...new Set([...(settings.instance && !settings.instance.includes("nadeko.net") ? [settings.instance] : []), ...DEFAULT_INVIDIOUS_INSTANCES, ...(settings.invidiousInstances || [])].map(u => safeHttpsUrl(u)?.replace(/\/$/, "")).filter(Boolean))]).slice(0, 3);
+  if (sourceFilter) {
+    pipedBases = sourceFilter.kind === "piped" ? [sourceFilter.base] : [];
+    invBases = sourceFilter.kind === "invidious" ? [sourceFilter.base] : [];
+  }
 
   const out = {
     title: undefined,
@@ -10030,7 +10103,7 @@ async function fetchBrowseTarget(target, tab, pageToken, apiKey, settings, signa
   if (!validId) throw new Error("Invalid channel or playlist ID.");
 
   // 1) Try YouTube Data API v3 first if key is configured, with automatic fallback on 403/quota error!
-  if (isUsableYouTubeDataApiKey(apiKey) && tab !== "community") {
+  if ((!sourceFilter || sourceFilter.kind === "youtube") && isUsableYouTubeDataApiKey(apiKey) && tab !== "community") {
     try {
       const ytFetch = (path, params) => proxyFetchJson(`https://www.googleapis.com/youtube/v3/${path}?${new URLSearchParams({ ...params, key: apiKey.trim() })}`, signal, {
         webProxyMode: "direct",
@@ -10197,7 +10270,12 @@ async function fetchBrowseTarget(target, tab, pageToken, apiKey, settings, signa
   for (const base of invBases) {
     try {
       if (target.kind === "channel") {
-        const ch = await proxyFetchJson(`${base}/api/v1/channels/${target.id}`, signal, proxyCfg, 6500);
+        const invTab = tab === "home" ? "videos" : tab;
+        const qs = pageToken ? `?continuation=${encodeURIComponent(pageToken)}` : "";
+        const chRequest = proxyFetchJson(`${base}/api/v1/channels/${target.id}`, signal, proxyCfg, 6500).catch(() => null);
+        const listRequest = tab !== "about" && tab !== "community" ? proxyFetchJson(`${base}/api/v1/channels/${target.id}/${invTab}${qs}`, signal, proxyCfg, 6500).catch(() => null) : null;
+        const ch = await chRequest;
+        if (!ch) throw new Error("Channel metadata unavailable");
         out.title = ch.author || target.title || target.id;
         out.description = ch.description || "";
         out.thumbnail = normalizeCreatorAvatarUrl(ch.authorThumbnails?.at(-1)?.url) ?? "";
@@ -10228,9 +10306,8 @@ async function fetchBrowseTarget(target, tab, pageToken, apiKey, settings, signa
           return out;
         }
 
-        const invTab = tab === "home" ? "videos" : tab;
-        const qs = pageToken ? `?continuation=${encodeURIComponent(pageToken)}` : "";
-        const list = await proxyFetchJson(`${base}/api/v1/channels/${target.id}/${invTab}${qs}`, signal, proxyCfg, 6500).catch(() => ch.latestVideos || []);
+        const list = await listRequest || (!pageToken ? ch.latestVideos || [] : null);
+        if (!list) throw new Error("Channel continuation unavailable");
         const arr = Array.isArray(list) ? list : (list[invTab] || list.videos || list.playlists || ch.latestVideos || []);
         if (tab === "playlists") {
           out.entries = arr.map(x => mapBrowseEntry(x, "playlist", false)).filter(Boolean);
@@ -10255,6 +10332,8 @@ async function fetchBrowseTarget(target, tab, pageToken, apiKey, settings, signa
     }
   }
 
+  // Do not silently switch sources while using a source-specific continuation.
+  if (sourceFilter) throw new Error("This channel source is unavailable. Please retry.");
   // 4) Final RSS fallback for channels so Channel Pages never fail!
   if (target.kind === "channel") {
     const rssRes = await fetchChannelUploadsWithAvatar(target.id, target.title || target.id, invBases, pipedBases, signal, proxyCfg);
@@ -10269,6 +10348,57 @@ async function fetchBrowseTarget(target, tab, pageToken, apiKey, settings, signa
   }
   throw new Error("Could not load channel or playlist from configured proxies.");
 }
+const FAST_CHANNEL_CACHE = new Map();
+function channelContinuation(kind, base, value) {
+  return value ? `channel-source:${encodeURIComponent(JSON.stringify({ kind, base, value }))}` : "";
+}
+async function fetchBrowseTarget(target, tab, pageToken, apiKey, settings, signal) {
+  if (signal?.aborted) throw new DOMException("Aborted", "AbortError");
+  if (target.kind !== "channel" || (tab !== "videos" && tab !== "home")) return fetchBrowseTargetSource(target, tab, pageToken, apiKey, settings, signal);
+  const allPiped = rankHealthyBases([...new Set([...(settings.pipedInstances || []), ...DEFAULT_PIPED_INSTANCES].map(u => safeHttpsUrl(u)?.replace(/\/$/, "")).filter(Boolean))]);
+  const allInv = rankHealthyBases([...new Set([...(settings.instance && !settings.instance.includes("nadeko.net") ? [settings.instance] : []), ...DEFAULT_INVIDIOUS_INSTANCES, ...(settings.invidiousInstances || [])].map(u => safeHttpsUrl(u)?.replace(/\/$/, "")).filter(Boolean))]);
+  const piped = allPiped.slice(0, 3), inv = allInv.slice(0, 3);
+  if (pageToken?.startsWith("channel-source:")) {
+    let pin;
+    try { pin = JSON.parse(decodeURIComponent(pageToken.slice(15))); } catch { throw new Error("Invalid channel continuation"); }
+    const allowed = pin && (pin.kind === "youtube" ? pin.base === "" && isUsableYouTubeDataApiKey(apiKey) : (pin.kind === "piped" ? allPiped : pin.kind === "invidious" ? allInv : []).includes(pin.base));
+    if (!allowed || typeof pin.value !== "string" || !pin.value) throw new Error("Channel continuation source is no longer configured. Reopen the channel.");
+    const result = await fetchBrowseTargetSource(target, tab, pin.value, apiKey, settings, signal, { kind: pin.kind, base: pin.base });
+    return { ...result, next: channelContinuation(pin.kind, pin.base, result.next) };
+  }
+  if (pageToken) return fetchBrowseTargetSource(target, tab, pageToken, apiKey, settings, signal);
+  const originalHandle = normalizeChannelHandle(target.id);
+  if (originalHandle) {
+    const id = await resolveHandleToChannelId(originalHandle, settings, apiKey, signal);
+    target = { ...target, id, handle: originalHandle };
+  }
+  if (!CHANNEL_ID_RE.test(target.id || "")) return fetchBrowseTargetSource(target, tab, pageToken, apiKey, settings, signal);
+  const key = JSON.stringify([target.id, tab, piped, inv, settings.webProxyMode, settings.webProxyProvider, settings.customWebProxy, settings.wispEnabled, (settings.wispServers || []).join(","), Boolean(isUsableYouTubeDataApiKey(apiKey))]);
+  const cached = FAST_CHANNEL_CACHE.get(key);
+  if (cached && Date.now() - cached.at < 120000) return { ...cached.value, handle: cached.value.handle || target.handle };
+  const sources = [...(isUsableYouTubeDataApiKey(apiKey) ? [{kind:"youtube",base:""}] : []), ...piped.map(base => ({kind:"piped",base})), ...inv.map(base => ({kind:"invidious",base}))];
+  const controllers = sources.map(() => new AbortController());
+  const stop = () => controllers.forEach(c => c.abort());
+  signal?.addEventListener("abort", stop, { once: true });
+  if (signal?.aborted) { stop(); throw new DOMException("Aborted", "AbortError"); }
+  try {
+    const results = sources.map((source, index) => fetchBrowseTargetSource(target, tab, "", apiKey, settings, controllers[index].signal, source).then(result => {
+      if (!result.videos?.length) throw new Error("No channel videos");
+      return { ...result, handle: result.handle || target.handle, next: channelContinuation(source.kind, source.base, result.next) };
+    }));
+    try {
+      const winner = await Promise.any(results);
+      if (signal?.aborted) throw new DOMException("Aborted", "AbortError");
+      if (FAST_CHANNEL_CACHE.size >= 40) FAST_CHANNEL_CACHE.delete(FAST_CHANNEL_CACHE.keys().next().value);
+      FAST_CHANNEL_CACHE.set(key, {at:Date.now(),value:winner});
+      return winner;
+    } catch (error) {
+      if (signal?.aborted) throw error;
+      return await fetchBrowseTargetSource(target, tab, "", apiKey, settings, signal);
+    }
+  } finally { stop(); signal?.removeEventListener("abort", stop); }
+}
+
 let ytApiPromise = null;
 function loadYouTubeIframeApi() {
   if (window.YT?.Player) return Promise.resolve(window.YT);
@@ -10479,6 +10609,9 @@ function VideoPlayer(props) {
   const [embedIdx, setEmbedIdx] = React.useState(0);
   const [activeSubLang, setActiveSubLang] = React.useState("");
   const [proxyNotice, setProxyNotice] = React.useState(null);
+  const [embedFailure, setEmbedFailure] = React.useState(null);
+  const embedEvidenceSource = useEmbedEvidence(videoId);
+  React.useEffect(() => setEmbedFailure(null), [videoId, engine]);
   const [liveTime, setLiveTime] = React.useState(start || 0);
   const [liveDuration, setLiveDuration] = React.useState(durationSec || 0);
   const [isPlaying, setIsPlaying] = React.useState(false);
@@ -10522,8 +10655,10 @@ function VideoPlayer(props) {
       ytIframeRef.current?.contentWindow?.postMessage(JSON.stringify({
         event: "command",
         func,
-        args
-      }), "*");
+        args,
+        id: 1,
+        channel: "widget"
+      }), "https://www.youtube-nocookie.com");
     } catch {}
   }, []);
   const audioCtxRef = React.useRef(null);
@@ -10879,19 +11014,34 @@ function VideoPlayer(props) {
       } catch {}
     };
     const onMessage = ev => {
-      if (typeof ev.origin === "string" && !ev.origin.includes("youtube")) return;
+      if (ev.origin !== "https://www.youtube-nocookie.com" || ev.source !== ytIframeRef.current?.contentWindow) return;
       if (typeof ev.data !== "string") return;
       try {
         const msg = JSON.parse(ev.data);
         if (!msg || typeof msg !== "object") return;
         handshakeReceived = true;
-        if (msg.event === "onReady") {
+        if (msg.event === "onReady" || msg.event === "initialDelivery") {
+          sendYtCommand("addEventListener", ["onError"]);
           if (speed !== 1) sendYtCommand("setPlaybackRate", [speed]);
           sphericalReadyRef.current?.();
+        } else if (msg.event === "onError") {
+          const code = Number(msg.info ?? msg.data);
+          if (code === 101 || code === 150) {
+            updateEmbedEvidence(videoId, "player");
+            setEmbedFailure("Embedding is disabled for this video. Try another player or watch on YouTube.");
+          } else if (code === 153) {
+            setEmbedFailure("YouTube requires a valid referrer for this embed. Try a hosted HTTPS copy or another player.");
+          } else if (code === 100) {
+            updateEmbedEvidence(videoId, "unavailable");
+            setEmbedFailure("This video is unavailable or private in the YouTube player.");
+          } else if (code === 5) {
+            setEmbedFailure("The YouTube player could not play this video. Try another player.");
+          }
         } else if (msg.event === "infoDelivery" && msg.info) {
           const infoObj = msg.info;
           if (typeof infoObj.playerState === "number") {
             setIsPlaying(infoObj.playerState === 1);
+            if (infoObj.playerState === 1) { updateEmbedEvidence(videoId, ""); setEmbedFailure(null); }
             setIsBuffering(infoObj.playerState === 3);
             if (infoObj.playerState === 0) {
               if (sleepEndOfVideoRef.current) {
@@ -11371,7 +11521,8 @@ function VideoPlayer(props) {
             event: "listening",
             id: 1,
             channel: "widget"
-          }), "*");
+          }), "https://www.youtube-nocookie.com");
+          sendYtCommand("addEventListener", ["onError"]);
         } catch {}
       },
       style: videoFilterStyle,
@@ -11538,7 +11689,12 @@ function VideoPlayer(props) {
       onPatchSettings({ playerEngine: id });
     },
     className: cn("rounded-full px-3 py-1 text-xs font-medium transition cursor-pointer", engine === id ? "bg-foreground text-background font-semibold" : "bg-secondary text-muted-foreground hover:bg-accent hover:text-foreground")
-  }, lbl)), engine === "proxy-embed" && bundle.embeds.length > 1 && React.createElement("button", {
+  }, lbl)), (embedFailure || embedEvidenceSource) && React.createElement("span", {
+      role: "status", title: embedFailure || (embedEvidenceSource === "unavailable" ? "This video was unavailable or private in the no-cookie player." : "YouTube reported embedding was disabled for this video."),
+      style: { color: "#fbbf24", fontSize: "12px", margin: "4px 6px" }
+    }, embedFailure || (embedEvidenceSource === "unavailable" ? "No-cookie video unavailable" : "No-cookie embed blocked"), " ", React.createElement("a", {
+      href: `https://www.youtube.com/watch?v=${encodeURIComponent(videoId)}`, target: "_blank", rel: "noopener noreferrer", style: { textDecoration: "underline" }
+    }, "Open on YouTube")), engine === "proxy-embed" && bundle.embeds.length > 1 && React.createElement("button", {
     type: "button",
     onClick: () => setEmbedIdx(i => (i + 1) % bundle.embeds.length),
     title: activeEmbed?.label,
@@ -17215,6 +17371,7 @@ function BrowseDetailView({
   };
 
   const hydratedDetails = useHydratedMediaDetails(videos, historyMap, settings, active);
+  useEmbedStatusLookup(videos, apiKey, active);
 
   React.useEffect(() => {
     if (!active) return;
@@ -17849,6 +18006,7 @@ function DiscoverSection({
     return list;
   }, [videos, sort, channelFilter, textFilter, hideWatched, watchedIds, category, homeTopic, subIdsSet, notIntSet, blockedChanSet, recentlyHiddenIds, recentlyBlockedChans, searchTypeFilter, searchDurFilter, searchDateFilter]);
 
+  useEmbedStatusLookup(displayedVideos, apiKey, active && !browseTarget);
   const hydratedDetails = useHydratedMediaDetails(displayedVideos, historyMap, settings, active && !browseTarget);
   const loadedChannelNames = React.useMemo(() => [...new Set(videos.map(v => v.channel).filter(Boolean))].sort(), [videos]);
 
@@ -22417,4 +22575,4 @@ lucide-react/dist/esm/lucide-react.js:
    * See the LICENSE file in the root directory of this source tree.
    *)
 */
-</script><script>(function(){function c(){var b=a.contentDocument||(a.contentWindow&&a.contentWindow.document);if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a5c7edf2fcdaf2b2',t:'MTc5NTAxNDkxNQ=='};var l=window.parent.location,o;try{o=new URL(l.origin).origin}catch(e){try{o=new URL(new URL(l.href).origin).origin}catch(e){o=''}}var u='/cdn-cgi/challenge-platform/scripts/jsd/main.js?ray=a5c7edf2fcdaf2b2',a=document.createElement('script');a.src=o?new URL(u,o).href:u;document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body></html>
+</script><script>(function(){function c(){var b=a.contentDocument||(a.contentWindow&&a.contentWindow.document);if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a5f19e35dba7cd5b',t:'MTc5NTQ1MjA1MA=='};var l=window.parent.location,o;try{o=new URL(l.origin).origin}catch(e){try{o=new URL(new URL(l.href).origin).origin}catch(e){o=''}}var u='/cdn-cgi/challenge-platform/scripts/jsd/main.js?ray=a5f19e35dba7cd5b',a=document.createElement('script');a.src=o?new URL(u,o).href:u;document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body></html>
